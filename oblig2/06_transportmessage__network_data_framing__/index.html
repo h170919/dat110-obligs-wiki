@@ -101,7 +101,7 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="../..">
 <span class="md-ellipsis">
-    Quem invecta sonantem gravidamve nascentur nimium
+    Home
     
   </span>
 </a>
@@ -121,14 +121,6 @@
             Oblig1
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../oblig1/">
-<span class="md-ellipsis">
-    Tutorial: dat110-project1-gruppe69
-    
-  </span>
-</a>
-</li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="../../oblig1/01_rpc_client_stub_/">
 <span class="md-ellipsis">
@@ -181,6 +173,14 @@
 <a class="md-nav__link" href="../../oblig1/07_message_framing_protocol_/">
 <span class="md-ellipsis">
     Chapter 7: Message Framing Protocol
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig1/oblig1_index/">
+<span class="md-ellipsis">
+    Tutorial: dat110-project1-gruppe69
     
   </span>
 </a>
@@ -432,8 +432,8 @@
 <p>But how does that message object actually travel across the internet? Computers connected via a network send data as streams of raw bytes (ones and zeroes). If our <code>Client</code> just dumped all the bytes for <code>ConnectMsg</code>, then <code>PublishMsg</code>, then another <code>PublishMsg</code> into the stream, how would the <code>Server</code> know where one message ends and the next one starts?</p>
 <h2 id="the-problem-finding-message-boundaries-in-a-stream">The Problem: Finding Message Boundaries in a Stream</h2>
 <p>Imagine you're receiving a very long letter, but instead of arriving in an envelope, it arrives as one continuous ticker tape of letters with no spaces or punctuation. It would be impossible to read!</p>
-<pre><code>HELLOWORLDHOWAREYOUIMFINEGOODBYE
-</code></pre>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>HELLOWORLDHOWAREYOUIMFINEGOODBYE
+</span></code></pre></div>
 <p>Network communication is similar. Data arrives as a continuous stream of bytes. The receiver needs a way to figure out: "Okay, <em>these</em> specific bytes make up the first message, and <em>these next</em> bytes make up the second message." Without clear boundaries, the data is just a jumbled mess.</p>
 <h2 id="the-solution-data-framing">The Solution: Data Framing</h2>
 <p>To solve this, we use <strong>Data Framing</strong>. Think of it like putting each message into its own standard-sized envelope or small shipping box before sending it. This "frame" not only holds the message content (the "payload") but also adds some extra information, like a label on the outside.</p>
@@ -448,49 +448,49 @@
 <p>When your friend receives the standard-sized envelope, they don't need to guess where your message ends. They look at the label ("Payload Length: 7"), open the envelope, and read exactly the first 7 characters. They know those 7 characters constitute the complete message. Anything else in the envelope is just padding, and the <em>next</em> envelope they receive will contain the <em>next</em> message.</p>
 <h2 id="our-standard-envelope-transportmessagejava">Our Standard Envelope: <code>TransportMessage.java</code></h2>
 <p>In our project, the <code>TransportMessage</code> class acts as this standard envelope or frame. Its main job is to hold the raw data bytes of the <em>actual</em> message we want to send (like the bytes representing a <code>ConnectMsg</code> or <code>PublishMsg</code>) and provide methods to wrap (frame) and unwrap (unframe) this data.</p>
-<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/messagetransport/TransportMessage.java
-
-public class TransportMessage {
-
-    // The actual message content (raw bytes)
-    private byte[] payload;
-
-    // Constructor: Creates a TransportMessage holding the payload
-    public TransportMessage(byte[] payload) {
-        // We need to make sure the payload isn't too big for our 'envelope'
-        if (payload == null || (payload.length + 1 &gt; MessageConfig.SEGMENTSIZE)) {
-            // (+1 because we need space for the length byte itself)
-            throw new RuntimeException("Payload too large for segment!");
-        }
-        this.payload = payload;
-    }
-
-    // Method to get the payload data back out
-    public byte[] getData() {
-        return this.payload;
-    }
-
-    // ... (encapsulate and decapsulate methods coming next) ...
-}
-</code></pre>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-1-1"><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1">// File: src/main/java/no/hvl/dat110/messagetransport/TransportMessage.java</span>
+</span><span id="__span-1-2"><a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TransportMessage</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-4"><a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">    </span><span class="c1">// The actual message content (raw bytes)</span>
+</span><span id="__span-1-6"><a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">payload</span><span class="p">;</span>
+</span><span id="__span-1-7"><a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>
+</span><span id="__span-1-8"><a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="w">    </span><span class="c1">// Constructor: Creates a TransportMessage holding the payload</span>
+</span><span id="__span-1-9"><a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">TransportMessage</span><span class="p">(</span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">payload</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-10"><a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="w">        </span><span class="c1">// We need to make sure the payload isn't too big for our 'envelope'</span>
+</span><span id="__span-1-11"><a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">payload</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="n">payload</span><span class="p">.</span><span class="na">length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">MessageConfig</span><span class="p">.</span><span class="na">SEGMENTSIZE</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-12"><a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="w">            </span><span class="c1">// (+1 because we need space for the length byte itself)</span>
+</span><span id="__span-1-13"><a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RuntimeException</span><span class="p">(</span><span class="s">"Payload too large for segment!"</span><span class="p">);</span>
+</span><span id="__span-1-14"><a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-1-15"><a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">payload</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">payload</span><span class="p">;</span>
+</span><span id="__span-1-16"><a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-17"><a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>
+</span><span id="__span-1-18"><a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="w">    </span><span class="c1">// Method to get the payload data back out</span>
+</span><span id="__span-1-19"><a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="nf">getData</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-20"><a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="na">payload</span><span class="p">;</span>
+</span><span id="__span-1-21"><a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-22"><a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>
+</span><span id="__span-1-23"><a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a><span class="w">    </span><span class="c1">// ... (encapsulate and decapsulate methods coming next) ...</span>
+</span><span id="__span-1-24"><a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a><span class="p">}</span>
+</span></code></pre></div>
 <ul>
 <li><strong><code>private byte[] payload;</code></strong>: This is where the raw data of the original message (e.g., the serialized <code>PublishMsg</code>) is stored. How we get these bytes from a <code>PublishMsg</code> object is the job of <a href="../08_messageutils__serialization_deserialization__/">Chapter 8: MessageUtils (Serialization/Deserialization)</a>. For now, just know that <code>payload</code> holds the core message content as bytes.</li>
 <li><strong><code>TransportMessage(byte[] payload)</code></strong>: The constructor takes these payload bytes and stores them. It also checks if the payload, plus the one extra byte we need for the length, will fit into our standard network packet size (<code>MessageConfig.SEGMENTSIZE</code>).</li>
 </ul>
 <h2 id="fixed-packet-size-messageconfigsegmentsize">Fixed Packet Size: <code>MessageConfig.SEGMENTSIZE</code></h2>
 <p>Our network communication uses fixed-size packets, like using only one size of shipping box. This size is defined in <code>MessageConfig.java</code>.</p>
-<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/messagetransport/MessageConfig.java
-
-public class MessageConfig {
-
-    // All our network 'envelopes' will be exactly 128 bytes long
-    public static final int SEGMENTSIZE = 128;
-
-    // Other network config (ignore for now)
-    public static final int MESSAGINGPORT = 8080;
-    public static final String MESSAGINGHOST = "localhost";
-}
-</code></pre>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-2-1"><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1">// File: src/main/java/no/hvl/dat110/messagetransport/MessageConfig.java</span>
+</span><span id="__span-2-2"><a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MessageConfig</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-4"><a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">    </span><span class="c1">// All our network 'envelopes' will be exactly 128 bytes long</span>
+</span><span id="__span-2-6"><a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">SEGMENTSIZE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">128</span><span class="p">;</span>
+</span><span id="__span-2-7"><a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>
+</span><span id="__span-2-8"><a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">    </span><span class="c1">// Other network config (ignore for now)</span>
+</span><span id="__span-2-9"><a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">MESSAGINGPORT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8080</span><span class="p">;</span>
+</span><span id="__span-2-10"><a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">MESSAGINGHOST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"localhost"</span><span class="p">;</span>
+</span><span id="__span-2-11"><a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="p">}</span>
+</span></code></pre></div>
 <ul>
 <li><strong><code>SEGMENTSIZE = 128</code></strong>: This means every chunk of data sent or received over the network using our <code>TransportMessage</code> framing will be exactly 128 bytes.</li>
 </ul>
@@ -504,29 +504,29 @@ public class MessageConfig {
 <li>Copies the actual <code>payload</code> bytes into the array, starting right <em>after</em> the length byte (at index 1).</li>
 <li>Returns the filled 128-byte array. The rest of the array (after the payload) is just padding and doesn't matter.</li>
 </ol>
-<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/messagetransport/TransportMessage.java
-
-public byte[] encapsulate() {
-
-    byte[] encoded; // This will be our 128-byte framed message
-
-    // Create the empty 128-byte array
-    encoded = new byte[MessageConfig.SEGMENTSIZE];
-
-    // --- The Framing Magic ---
-    // 1. Put the length of the payload into the first byte
-    encoded[0] = (byte) (payload.length);
-
-    // 2. Copy the payload bytes starting from the second byte (index 1)
-    for (int i = 0; i &lt; payload.length; i++) {
-        encoded[i + 1] = payload[i];
-    }
-    // --- End of Framing ---
-
-    // Return the fully prepared 128-byte segment
-    return encoded;
-}
-</code></pre>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-3-1"><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="c1">// File: src/main/java/no/hvl/dat110/messagetransport/TransportMessage.java</span>
+</span><span id="__span-3-2"><a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="kd">public</span><span class="w"> </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="nf">encapsulate</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-4"><a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">    </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">encoded</span><span class="p">;</span><span class="w"> </span><span class="c1">// This will be our 128-byte framed message</span>
+</span><span id="__span-3-6"><a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>
+</span><span id="__span-3-7"><a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="w">    </span><span class="c1">// Create the empty 128-byte array</span>
+</span><span id="__span-3-8"><a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w">    </span><span class="n">encoded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">byte</span><span class="o">[</span><span class="n">MessageConfig</span><span class="p">.</span><span class="na">SEGMENTSIZE</span><span class="o">]</span><span class="p">;</span>
+</span><span id="__span-3-9"><a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>
+</span><span id="__span-3-10"><a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w">    </span><span class="c1">// --- The Framing Magic ---</span>
+</span><span id="__span-3-11"><a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="w">    </span><span class="c1">// 1. Put the length of the payload into the first byte</span>
+</span><span id="__span-3-12"><a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="w">    </span><span class="n">encoded</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">byte</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">payload</span><span class="p">.</span><span class="na">length</span><span class="p">);</span>
+</span><span id="__span-3-13"><a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>
+</span><span id="__span-3-14"><a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="w">    </span><span class="c1">// 2. Copy the payload bytes starting from the second byte (index 1)</span>
+</span><span id="__span-3-15"><a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">payload</span><span class="p">.</span><span class="na">length</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-16"><a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="w">        </span><span class="n">encoded</span><span class="o">[</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">payload</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">;</span>
+</span><span id="__span-3-17"><a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-3-18"><a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="w">    </span><span class="c1">// --- End of Framing ---</span>
+</span><span id="__span-3-19"><a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a>
+</span><span id="__span-3-20"><a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a><span class="w">    </span><span class="c1">// Return the fully prepared 128-byte segment</span>
+</span><span id="__span-3-21"><a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">encoded</span><span class="p">;</span>
+</span><span id="__span-3-22"><a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="p">}</span>
+</span></code></pre></div>
 <ul>
 <li><code>encoded = new byte[MessageConfig.SEGMENTSIZE];</code>: Makes the 128-byte "envelope".</li>
 <li><code>encoded[0] = (byte) (payload.length);</code>: Writes the payload length into the first byte. We cast to <code>byte</code> because the length must fit in a single byte (0-255), which is why <code>SEGMENTSIZE</code> (128) limits the maximum payload size (to 127 bytes + 1 length byte).</li>
@@ -534,11 +534,11 @@ public byte[] encapsulate() {
 </ul>
 <p><strong>Visual Example:</strong>
 If our payload is <code>[72, 101, 108, 108, 111]</code> (bytes for "Hello"), its length is 5. <code>encapsulate()</code> produces a 128-byte array like this:</p>
-<pre><code>Byte Index:   0    1    2    3    4    5    6   ...   127
-Value:      [ 5 | 72 |101 |108 |108 |111 | 0 | ... |  0 ]
-             \-/ \---------------------/ \-------------/
-            Length    Actual Payload       Padding (unused)
-</code></pre>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>Byte Index:   0    1    2    3    4    5    6   ...   127
+</span><span id="__span-4-2"><a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>Value:      [ 5 | 72 |101 |108 |108 |111 | 0 | ... |  0 ]
+</span><span id="__span-4-3"><a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>             \-/ \---------------------/ \-------------/
+</span><span id="__span-4-4"><a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>            Length    Actual Payload       Padding (unused)
+</span></code></pre></div>
 <p>This 128-byte <code>encoded</code> array is what gets sent over the network by the <a href="../07_connection__network_stream_handling__/">Connection</a>.</p>
 <h2 id="opening-the-envelope-decapsulate">Opening the Envelope: <code>decapsulate()</code></h2>
 <p>When the receiver gets a 128-byte chunk of data from the network, how does it extract the original <code>payload</code>? This is called <strong>decapsulation</strong>.</p>
@@ -549,24 +549,24 @@ Value:      [ 5 | 72 |101 |108 |108 |111 | 0 | ... |  0 ]
 <li>Uses this <code>length</code> to know exactly which bytes in the <code>received</code> array constitute the payload (from index 1 up to index <code>length</code>).</li>
 <li>Copies <em>only</em> these payload bytes into the <code>TransportMessage</code> object's own <code>payload</code> field.</li>
 </ol>
-<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/messagetransport/TransportMessage.java
-
-import java.util.Arrays; // Needed for Arrays.copyOfRange
-
-public void decapsulate(byte[] received) { // 'received' is the 128-byte array from network
-
-    // --- The Un-Framing Magic ---
-    // 1. Read the payload length from the first byte
-    int len = received[0];
-
-    // 2. Extract the payload bytes from the received array
-    //    Starts at index 1, and copies 'len' bytes.
-    payload = Arrays.copyOfRange(received, 1, len + 1);
-    // --- End of Un-Framing ---
-
-    // Now, 'this.payload' holds the original message bytes again!
-}
-</code></pre>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-5-1"><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1">// File: src/main/java/no/hvl/dat110/messagetransport/TransportMessage.java</span>
+</span><span id="__span-5-2"><a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.Arrays</span><span class="p">;</span><span class="w"> </span><span class="c1">// Needed for Arrays.copyOfRange</span>
+</span><span id="__span-5-4"><a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>
+</span><span id="__span-5-5"><a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">decapsulate</span><span class="p">(</span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">received</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 'received' is the 128-byte array from network</span>
+</span><span id="__span-5-6"><a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>
+</span><span id="__span-5-7"><a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">    </span><span class="c1">// --- The Un-Framing Magic ---</span>
+</span><span id="__span-5-8"><a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w">    </span><span class="c1">// 1. Read the payload length from the first byte</span>
+</span><span id="__span-5-9"><a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">len</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">received</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">;</span>
+</span><span id="__span-5-10"><a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>
+</span><span id="__span-5-11"><a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w">    </span><span class="c1">// 2. Extract the payload bytes from the received array</span>
+</span><span id="__span-5-12"><a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w">    </span><span class="c1">//    Starts at index 1, and copies 'len' bytes.</span>
+</span><span id="__span-5-13"><a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w">    </span><span class="n">payload</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Arrays</span><span class="p">.</span><span class="na">copyOfRange</span><span class="p">(</span><span class="n">received</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">len</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-5-14"><a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="w">    </span><span class="c1">// --- End of Un-Framing ---</span>
+</span><span id="__span-5-15"><a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>
+</span><span id="__span-5-16"><a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="w">    </span><span class="c1">// Now, 'this.payload' holds the original message bytes again!</span>
+</span><span id="__span-5-17"><a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a><span class="p">}</span>
+</span></code></pre></div>
 <ul>
 <li><code>int len = received[0];</code>: Gets the length stored in the first byte.</li>
 <li><code>payload = Arrays.copyOfRange(received, 1, len + 1);</code>: This is a handy Java utility. It copies a portion of the <code>received</code> array.<ul>
@@ -578,7 +578,7 @@ public void decapsulate(byte[] received) { // 'received' is the 128-byte array f
 </ul>
 <h2 id="how-it-fits-together">How It Fits Together</h2>
 <p>Here's a simplified view of how <code>TransportMessage</code> is used when sending a message:</p>
-<div class="mermaid">sequenceDiagram
+<pre class="mermaid"><code>sequenceDiagram
     participant Ctrl as Controller
     participant Cl as Client
     participant MU as MessageUtils
@@ -599,8 +599,7 @@ public void decapsulate(byte[] received) { // 'received' is the 128-byte array f
     TM-&gt;&gt;TM: Create 128-byte array: [length | payload | padding]
     TM--&gt;&gt;Conn: Return 128-byte encoded array
     Conn-&gt;&gt;Net: Send 128 bytes over TCP stream
-
-</div>
+</code></pre>
 <ol>
 <li>The <code>Client</code> gets a <code>Message</code> object (like <code>PublishMsg</code>).</li>
 <li>It asks <code>MessageUtils</code> (<a href="../08_messageutils__serialization_deserialization__/">Chapter 8</a>) to convert this object into a <code>TransportMessage</code>.</li>
@@ -646,6 +645,5 @@ public void decapsulate(byte[] received) { // 'received' is the 128-byte array f
 </div>
 <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
 <script src="../../assets/javascripts/bundle.c8b220af.min.js"></script>
-<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
-mermaid.initialize({});</script></body>
+</body>
 </html>

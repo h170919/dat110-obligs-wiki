@@ -101,7 +101,7 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="../..">
 <span class="md-ellipsis">
-    Quem invecta sonantem gravidamve nascentur nimium
+    Home
     
   </span>
 </a>
@@ -121,14 +121,6 @@
             Oblig1
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../oblig1/">
-<span class="md-ellipsis">
-    Tutorial: dat110-project1-gruppe69
-    
-  </span>
-</a>
-</li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="../../oblig1/01_rpc_client_stub_/">
 <span class="md-ellipsis">
@@ -181,6 +173,14 @@
 <a class="md-nav__link" href="../../oblig1/07_message_framing_protocol_/">
 <span class="md-ellipsis">
     Chapter 7: Message Framing Protocol
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig1/oblig1_index/">
+<span class="md-ellipsis">
+    Tutorial: dat110-project1-gruppe69
     
   </span>
 </a>
@@ -408,51 +408,51 @@
 </ul>
 <p><strong>Setting up the <code>CommandArea</code></strong></p>
 <p>Remember in <code>Chapp.java</code>, we saw this line:</p>
-<pre><code class="language-java">// From Chapp.java's start() method
-carea.setupCommandArea(hbox, controller, marea);
-</code></pre>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-0-1"><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1">// From Chapp.java's start() method</span>
+</span><span id="__span-0-2"><a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="n">carea</span><span class="p">.</span><span class="na">setupCommandArea</span><span class="p">(</span><span class="n">hbox</span><span class="p">,</span><span class="w"> </span><span class="n">controller</span><span class="p">,</span><span class="w"> </span><span class="n">marea</span><span class="p">);</span>
+</span></code></pre></div>
 <p>This calls the <code>setupCommandArea</code> method inside <code>CommandArea.java</code>. Let's look at a simplified version of what that method does:</p>
-<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/chapp/CommandArea.java (Simplified)
-package no.hvl.dat110.chapp;
-
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane; // For arranging elements in a grid
-import javafx.scene.layout.HBox;    // The horizontal box from Chapp
-// ... other imports
-
-public class CommandArea {
-
-    private Controller controller; // Reference to the application's brain
-
-    public void setupCommandArea(HBox hbox, Controller controller, MessageArea marea) {
-        this.controller = controller; // Store the controller for later use
-
-        // Create a grid layout to organize controls
-        GridPane grid = new GridPane();
-        grid.setHgap(10); // Horizontal spacing
-        grid.setVgap(10); // Vertical spacing
-
-        // --- Example: Connect Button ---
-        Button connectBtn = new Button("Connect");
-        grid.add(connectBtn, 0, 0); // Add button to grid at column 0, row 0
-
-        // --- Example: Topic Text Field ---
-        TextField topicField = new TextField();
-        topicField.setPromptText("Enter topic name"); // Placeholder text
-        grid.add(topicField, 1, 1); // Add text field at column 1, row 1
-
-        // --- Example: Create Topic Button ---
-        Button createTopicBtn = new Button("Create Topic");
-        grid.add(createTopicBtn, 0, 1); // Add button at column 0, row 1
-
-        // ... (Many other buttons and fields are created and added here) ...
-
-        // Finally, add the organized grid to the HBox provided by Chapp
-        hbox.getChildren().add(grid);
-    }
-}
-</code></pre>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-1-1"><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1">// File: src/main/java/no/hvl/dat110/chapp/CommandArea.java (Simplified)</span>
+</span><span id="__span-1-2"><a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="kn">package</span><span class="w"> </span><span class="nn">no.hvl.dat110.chapp</span><span class="p">;</span>
+</span><span id="__span-1-3"><a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">javafx.scene.control.Button</span><span class="p">;</span>
+</span><span id="__span-1-5"><a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="kn">import</span><span class="w"> </span><span class="nn">javafx.scene.control.TextField</span><span class="p">;</span>
+</span><span id="__span-1-6"><a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="kn">import</span><span class="w"> </span><span class="nn">javafx.scene.layout.GridPane</span><span class="p">;</span><span class="w"> </span><span class="c1">// For arranging elements in a grid</span>
+</span><span id="__span-1-7"><a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="kn">import</span><span class="w"> </span><span class="nn">javafx.scene.layout.HBox</span><span class="p">;</span><span class="w">    </span><span class="c1">// The horizontal box from Chapp</span>
+</span><span id="__span-1-8"><a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="c1">// ... other imports</span>
+</span><span id="__span-1-9"><a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">CommandArea</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-11"><a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>
+</span><span id="__span-1-12"><a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">Controller</span><span class="w"> </span><span class="n">controller</span><span class="p">;</span><span class="w"> </span><span class="c1">// Reference to the application's brain</span>
+</span><span id="__span-1-13"><a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>
+</span><span id="__span-1-14"><a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">setupCommandArea</span><span class="p">(</span><span class="n">HBox</span><span class="w"> </span><span class="n">hbox</span><span class="p">,</span><span class="w"> </span><span class="n">Controller</span><span class="w"> </span><span class="n">controller</span><span class="p">,</span><span class="w"> </span><span class="n">MessageArea</span><span class="w"> </span><span class="n">marea</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-15"><a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">controller</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">controller</span><span class="p">;</span><span class="w"> </span><span class="c1">// Store the controller for later use</span>
+</span><span id="__span-1-16"><a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>
+</span><span id="__span-1-17"><a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="w">        </span><span class="c1">// Create a grid layout to organize controls</span>
+</span><span id="__span-1-18"><a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="w">        </span><span class="n">GridPane</span><span class="w"> </span><span class="n">grid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">GridPane</span><span class="p">();</span>
+</span><span id="__span-1-19"><a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a><span class="w">        </span><span class="n">grid</span><span class="p">.</span><span class="na">setHgap</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span><span class="w"> </span><span class="c1">// Horizontal spacing</span>
+</span><span id="__span-1-20"><a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a><span class="w">        </span><span class="n">grid</span><span class="p">.</span><span class="na">setVgap</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span><span class="w"> </span><span class="c1">// Vertical spacing</span>
+</span><span id="__span-1-21"><a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>
+</span><span id="__span-1-22"><a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a><span class="w">        </span><span class="c1">// --- Example: Connect Button ---</span>
+</span><span id="__span-1-23"><a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a><span class="w">        </span><span class="n">Button</span><span class="w"> </span><span class="n">connectBtn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Button</span><span class="p">(</span><span class="s">"Connect"</span><span class="p">);</span>
+</span><span id="__span-1-24"><a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a><span class="w">        </span><span class="n">grid</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">connectBtn</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"> </span><span class="c1">// Add button to grid at column 0, row 0</span>
+</span><span id="__span-1-25"><a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>
+</span><span id="__span-1-26"><a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a><span class="w">        </span><span class="c1">// --- Example: Topic Text Field ---</span>
+</span><span id="__span-1-27"><a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a><span class="w">        </span><span class="n">TextField</span><span class="w"> </span><span class="n">topicField</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TextField</span><span class="p">();</span>
+</span><span id="__span-1-28"><a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a><span class="w">        </span><span class="n">topicField</span><span class="p">.</span><span class="na">setPromptText</span><span class="p">(</span><span class="s">"Enter topic name"</span><span class="p">);</span><span class="w"> </span><span class="c1">// Placeholder text</span>
+</span><span id="__span-1-29"><a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a><span class="w">        </span><span class="n">grid</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">topicField</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"> </span><span class="c1">// Add text field at column 1, row 1</span>
+</span><span id="__span-1-30"><a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a>
+</span><span id="__span-1-31"><a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a><span class="w">        </span><span class="c1">// --- Example: Create Topic Button ---</span>
+</span><span id="__span-1-32"><a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a><span class="w">        </span><span class="n">Button</span><span class="w"> </span><span class="n">createTopicBtn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Button</span><span class="p">(</span><span class="s">"Create Topic"</span><span class="p">);</span>
+</span><span id="__span-1-33"><a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a><span class="w">        </span><span class="n">grid</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">createTopicBtn</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"> </span><span class="c1">// Add button at column 0, row 1</span>
+</span><span id="__span-1-34"><a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a>
+</span><span id="__span-1-35"><a href="#__codelineno-1-35" id="__codelineno-1-35" name="__codelineno-1-35"></a><span class="w">        </span><span class="c1">// ... (Many other buttons and fields are created and added here) ...</span>
+</span><span id="__span-1-36"><a href="#__codelineno-1-36" id="__codelineno-1-36" name="__codelineno-1-36"></a>
+</span><span id="__span-1-37"><a href="#__codelineno-1-37" id="__codelineno-1-37" name="__codelineno-1-37"></a><span class="w">        </span><span class="c1">// Finally, add the organized grid to the HBox provided by Chapp</span>
+</span><span id="__span-1-38"><a href="#__codelineno-1-38" id="__codelineno-1-38" name="__codelineno-1-38"></a><span class="w">        </span><span class="n">hbox</span><span class="p">.</span><span class="na">getChildren</span><span class="p">().</span><span class="na">add</span><span class="p">(</span><span class="n">grid</span><span class="p">);</span>
+</span><span id="__span-1-39"><a href="#__codelineno-1-39" id="__codelineno-1-39" name="__codelineno-1-39"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-40"><a href="#__codelineno-1-40" id="__codelineno-1-40" name="__codelineno-1-40"></a><span class="p">}</span>
+</span></code></pre></div>
 <ul>
 <li><strong><code>setupCommandArea</code>:</strong> This method takes the main <code>HBox</code> (from <code>Chapp</code>), the central <code>Controller</code> (our application's brain), and the <code>MessageArea</code> as input.</li>
 <li><strong><code>GridPane</code>:</strong> A handy JavaFX layout tool that arranges elements in rows and columns, like a spreadsheet.</li>
@@ -463,24 +463,24 @@ public class CommandArea {
 <p><strong>Making Buttons Do Things</strong></p>
 <p>Creating buttons is nice, but they need to <em>do</em> something when clicked! This is where the <a href="../05_controller__ui_logic_coordinator__/">Controller</a> comes in. Inside <code>setupCommandArea</code>, we also set up <em>event handlers</em>.</p>
 <p>Think of an event handler as telling the button: "When someone clicks you, call this specific method in the <code>Controller</code>."</p>
-<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/chapp/CommandArea.java (Simplified event handling)
-
-// Inside setupCommandArea, after creating createTopicBtn and topicField
-
-createTopicBtn.setOnAction((event) -&gt; {
-    // This code runs when createTopicBtn is clicked
-
-    String topic = topicField.getText(); // Get text from the topic input field
-
-    if (!topic.isEmpty()) { // Make sure the user typed something
-        // Tell the controller to handle the "create topic" action
-        controller.createTopic(topic);
-        System.out.println("Create Topic button clicked for: " + topic);
-    }
-});
-
-// Similar setOnAction calls are made for connectBtn, subscribeBtn, publishBtn, etc.
-</code></pre>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-2-1"><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1">// File: src/main/java/no/hvl/dat110/chapp/CommandArea.java (Simplified event handling)</span>
+</span><span id="__span-2-2"><a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="c1">// Inside setupCommandArea, after creating createTopicBtn and topicField</span>
+</span><span id="__span-2-4"><a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="n">createTopicBtn</span><span class="p">.</span><span class="na">setOnAction</span><span class="p">((</span><span class="n">event</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-6"><a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">    </span><span class="c1">// This code runs when createTopicBtn is clicked</span>
+</span><span id="__span-2-7"><a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>
+</span><span id="__span-2-8"><a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">topic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">topicField</span><span class="p">.</span><span class="na">getText</span><span class="p">();</span><span class="w"> </span><span class="c1">// Get text from the topic input field</span>
+</span><span id="__span-2-9"><a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>
+</span><span id="__span-2-10"><a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">topic</span><span class="p">.</span><span class="na">isEmpty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// Make sure the user typed something</span>
+</span><span id="__span-2-11"><a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w">        </span><span class="c1">// Tell the controller to handle the "create topic" action</span>
+</span><span id="__span-2-12"><a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w">        </span><span class="n">controller</span><span class="p">.</span><span class="na">createTopic</span><span class="p">(</span><span class="n">topic</span><span class="p">);</span>
+</span><span id="__span-2-13"><a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">"Create Topic button clicked for: "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">topic</span><span class="p">);</span>
+</span><span id="__span-2-14"><a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-2-15"><a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="p">});</span>
+</span><span id="__span-2-16"><a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>
+</span><span id="__span-2-17"><a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="c1">// Similar setOnAction calls are made for connectBtn, subscribeBtn, publishBtn, etc.</span>
+</span></code></pre></div>
 <ul>
 <li><strong><code>setOnAction(...)</code>:</strong> This is a standard JavaFX way to define what happens when a button (or other control) is interacted with.</li>
 <li><strong><code>controller.createTopic(topic)</code>:</strong> This is the crucial part! The <code>CommandArea</code> doesn't know <em>how</em> to create a topic itself. It just grabs the topic name from the text field and tells the <code>Controller</code> to handle the logic. The <code>Controller</code> will then likely use the <code>Client</code> to send the appropriate message (<a href="../01_message_hierarchy__communication_protocol__/">Chapter 1</a>) to the server.</li>
@@ -496,50 +496,50 @@ createTopicBtn.setOnAction((event) -&gt; {
 </ul>
 <p><strong>Setting up the <code>MessageArea</code></strong></p>
 <p>Similar to <code>CommandArea</code>, <code>Chapp.java</code> calls a setup method:</p>
-<pre><code class="language-java">// From Chapp.java's start() method
-marea.setupMessageAera(hbox, controller);
-</code></pre>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-3-1"><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="c1">// From Chapp.java's start() method</span>
+</span><span id="__span-3-2"><a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="n">marea</span><span class="p">.</span><span class="na">setupMessageAera</span><span class="p">(</span><span class="n">hbox</span><span class="p">,</span><span class="w"> </span><span class="n">controller</span><span class="p">);</span>
+</span></code></pre></div>
 <p>Let's look at a simplified <code>setupMessageAera</code> method:</p>
-<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/chapp/MessageArea.java (Simplified)
-package no.hvl.dat110.chapp;
-
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea; // The main display area
-import javafx.scene.layout.HBox;     // The horizontal box from Chapp
-import javafx.scene.layout.VBox;     // Vertical layout for this area
-// ... other imports
-
-public class MessageArea {
-
-    private Controller controller;
-    private TextArea messages; // The field where messages will appear
-
-    public void setupMessageAera(HBox hbox, Controller controller) {
-        this.controller = controller;
-
-        // Create a vertical layout for this panel
-        VBox vbox = new VBox();
-        vbox.setPadding(new Insets(10, 10, 10, 10)); // Add some spacing
-
-        // --- A Title Label ---
-        Label msgLabel = new Label("Messages");
-
-        // --- The Main Message Display Area ---
-        messages = new TextArea(); // Create the text area
-        messages.setPrefHeight(500); // Suggest a height
-        messages.setPrefWidth(300);  // Suggest a width
-        messages.setEditable(false); // User shouldn't type directly here!
-
-        // Add the label and the text area to the vertical box
-        vbox.getChildren().addAll(msgLabel, messages);
-
-        // Add this vertical box to the main HBox from Chapp
-        hbox.getChildren().add(vbox);
-    }
-
-    // ... (methods to start/stop message handling are also here) ...
-}
-</code></pre>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-4-1"><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1">// File: src/main/java/no/hvl/dat110/chapp/MessageArea.java (Simplified)</span>
+</span><span id="__span-4-2"><a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="kn">package</span><span class="w"> </span><span class="nn">no.hvl.dat110.chapp</span><span class="p">;</span>
+</span><span id="__span-4-3"><a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">javafx.scene.control.Label</span><span class="p">;</span>
+</span><span id="__span-4-5"><a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="kn">import</span><span class="w"> </span><span class="nn">javafx.scene.control.TextArea</span><span class="p">;</span><span class="w"> </span><span class="c1">// The main display area</span>
+</span><span id="__span-4-6"><a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="kn">import</span><span class="w"> </span><span class="nn">javafx.scene.layout.HBox</span><span class="p">;</span><span class="w">     </span><span class="c1">// The horizontal box from Chapp</span>
+</span><span id="__span-4-7"><a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="kn">import</span><span class="w"> </span><span class="nn">javafx.scene.layout.VBox</span><span class="p">;</span><span class="w">     </span><span class="c1">// Vertical layout for this area</span>
+</span><span id="__span-4-8"><a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="c1">// ... other imports</span>
+</span><span id="__span-4-9"><a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>
+</span><span id="__span-4-10"><a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MessageArea</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-11"><a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>
+</span><span id="__span-4-12"><a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">Controller</span><span class="w"> </span><span class="n">controller</span><span class="p">;</span>
+</span><span id="__span-4-13"><a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">TextArea</span><span class="w"> </span><span class="n">messages</span><span class="p">;</span><span class="w"> </span><span class="c1">// The field where messages will appear</span>
+</span><span id="__span-4-14"><a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>
+</span><span id="__span-4-15"><a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">setupMessageAera</span><span class="p">(</span><span class="n">HBox</span><span class="w"> </span><span class="n">hbox</span><span class="p">,</span><span class="w"> </span><span class="n">Controller</span><span class="w"> </span><span class="n">controller</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-16"><a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">controller</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">controller</span><span class="p">;</span>
+</span><span id="__span-4-17"><a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>
+</span><span id="__span-4-18"><a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a><span class="w">        </span><span class="c1">// Create a vertical layout for this panel</span>
+</span><span id="__span-4-19"><a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a><span class="w">        </span><span class="n">VBox</span><span class="w"> </span><span class="n">vbox</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">VBox</span><span class="p">();</span>
+</span><span id="__span-4-20"><a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a><span class="w">        </span><span class="n">vbox</span><span class="p">.</span><span class="na">setPadding</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Insets</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">));</span><span class="w"> </span><span class="c1">// Add some spacing</span>
+</span><span id="__span-4-21"><a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>
+</span><span id="__span-4-22"><a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a><span class="w">        </span><span class="c1">// --- A Title Label ---</span>
+</span><span id="__span-4-23"><a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a><span class="w">        </span><span class="n">Label</span><span class="w"> </span><span class="n">msgLabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Label</span><span class="p">(</span><span class="s">"Messages"</span><span class="p">);</span>
+</span><span id="__span-4-24"><a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a>
+</span><span id="__span-4-25"><a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a><span class="w">        </span><span class="c1">// --- The Main Message Display Area ---</span>
+</span><span id="__span-4-26"><a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a><span class="w">        </span><span class="n">messages</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TextArea</span><span class="p">();</span><span class="w"> </span><span class="c1">// Create the text area</span>
+</span><span id="__span-4-27"><a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a><span class="w">        </span><span class="n">messages</span><span class="p">.</span><span class="na">setPrefHeight</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span><span class="w"> </span><span class="c1">// Suggest a height</span>
+</span><span id="__span-4-28"><a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a><span class="w">        </span><span class="n">messages</span><span class="p">.</span><span class="na">setPrefWidth</span><span class="p">(</span><span class="mi">300</span><span class="p">);</span><span class="w">  </span><span class="c1">// Suggest a width</span>
+</span><span id="__span-4-29"><a href="#__codelineno-4-29" id="__codelineno-4-29" name="__codelineno-4-29"></a><span class="w">        </span><span class="n">messages</span><span class="p">.</span><span class="na">setEditable</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span><span class="w"> </span><span class="c1">// User shouldn't type directly here!</span>
+</span><span id="__span-4-30"><a href="#__codelineno-4-30" id="__codelineno-4-30" name="__codelineno-4-30"></a>
+</span><span id="__span-4-31"><a href="#__codelineno-4-31" id="__codelineno-4-31" name="__codelineno-4-31"></a><span class="w">        </span><span class="c1">// Add the label and the text area to the vertical box</span>
+</span><span id="__span-4-32"><a href="#__codelineno-4-32" id="__codelineno-4-32" name="__codelineno-4-32"></a><span class="w">        </span><span class="n">vbox</span><span class="p">.</span><span class="na">getChildren</span><span class="p">().</span><span class="na">addAll</span><span class="p">(</span><span class="n">msgLabel</span><span class="p">,</span><span class="w"> </span><span class="n">messages</span><span class="p">);</span>
+</span><span id="__span-4-33"><a href="#__codelineno-4-33" id="__codelineno-4-33" name="__codelineno-4-33"></a>
+</span><span id="__span-4-34"><a href="#__codelineno-4-34" id="__codelineno-4-34" name="__codelineno-4-34"></a><span class="w">        </span><span class="c1">// Add this vertical box to the main HBox from Chapp</span>
+</span><span id="__span-4-35"><a href="#__codelineno-4-35" id="__codelineno-4-35" name="__codelineno-4-35"></a><span class="w">        </span><span class="n">hbox</span><span class="p">.</span><span class="na">getChildren</span><span class="p">().</span><span class="na">add</span><span class="p">(</span><span class="n">vbox</span><span class="p">);</span>
+</span><span id="__span-4-36"><a href="#__codelineno-4-36" id="__codelineno-4-36" name="__codelineno-4-36"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-4-37"><a href="#__codelineno-4-37" id="__codelineno-4-37" name="__codelineno-4-37"></a>
+</span><span id="__span-4-38"><a href="#__codelineno-4-38" id="__codelineno-4-38" name="__codelineno-4-38"></a><span class="w">    </span><span class="c1">// ... (methods to start/stop message handling are also here) ...</span>
+</span><span id="__span-4-39"><a href="#__codelineno-4-39" id="__codelineno-4-39" name="__codelineno-4-39"></a><span class="p">}</span>
+</span></code></pre></div>
 <ul>
 <li><strong><code>setupMessageAera</code>:</strong> Takes the main <code>HBox</code> and the <code>Controller</code>.</li>
 <li><strong><code>VBox</code>:</strong> A vertical layout pane. We put the "Messages" label above the <code>TextArea</code>.</li>
@@ -552,38 +552,38 @@ public class MessageArea {
 <p>How does text actually appear in the <code>messages</code> TextArea? The <code>MessageArea</code> itself doesn't directly listen for network messages. That's the job of the <a href="../02_client__network_interaction_logic__/">Client</a> and the <a href="../05_controller__ui_logic_coordinator__/">Controller</a>.</p>
 <p>The <code>MessageArea</code> has a helper mechanism (involving <code>MessageHandler.java</code>, which we won't detail here) that periodically asks the <code>Controller</code> if any new messages have arrived. If the <code>Controller</code> provides a message, the <code>MessageHandler</code> updates the <code>TextArea</code>.</p>
 <p>A crucial part of this is starting the message handler:</p>
-<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/chapp/MessageArea.java
-
-// Reference to the message handler helper task
-private MessageHandler msghandler;
-// The TextArea defined in setupMessageAera
-private TextArea messages;
-
-public void startMessageHandler () {
-    // Create the handler, giving it the controller (to ask for messages)
-    // and the messages TextArea (to update it)
-    msghandler = new MessageHandler(controller, messages);
-
-    // Start the handler running in the background
-    msghandler.start();
-}
-
-public void stopMessageHandler () {
-    // Method to stop the background task gracefully
-    if (msghandler != null) {
-        msghandler.doStop();
-    }
-}
-
-// --- Inside MessageHandler.java (Conceptual) ---
-// public void doProcess() {
-//     String message = controller.receive(); // Ask controller for new message
-//     if (message != null) {
-//         messages.appendText(message + "\n-\n"); // Add to TextArea!
-//     }
-//     // Wait a bit before checking again
-// }
-</code></pre>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-5-1"><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1">// File: src/main/java/no/hvl/dat110/chapp/MessageArea.java</span>
+</span><span id="__span-5-2"><a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="c1">// Reference to the message handler helper task</span>
+</span><span id="__span-5-4"><a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="kd">private</span><span class="w"> </span><span class="n">MessageHandler</span><span class="w"> </span><span class="n">msghandler</span><span class="p">;</span>
+</span><span id="__span-5-5"><a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="c1">// The TextArea defined in setupMessageAera</span>
+</span><span id="__span-5-6"><a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="kd">private</span><span class="w"> </span><span class="n">TextArea</span><span class="w"> </span><span class="n">messages</span><span class="p">;</span>
+</span><span id="__span-5-7"><a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>
+</span><span id="__span-5-8"><a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">startMessageHandler</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-9"><a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w">    </span><span class="c1">// Create the handler, giving it the controller (to ask for messages)</span>
+</span><span id="__span-5-10"><a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w">    </span><span class="c1">// and the messages TextArea (to update it)</span>
+</span><span id="__span-5-11"><a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w">    </span><span class="n">msghandler</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MessageHandler</span><span class="p">(</span><span class="n">controller</span><span class="p">,</span><span class="w"> </span><span class="n">messages</span><span class="p">);</span>
+</span><span id="__span-5-12"><a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>
+</span><span id="__span-5-13"><a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w">    </span><span class="c1">// Start the handler running in the background</span>
+</span><span id="__span-5-14"><a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="w">    </span><span class="n">msghandler</span><span class="p">.</span><span class="na">start</span><span class="p">();</span>
+</span><span id="__span-5-15"><a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="p">}</span>
+</span><span id="__span-5-16"><a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>
+</span><span id="__span-5-17"><a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">stopMessageHandler</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-18"><a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a><span class="w">    </span><span class="c1">// Method to stop the background task gracefully</span>
+</span><span id="__span-5-19"><a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">msghandler</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-20"><a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a><span class="w">        </span><span class="n">msghandler</span><span class="p">.</span><span class="na">doStop</span><span class="p">();</span>
+</span><span id="__span-5-21"><a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-5-22"><a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a><span class="p">}</span>
+</span><span id="__span-5-23"><a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a>
+</span><span id="__span-5-24"><a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a><span class="c1">// --- Inside MessageHandler.java (Conceptual) ---</span>
+</span><span id="__span-5-25"><a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a><span class="c1">// public void doProcess() {</span>
+</span><span id="__span-5-26"><a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a><span class="c1">//     String message = controller.receive(); // Ask controller for new message</span>
+</span><span id="__span-5-27"><a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a><span class="c1">//     if (message != null) {</span>
+</span><span id="__span-5-28"><a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a><span class="c1">//         messages.appendText(message + "\n-\n"); // Add to TextArea!</span>
+</span><span id="__span-5-29"><a href="#__codelineno-5-29" id="__codelineno-5-29" name="__codelineno-5-29"></a><span class="c1">//     }</span>
+</span><span id="__span-5-30"><a href="#__codelineno-5-30" id="__codelineno-5-30" name="__codelineno-5-30"></a><span class="c1">//     // Wait a bit before checking again</span>
+</span><span id="__span-5-31"><a href="#__codelineno-5-31" id="__codelineno-5-31" name="__codelineno-5-31"></a><span class="c1">// }</span>
+</span></code></pre></div>
 <ul>
 <li><strong><code>startMessageHandler()</code>:</strong> This method (called at the right time, often after connecting) creates and starts the <code>MessageHandler</code>.</li>
 <li><strong><code>MessageHandler</code>:</strong> This helper continuously checks with the <code>controller.receive()</code> method.</li>
@@ -591,7 +591,7 @@ public void stopMessageHandler () {
 </ul>
 <p>So, the <code>MessageArea</code> primarily provides the <em>place</em> (<code>TextArea</code>) for messages to be displayed, and relies on a helper mechanism coordinated by the <code>Controller</code> to actually <em>get</em> and <em>display</em> those messages.</p>
 <h2 id="how-they-fit-together">How They Fit Together</h2>
-<div class="mermaid">graph TD
+<pre class="mermaid"><code>graph TD
     subgraph User Interface Window
         CA[CommandArea (GridPane)]
         MA[MessageArea (VBox)]
@@ -608,8 +608,7 @@ public void stopMessageHandler () {
     MH --&gt; MA(Updates TextArea)
 
     style CA fill:#ccf,stroke:#333,stroke-width:2px
-    style MA fill:#cdf,stroke:#333,stroke-width:2px
-</div>
+    style MA fill:#cdf,stroke:#333,stroke-width:2px</code></pre>
 <p>This diagram shows the flow:
 1.  The User interacts with the <code>CommandArea</code>.
 2.  <code>CommandArea</code> tells the <code>Controller</code> what the user did.
@@ -651,6 +650,5 @@ public void stopMessageHandler () {
 </div>
 <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
 <script src="../../assets/javascripts/bundle.c8b220af.min.js"></script>
-<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
-mermaid.initialize({});</script></body>
+</body>
 </html>

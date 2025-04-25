@@ -101,7 +101,7 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="../..">
 <span class="md-ellipsis">
-    Quem invecta sonantem gravidamve nascentur nimium
+    Home
     
   </span>
 </a>
@@ -121,14 +121,6 @@
             Oblig1
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../">
-<span class="md-ellipsis">
-    Tutorial: dat110-project1-gruppe69
-    
-  </span>
-</a>
-</li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="../01_rpc_client_stub_/">
 <span class="md-ellipsis">
@@ -232,6 +224,14 @@
 <a class="md-nav__link" href="../07_message_framing_protocol_/">
 <span class="md-ellipsis">
     Chapter 7: Message Framing Protocol
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../oblig1_index/">
+<span class="md-ellipsis">
+    Tutorial: dat110-project1-gruppe69
     
   </span>
 </a>
@@ -419,62 +419,62 @@
 <h2 id="example-handling-the-read-request-in-sensorimpl">Example: Handling the <code>read()</code> Request in <code>SensorImpl</code></h2>
 <p>Let's look at how <code>SensorImpl.java</code> acts as the skeleton for the Sensor's <code>read</code> method.</p>
 <p>First, the base class <code>RPCRemoteImpl</code>: All skeletons extend this. Its main job in the constructor is to tell the main <a href="../04_rpc_server_/">RPC Server</a> "Hey, I exist, and I handle requests with this specific ID."</p>
-<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/rpc/RPCRemoteImpl.java
-package no.hvl.dat110.rpc;
-
-public abstract class RPCRemoteImpl {
-
-    // Constructor called by subclasses (like SensorImpl)
-    public RPCRemoteImpl(byte rpcid, RPCServer rpcserver) {
-        // Register this implementation with the server,
-        // associating it with the given rpcid
-        rpcserver.register(rpcid, this);
-    }
-
-    // The method subclasses MUST implement to handle requests
-    public abstract byte[] invoke(byte[] params);
-}
-</code></pre>
-<p>This code tells us that any class extending <code>RPCRemoteImpl</code> needs to provide its own <code>invoke</code> method. The constructor ensures the <a href="../04_rpc_server_/">RPC Server</a> knows which skeleton handles which ID.</p>
+<p><div class="language-java highlight"><pre><span></span><code><span id="__span-0-1"><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1">// File: src/main/java/no/hvl/dat110/rpc/RPCRemoteImpl.java</span>
+</span><span id="__span-0-2"><a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="kn">package</span><span class="w"> </span><span class="nn">no.hvl.dat110.rpc</span><span class="p">;</span>
+</span><span id="__span-0-3"><a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="kd">public</span><span class="w"> </span><span class="kd">abstract</span><span class="w"> </span><span class="kd">class</span> <span class="nc">RPCRemoteImpl</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-5"><a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="w">    </span><span class="c1">// Constructor called by subclasses (like SensorImpl)</span>
+</span><span id="__span-0-7"><a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">RPCRemoteImpl</span><span class="p">(</span><span class="kt">byte</span><span class="w"> </span><span class="n">rpcid</span><span class="p">,</span><span class="w"> </span><span class="n">RPCServer</span><span class="w"> </span><span class="n">rpcserver</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-8"><a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w">        </span><span class="c1">// Register this implementation with the server,</span>
+</span><span id="__span-0-9"><a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="w">        </span><span class="c1">// associating it with the given rpcid</span>
+</span><span id="__span-0-10"><a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w">        </span><span class="n">rpcserver</span><span class="p">.</span><span class="na">register</span><span class="p">(</span><span class="n">rpcid</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">);</span>
+</span><span id="__span-0-11"><a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-12"><a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+</span><span id="__span-0-13"><a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="w">    </span><span class="c1">// The method subclasses MUST implement to handle requests</span>
+</span><span id="__span-0-14"><a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">abstract</span><span class="w"> </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="nf">invoke</span><span class="p">(</span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">params</span><span class="p">);</span>
+</span><span id="__span-0-15"><a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="p">}</span>
+</span></code></pre></div>
+This code tells us that any class extending <code>RPCRemoteImpl</code> needs to provide its own <code>invoke</code> method. The constructor ensures the <a href="../04_rpc_server_/">RPC Server</a> knows which skeleton handles which ID.</p>
 <p>Now, the <code>SensorImpl</code> itself:</p>
-<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/system/sensor/SensorImpl.java
-package no.hvl.dat110.system.sensor;
-
-import no.hvl.dat110.rpc.*; // Import necessary RPC classes
-
-public class SensorImpl extends RPCRemoteImpl { // Extends the base class
-
-    // Constructor: tells the base class its ID (READ_RPCID)
-    // and which RPCServer it belongs to.
-    public SensorImpl(byte rpcid, RPCServer rpcserver) {
-        super(rpcid, rpcserver); // Calls the RPCRemoteImpl constructor
-    }
-
-    // The ACTUAL application logic for reading the sensor
-    public int read() {
-        // Simulate getting a temperature reading
-        int temp = (int) Math.ceil(20 * Math.sin(System.currentTimeMillis() / 1000.0));
-        System.out.println("Sensor read temperature: " + temp);
-        return temp;
-    }
-
-    // The invoke method called by the RPCServer for READ_RPCID
-    @Override
-    public byte[] invoke(byte[] param) {
-        // 1. Unmarshall Parameters: 'read' expects no arguments (void).
-        RPCUtils.unmarshallVoid(param); // Check param is correctly 'void'
-
-        // 2. Call the Real Method: Execute the actual sensor reading logic.
-        int temperature = read();
-
-        // 3. Marshall Return Value: Convert the integer result into bytes.
-        byte[] returnval = RPCUtils.marshallInteger(temperature);
-
-        // 4. Return marshalled bytes to the RPC Server
-        return returnval;
-    }
-}
-</code></pre>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-1-1"><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1">// File: src/main/java/no/hvl/dat110/system/sensor/SensorImpl.java</span>
+</span><span id="__span-1-2"><a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="kn">package</span><span class="w"> </span><span class="nn">no.hvl.dat110.system.sensor</span><span class="p">;</span>
+</span><span id="__span-1-3"><a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">no.hvl.dat110.rpc.*</span><span class="p">;</span><span class="w"> </span><span class="c1">// Import necessary RPC classes</span>
+</span><span id="__span-1-5"><a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>
+</span><span id="__span-1-6"><a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SensorImpl</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">RPCRemoteImpl</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// Extends the base class</span>
+</span><span id="__span-1-7"><a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>
+</span><span id="__span-1-8"><a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="w">    </span><span class="c1">// Constructor: tells the base class its ID (READ_RPCID)</span>
+</span><span id="__span-1-9"><a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="w">    </span><span class="c1">// and which RPCServer it belongs to.</span>
+</span><span id="__span-1-10"><a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">SensorImpl</span><span class="p">(</span><span class="kt">byte</span><span class="w"> </span><span class="n">rpcid</span><span class="p">,</span><span class="w"> </span><span class="n">RPCServer</span><span class="w"> </span><span class="n">rpcserver</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-11"><a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="n">rpcid</span><span class="p">,</span><span class="w"> </span><span class="n">rpcserver</span><span class="p">);</span><span class="w"> </span><span class="c1">// Calls the RPCRemoteImpl constructor</span>
+</span><span id="__span-1-12"><a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-13"><a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>
+</span><span id="__span-1-14"><a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="w">    </span><span class="c1">// The ACTUAL application logic for reading the sensor</span>
+</span><span id="__span-1-15"><a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">read</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-16"><a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a><span class="w">        </span><span class="c1">// Simulate getting a temperature reading</span>
+</span><span id="__span-1-17"><a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="n">Math</span><span class="p">.</span><span class="na">ceil</span><span class="p">(</span><span class="mi">20</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Math</span><span class="p">.</span><span class="na">sin</span><span class="p">(</span><span class="n">System</span><span class="p">.</span><span class="na">currentTimeMillis</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">1000.0</span><span class="p">));</span>
+</span><span id="__span-1-18"><a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">"Sensor read temperature: "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">temp</span><span class="p">);</span>
+</span><span id="__span-1-19"><a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">temp</span><span class="p">;</span>
+</span><span id="__span-1-20"><a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-21"><a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>
+</span><span id="__span-1-22"><a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a><span class="w">    </span><span class="c1">// The invoke method called by the RPCServer for READ_RPCID</span>
+</span><span id="__span-1-23"><a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a><span class="w">    </span><span class="nd">@Override</span>
+</span><span id="__span-1-24"><a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="nf">invoke</span><span class="p">(</span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-25"><a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a><span class="w">        </span><span class="c1">// 1. Unmarshall Parameters: 'read' expects no arguments (void).</span>
+</span><span id="__span-1-26"><a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a><span class="w">        </span><span class="n">RPCUtils</span><span class="p">.</span><span class="na">unmarshallVoid</span><span class="p">(</span><span class="n">param</span><span class="p">);</span><span class="w"> </span><span class="c1">// Check param is correctly 'void'</span>
+</span><span id="__span-1-27"><a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>
+</span><span id="__span-1-28"><a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a><span class="w">        </span><span class="c1">// 2. Call the Real Method: Execute the actual sensor reading logic.</span>
+</span><span id="__span-1-29"><a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">temperature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">read</span><span class="p">();</span>
+</span><span id="__span-1-30"><a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a>
+</span><span id="__span-1-31"><a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a><span class="w">        </span><span class="c1">// 3. Marshall Return Value: Convert the integer result into bytes.</span>
+</span><span id="__span-1-32"><a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">returnval</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RPCUtils</span><span class="p">.</span><span class="na">marshallInteger</span><span class="p">(</span><span class="n">temperature</span><span class="p">);</span>
+</span><span id="__span-1-33"><a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a>
+</span><span id="__span-1-34"><a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a><span class="w">        </span><span class="c1">// 4. Return marshalled bytes to the RPC Server</span>
+</span><span id="__span-1-35"><a href="#__codelineno-1-35" id="__codelineno-1-35" name="__codelineno-1-35"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">returnval</span><span class="p">;</span>
+</span><span id="__span-1-36"><a href="#__codelineno-1-36" id="__codelineno-1-36" name="__codelineno-1-36"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-37"><a href="#__codelineno-1-37" id="__codelineno-1-37" name="__codelineno-1-37"></a><span class="p">}</span>
+</span></code></pre></div>
 <p>Let's break down <code>SensorImpl</code>:</p>
 <ol>
 <li><strong><code>extends RPCRemoteImpl</code></strong>: Marks this as a server-side implementation skeleton.</li>
@@ -491,7 +491,7 @@ public class SensorImpl extends RPCRemoteImpl { // Extends the base class
 </ol>
 <h2 id="how-the-rpc-server-uses-the-skeleton">How the RPC Server Uses the Skeleton</h2>
 <p>Imagine the <a href="../04_rpc_server_/">RPC Server</a> receives a network message. It unpacks it and finds it's an RPC request with ID <code>1</code> (let's say <code>Common.READ_RPCID</code> is 1) and some parameter bytes.</p>
-<div class="mermaid">sequenceDiagram
+<pre class="mermaid"><code>sequenceDiagram
     participant ClientStub as Client Stub
     participant Network
     participant RpcServer as RPC Server
@@ -508,8 +508,7 @@ public class SensorImpl extends RPCRemoteImpl { // Extends the base class
     Note over Skeleton: Marshall integer 17 -&gt; temp_bytes
     Skeleton--&gt;&gt;RpcServer: return temp_bytes
     RpcServer-&gt;&gt;Network: Send Response (temp_bytes)
-    Network-&gt;&gt;ClientStub: Receive Response (temp_bytes)
-</div>
+    Network-&gt;&gt;ClientStub: Receive Response (temp_bytes)</code></pre>
 <p>The <a href="../04_rpc_server_/">RPC Server</a> maintains a registry (a map) where it stored the <code>SensorImpl</code> object when it was created, associating it with <code>READ_RPCID</code>.</p>
 <ol>
 <li>The server sees the ID <code>1</code>.</li>
@@ -523,7 +522,6 @@ public class SensorImpl extends RPCRemoteImpl { // Extends the base class
 <p>We've now seen the client-side stub that initiates the call and the server-side skeleton that executes the call. But how does the message actually get from the stub to the server? We need components that manage the network connection and the sending/receiving of these requests and replies.</p>
 <p>Next up, we'll look at the client-side component responsible for managing this network communication: the <a href="../03_rpc_client_/">RPC Client</a>.</p>
 <hr/>
-<p>Generated by <a href="https://github.com/The-Pocket/Tutorial-Codebase-Knowledge">AI Codebase Knowledge Builder</a></p>
 </article>
 </div>
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
@@ -549,6 +547,5 @@ public class SensorImpl extends RPCRemoteImpl { // Extends the base class
 </div>
 <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
 <script src="../../assets/javascripts/bundle.c8b220af.min.js"></script>
-<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
-mermaid.initialize({});</script></body>
+</body>
 </html>

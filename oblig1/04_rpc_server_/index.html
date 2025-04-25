@@ -101,7 +101,7 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="../..">
 <span class="md-ellipsis">
-    Quem invecta sonantem gravidamve nascentur nimium
+    Home
     
   </span>
 </a>
@@ -121,14 +121,6 @@
             Oblig1
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../">
-<span class="md-ellipsis">
-    Tutorial: dat110-project1-gruppe69
-    
-  </span>
-</a>
-</li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="../01_rpc_client_stub_/">
 <span class="md-ellipsis">
@@ -232,6 +224,14 @@
 <a class="md-nav__link" href="../07_message_framing_protocol_/">
 <span class="md-ellipsis">
     Chapter 7: Message Framing Protocol
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../oblig1_index/">
+<span class="md-ellipsis">
+    Tutorial: dat110-project1-gruppe69
     
   </span>
 </a>
@@ -419,119 +419,119 @@
 <p><strong>1. Registration: Knowing Who Does What</strong></p>
 <p>Before the server can handle any requests, it needs to know which "specialist department" (<a href="02_rpc_server_implementation__skeleton_.md">RPC Server Implementation (Skeleton)</a>) handles which task (RPC ID). This happens through a <code>register</code> method.</p>
 <p>When the Sensor application starts, it creates the <code>SensorImpl</code> object. The <code>SensorImpl</code> constructor calls the <code>RPCServer</code>'s <code>register</code> method.</p>
-<pre><code class="language-java">// Inside SensorDevice.java (Simplified Startup)
-public static void main(String[] args) {
-    // Create the main RPC Server listening on the Sensor port
-    RPCServer sensorserver = new RPCServer(Common.SENSORPORT);
-
-    // Create the SensorImpl specialist. Its constructor will register it.
-    // It tells the server: "I handle requests with ID = READ_RPCID"
-    SensorImpl sensor = new SensorImpl((byte)Common.READ_RPCID, sensorserver);
-
-    // Start the server's main loop
-    sensorserver.run();
-    // ... stop server ...
-}
-</code></pre>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-0-1"><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1">// Inside SensorDevice.java (Simplified Startup)</span>
+</span><span id="__span-0-2"><a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-3"><a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">    </span><span class="c1">// Create the main RPC Server listening on the Sensor port</span>
+</span><span id="__span-0-4"><a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w">    </span><span class="n">RPCServer</span><span class="w"> </span><span class="n">sensorserver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RPCServer</span><span class="p">(</span><span class="n">Common</span><span class="p">.</span><span class="na">SENSORPORT</span><span class="p">);</span>
+</span><span id="__span-0-5"><a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="w">    </span><span class="c1">// Create the SensorImpl specialist. Its constructor will register it.</span>
+</span><span id="__span-0-7"><a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">    </span><span class="c1">// It tells the server: "I handle requests with ID = READ_RPCID"</span>
+</span><span id="__span-0-8"><a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w">    </span><span class="n">SensorImpl</span><span class="w"> </span><span class="n">sensor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SensorImpl</span><span class="p">((</span><span class="kt">byte</span><span class="p">)</span><span class="n">Common</span><span class="p">.</span><span class="na">READ_RPCID</span><span class="p">,</span><span class="w"> </span><span class="n">sensorserver</span><span class="p">);</span>
+</span><span id="__span-0-9"><a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
+</span><span id="__span-0-10"><a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w">    </span><span class="c1">// Start the server's main loop</span>
+</span><span id="__span-0-11"><a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w">    </span><span class="n">sensorserver</span><span class="p">.</span><span class="na">run</span><span class="p">();</span>
+</span><span id="__span-0-12"><a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w">    </span><span class="c1">// ... stop server ...</span>
+</span><span id="__span-0-13"><a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="p">}</span>
+</span></code></pre></div>
 <p>Let's look at the <code>RPCServer</code>'s <code>register</code> method and how it stores this information:</p>
-<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/rpc/RPCServer.java (Partial)
-package no.hvl.dat110.rpc;
-
-import java.util.HashMap;
-import no.hvl.dat110.messaging.*; // Import messaging classes
-
-public class RPCServer {
-
-    private MessagingServer msgserver; // From the Messaging Layer
-    private MessageConnection connection; // Represents a client connection
-
-    // A map to store the registered specialists (Skeletons)
-    // Key: RPC ID (byte), Value: The Skeleton object (RPCRemoteImpl)
-    private HashMap&lt;Byte, RPCRemoteImpl&gt; services;
-
-    // Constructor: Creates the underlying messaging server and the map
-    public RPCServer(int port) {
-        this.msgserver = new MessagingServer(port); // Setup listener
-        this.services = new HashMap&lt;Byte, RPCRemoteImpl&gt;(); // Prepare the registry
-    }
-
-    // Called by Skeletons (like SensorImpl) to register themselves
-    public void register(byte rpcid, RPCRemoteImpl impl) {
-        System.out.println("Registering service: RPC ID = " + rpcid);
-        services.put(rpcid, impl); // Store: ID -&gt; Specialist Object
-    }
-
-    // ... run method is next ...
-    // ... stop method ...
-}
-</code></pre>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-1-1"><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1">// File: src/main/java/no/hvl/dat110/rpc/RPCServer.java (Partial)</span>
+</span><span id="__span-1-2"><a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="kn">package</span><span class="w"> </span><span class="nn">no.hvl.dat110.rpc</span><span class="p">;</span>
+</span><span id="__span-1-3"><a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.HashMap</span><span class="p">;</span>
+</span><span id="__span-1-5"><a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="kn">import</span><span class="w"> </span><span class="nn">no.hvl.dat110.messaging.*</span><span class="p">;</span><span class="w"> </span><span class="c1">// Import messaging classes</span>
+</span><span id="__span-1-6"><a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>
+</span><span id="__span-1-7"><a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">RPCServer</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-8"><a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>
+</span><span id="__span-1-9"><a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">MessagingServer</span><span class="w"> </span><span class="n">msgserver</span><span class="p">;</span><span class="w"> </span><span class="c1">// From the Messaging Layer</span>
+</span><span id="__span-1-10"><a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">MessageConnection</span><span class="w"> </span><span class="n">connection</span><span class="p">;</span><span class="w"> </span><span class="c1">// Represents a client connection</span>
+</span><span id="__span-1-11"><a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>
+</span><span id="__span-1-12"><a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="w">    </span><span class="c1">// A map to store the registered specialists (Skeletons)</span>
+</span><span id="__span-1-13"><a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="w">    </span><span class="c1">// Key: RPC ID (byte), Value: The Skeleton object (RPCRemoteImpl)</span>
+</span><span id="__span-1-14"><a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">HashMap</span><span class="o">&lt;</span><span class="n">Byte</span><span class="p">,</span><span class="w"> </span><span class="n">RPCRemoteImpl</span><span class="o">&gt;</span><span class="w"> </span><span class="n">services</span><span class="p">;</span>
+</span><span id="__span-1-15"><a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>
+</span><span id="__span-1-16"><a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a><span class="w">    </span><span class="c1">// Constructor: Creates the underlying messaging server and the map</span>
+</span><span id="__span-1-17"><a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">RPCServer</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">port</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-18"><a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">msgserver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MessagingServer</span><span class="p">(</span><span class="n">port</span><span class="p">);</span><span class="w"> </span><span class="c1">// Setup listener</span>
+</span><span id="__span-1-19"><a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">services</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">HashMap</span><span class="o">&lt;</span><span class="n">Byte</span><span class="p">,</span><span class="w"> </span><span class="n">RPCRemoteImpl</span><span class="o">&gt;</span><span class="p">();</span><span class="w"> </span><span class="c1">// Prepare the registry</span>
+</span><span id="__span-1-20"><a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-21"><a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>
+</span><span id="__span-1-22"><a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a><span class="w">    </span><span class="c1">// Called by Skeletons (like SensorImpl) to register themselves</span>
+</span><span id="__span-1-23"><a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="kt">byte</span><span class="w"> </span><span class="n">rpcid</span><span class="p">,</span><span class="w"> </span><span class="n">RPCRemoteImpl</span><span class="w"> </span><span class="n">impl</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-24"><a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">"Registering service: RPC ID = "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">rpcid</span><span class="p">);</span>
+</span><span id="__span-1-25"><a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a><span class="w">        </span><span class="n">services</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="n">rpcid</span><span class="p">,</span><span class="w"> </span><span class="n">impl</span><span class="p">);</span><span class="w"> </span><span class="c1">// Store: ID -&gt; Specialist Object</span>
+</span><span id="__span-1-26"><a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-27"><a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>
+</span><span id="__span-1-28"><a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a><span class="w">    </span><span class="c1">// ... run method is next ...</span>
+</span><span id="__span-1-29"><a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a><span class="w">    </span><span class="c1">// ... stop method ...</span>
+</span><span id="__span-1-30"><a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a><span class="p">}</span>
+</span></code></pre></div>
 <ul>
 <li>The <code>RPCServer</code> keeps a <code>HashMap</code> called <code>services</code>. Think of this map as the manager's directory.</li>
 <li>The <code>register</code> method takes the <code>rpcid</code> (like <code>Common.READ_RPCID</code>) and the actual specialist object (<code>impl</code>, which is the <code>SensorImpl</code> instance) and puts them into the <code>services</code> map. Now, the server knows that requests for <code>READ_RPCID</code> should go to that specific <code>SensorImpl</code> object.</li>
 </ul>
 <p><strong>2. Running the Server: The Main Loop</strong></p>
 <p>The <code>run()</code> method is where the RPC Server starts its main job of listening and processing requests.</p>
-<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/rpc/RPCServer.java (Simplified run method)
-public class RPCServer {
-    // ... constructor, register, services map, msgserver ...
-
-    public void run() {
-        // Special case: Register the built-in "stop" service (RPC ID 0)
-        RPCRemoteImpl rpcstop = new RPCServerStopImpl(RPCCommon.RPIDSTOP, this);
-
-        System.out.println("RPC SERVER starting to listen...");
-
-        // 1. Wait for a client to connect (using the messaging layer)
-        connection = msgserver.accept(); // Blocks until a client connects
-        System.out.println("RPC SERVER accepted connection");
-
-        boolean stop = false; // Flag to control the loop
-        while (!stop) {
-            Message requestmsg = null;
-            byte rpcid = 0;
-
-            try {
-                // 2. Receive a request message from the connected client
-                requestmsg = connection.receive(); // Blocks until message arrives
-
-                // 3. Extract the RPC ID (the first byte of the message data)
-                byte[] requestData = requestmsg.getData();
-                rpcid = requestData[0]; // Peek at the first byte for the ID
-
-                // 4. Decapsulate: Get the parameters (remove the ID byte)
-                // (Details in RPC Data Marshalling/Unmarshalling chapter)
-                byte[] params = RPCUtils.decapsulate(requestData);
-
-                // 5. Lookup: Find the specialist for this RPC ID
-                RPCRemoteImpl specialist = services.get(rpcid);
-
-                // 6. Invoke: Ask the specialist to handle the request
-                byte[] result = specialist.invoke(params); // The specialist does the real work!
-
-                // 7. Encapsulate: Package the result with the RPC ID
-                // (Details in RPC Data Marshalling/Unmarshalling chapter)
-                byte[] replyData = RPCUtils.encapsulate(rpcid, result);
-
-                // 8. Send Reply: Send the result back to the client
-                Message replymsg = new Message(replyData);
-                connection.send(replymsg);
-
-            } catch (Exception e) {
-                System.err.println("RPC Server Error: " + e.getMessage());
-                e.printStackTrace();
-                stop = true; // Stop on error
-            }
-
-            // Check if the received RPC ID was the special "stop" command
-            if (rpcid == RPCCommon.RPIDSTOP) {
-                System.out.println("RPC SERVER received stop command.");
-                stop = true;
-            }
-        }
-    }
-    // ... stop method ...
-}
-</code></pre>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-2-1"><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1">// File: src/main/java/no/hvl/dat110/rpc/RPCServer.java (Simplified run method)</span>
+</span><span id="__span-2-2"><a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">RPCServer</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-3"><a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">    </span><span class="c1">// ... constructor, register, services map, msgserver ...</span>
+</span><span id="__span-2-4"><a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">run</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-6"><a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">        </span><span class="c1">// Special case: Register the built-in "stop" service (RPC ID 0)</span>
+</span><span id="__span-2-7"><a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w">        </span><span class="n">RPCRemoteImpl</span><span class="w"> </span><span class="n">rpcstop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RPCServerStopImpl</span><span class="p">(</span><span class="n">RPCCommon</span><span class="p">.</span><span class="na">RPIDSTOP</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">);</span>
+</span><span id="__span-2-8"><a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>
+</span><span id="__span-2-9"><a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">"RPC SERVER starting to listen..."</span><span class="p">);</span>
+</span><span id="__span-2-10"><a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>
+</span><span id="__span-2-11"><a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w">        </span><span class="c1">// 1. Wait for a client to connect (using the messaging layer)</span>
+</span><span id="__span-2-12"><a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w">        </span><span class="n">connection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">msgserver</span><span class="p">.</span><span class="na">accept</span><span class="p">();</span><span class="w"> </span><span class="c1">// Blocks until a client connects</span>
+</span><span id="__span-2-13"><a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">"RPC SERVER accepted connection"</span><span class="p">);</span>
+</span><span id="__span-2-14"><a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>
+</span><span id="__span-2-15"><a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="w">        </span><span class="kt">boolean</span><span class="w"> </span><span class="n">stop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span><span class="w"> </span><span class="c1">// Flag to control the loop</span>
+</span><span id="__span-2-16"><a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">stop</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-17"><a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="w">            </span><span class="n">Message</span><span class="w"> </span><span class="n">requestmsg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+</span><span id="__span-2-18"><a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a><span class="w">            </span><span class="kt">byte</span><span class="w"> </span><span class="n">rpcid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-2-19"><a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a>
+</span><span id="__span-2-20"><a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a><span class="w">            </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-21"><a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a><span class="w">                </span><span class="c1">// 2. Receive a request message from the connected client</span>
+</span><span id="__span-2-22"><a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a><span class="w">                </span><span class="n">requestmsg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">connection</span><span class="p">.</span><span class="na">receive</span><span class="p">();</span><span class="w"> </span><span class="c1">// Blocks until message arrives</span>
+</span><span id="__span-2-23"><a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a>
+</span><span id="__span-2-24"><a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a><span class="w">                </span><span class="c1">// 3. Extract the RPC ID (the first byte of the message data)</span>
+</span><span id="__span-2-25"><a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a><span class="w">                </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">requestData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">requestmsg</span><span class="p">.</span><span class="na">getData</span><span class="p">();</span>
+</span><span id="__span-2-26"><a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a><span class="w">                </span><span class="n">rpcid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">requestData</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="c1">// Peek at the first byte for the ID</span>
+</span><span id="__span-2-27"><a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a>
+</span><span id="__span-2-28"><a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a><span class="w">                </span><span class="c1">// 4. Decapsulate: Get the parameters (remove the ID byte)</span>
+</span><span id="__span-2-29"><a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a><span class="w">                </span><span class="c1">// (Details in RPC Data Marshalling/Unmarshalling chapter)</span>
+</span><span id="__span-2-30"><a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a><span class="w">                </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">params</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RPCUtils</span><span class="p">.</span><span class="na">decapsulate</span><span class="p">(</span><span class="n">requestData</span><span class="p">);</span>
+</span><span id="__span-2-31"><a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a>
+</span><span id="__span-2-32"><a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a><span class="w">                </span><span class="c1">// 5. Lookup: Find the specialist for this RPC ID</span>
+</span><span id="__span-2-33"><a href="#__codelineno-2-33" id="__codelineno-2-33" name="__codelineno-2-33"></a><span class="w">                </span><span class="n">RPCRemoteImpl</span><span class="w"> </span><span class="n">specialist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">services</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">rpcid</span><span class="p">);</span>
+</span><span id="__span-2-34"><a href="#__codelineno-2-34" id="__codelineno-2-34" name="__codelineno-2-34"></a>
+</span><span id="__span-2-35"><a href="#__codelineno-2-35" id="__codelineno-2-35" name="__codelineno-2-35"></a><span class="w">                </span><span class="c1">// 6. Invoke: Ask the specialist to handle the request</span>
+</span><span id="__span-2-36"><a href="#__codelineno-2-36" id="__codelineno-2-36" name="__codelineno-2-36"></a><span class="w">                </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">specialist</span><span class="p">.</span><span class="na">invoke</span><span class="p">(</span><span class="n">params</span><span class="p">);</span><span class="w"> </span><span class="c1">// The specialist does the real work!</span>
+</span><span id="__span-2-37"><a href="#__codelineno-2-37" id="__codelineno-2-37" name="__codelineno-2-37"></a>
+</span><span id="__span-2-38"><a href="#__codelineno-2-38" id="__codelineno-2-38" name="__codelineno-2-38"></a><span class="w">                </span><span class="c1">// 7. Encapsulate: Package the result with the RPC ID</span>
+</span><span id="__span-2-39"><a href="#__codelineno-2-39" id="__codelineno-2-39" name="__codelineno-2-39"></a><span class="w">                </span><span class="c1">// (Details in RPC Data Marshalling/Unmarshalling chapter)</span>
+</span><span id="__span-2-40"><a href="#__codelineno-2-40" id="__codelineno-2-40" name="__codelineno-2-40"></a><span class="w">                </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">replyData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RPCUtils</span><span class="p">.</span><span class="na">encapsulate</span><span class="p">(</span><span class="n">rpcid</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">);</span>
+</span><span id="__span-2-41"><a href="#__codelineno-2-41" id="__codelineno-2-41" name="__codelineno-2-41"></a>
+</span><span id="__span-2-42"><a href="#__codelineno-2-42" id="__codelineno-2-42" name="__codelineno-2-42"></a><span class="w">                </span><span class="c1">// 8. Send Reply: Send the result back to the client</span>
+</span><span id="__span-2-43"><a href="#__codelineno-2-43" id="__codelineno-2-43" name="__codelineno-2-43"></a><span class="w">                </span><span class="n">Message</span><span class="w"> </span><span class="n">replymsg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Message</span><span class="p">(</span><span class="n">replyData</span><span class="p">);</span>
+</span><span id="__span-2-44"><a href="#__codelineno-2-44" id="__codelineno-2-44" name="__codelineno-2-44"></a><span class="w">                </span><span class="n">connection</span><span class="p">.</span><span class="na">send</span><span class="p">(</span><span class="n">replymsg</span><span class="p">);</span>
+</span><span id="__span-2-45"><a href="#__codelineno-2-45" id="__codelineno-2-45" name="__codelineno-2-45"></a>
+</span><span id="__span-2-46"><a href="#__codelineno-2-46" id="__codelineno-2-46" name="__codelineno-2-46"></a><span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-47"><a href="#__codelineno-2-47" id="__codelineno-2-47" name="__codelineno-2-47"></a><span class="w">                </span><span class="n">System</span><span class="p">.</span><span class="na">err</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">"RPC Server Error: "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="na">getMessage</span><span class="p">());</span>
+</span><span id="__span-2-48"><a href="#__codelineno-2-48" id="__codelineno-2-48" name="__codelineno-2-48"></a><span class="w">                </span><span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
+</span><span id="__span-2-49"><a href="#__codelineno-2-49" id="__codelineno-2-49" name="__codelineno-2-49"></a><span class="w">                </span><span class="n">stop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span><span class="w"> </span><span class="c1">// Stop on error</span>
+</span><span id="__span-2-50"><a href="#__codelineno-2-50" id="__codelineno-2-50" name="__codelineno-2-50"></a><span class="w">            </span><span class="p">}</span>
+</span><span id="__span-2-51"><a href="#__codelineno-2-51" id="__codelineno-2-51" name="__codelineno-2-51"></a>
+</span><span id="__span-2-52"><a href="#__codelineno-2-52" id="__codelineno-2-52" name="__codelineno-2-52"></a><span class="w">            </span><span class="c1">// Check if the received RPC ID was the special "stop" command</span>
+</span><span id="__span-2-53"><a href="#__codelineno-2-53" id="__codelineno-2-53" name="__codelineno-2-53"></a><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rpcid</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">RPCCommon</span><span class="p">.</span><span class="na">RPIDSTOP</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-54"><a href="#__codelineno-2-54" id="__codelineno-2-54" name="__codelineno-2-54"></a><span class="w">                </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">"RPC SERVER received stop command."</span><span class="p">);</span>
+</span><span id="__span-2-55"><a href="#__codelineno-2-55" id="__codelineno-2-55" name="__codelineno-2-55"></a><span class="w">                </span><span class="n">stop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+</span><span id="__span-2-56"><a href="#__codelineno-2-56" id="__codelineno-2-56" name="__codelineno-2-56"></a><span class="w">            </span><span class="p">}</span>
+</span><span id="__span-2-57"><a href="#__codelineno-2-57" id="__codelineno-2-57" name="__codelineno-2-57"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-2-58"><a href="#__codelineno-2-58" id="__codelineno-2-58" name="__codelineno-2-58"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-2-59"><a href="#__codelineno-2-59" id="__codelineno-2-59" name="__codelineno-2-59"></a><span class="w">    </span><span class="c1">// ... stop method ...</span>
+</span><span id="__span-2-60"><a href="#__codelineno-2-60" id="__codelineno-2-60" name="__codelineno-2-60"></a><span class="p">}</span>
+</span></code></pre></div>
 <p>Let's break down the <code>run()</code> loop:</p>
 <ol>
 <li><strong>Accept Connection:</strong> <code>msgserver.accept()</code> tells the underlying <a href="../06_messaging_connection_/">Messaging Connection</a> layer to wait for a client to connect. This call <em>blocks</em> (pauses) until a connection is made. The resulting <code>connection</code> object represents the communication link to that specific client.</li>
@@ -546,7 +546,7 @@ public class RPCServer {
 </ol>
 <h2 id="the-big-picture-request-flow">The Big Picture: Request Flow</h2>
 <p>Here's a diagram showing the RPC Server's role in handling a <code>read()</code> request:</p>
-<div class="mermaid">sequenceDiagram
+<pre class="mermaid"><code>sequenceDiagram
     participant Client as RPC Client (Controller)
     participant Network
     participant MsgServer as MessagingServer (Sensor)
@@ -568,15 +568,13 @@ public class RPCServer {
     RpcSrv-&gt;&gt;MsgServer: send(Message(replyData))
     MsgServer-&gt;&gt;Network: Send reply data
     Network-&gt;&gt;Client: Receive Reply (temp_bytes)
-end
-</div>
+end</code></pre>
 <p>The <code>RPCServer</code> acts as the central dispatcher, taking incoming network messages facilitated by the <code>MessagingServer</code>, understanding the RPC request within, delegating the work to the correct <code>Skeleton</code>, and ensuring the reply gets sent back.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>The <strong>RPC Server</strong> is the heart of the server-side RPC mechanism. It listens for incoming client connections using the underlying <a href="../06_messaging_connection_/">Messaging Connection</a> layer. For each connected client, it enters a loop where it receives request messages, identifies the target procedure using the RPC ID, looks up the registered <a href="02_rpc_server_implementation__skeleton_.md">RPC Server Implementation (Skeleton)</a>, calls its <code>invoke</code> method, and sends the marshalled result back in a reply message. It's the essential coordinator that makes remote procedure calls possible from the server's perspective.</p>
 <p>We've seen how the RPC Client and Server use <code>encapsulate</code> and <code>decapsulate</code>, and how Stubs and Skeletons use <code>marshall</code> and <code>unmarshall</code>. But what do these functions actually <em>do</em>? How is data like integers, strings, or even "nothing" (void) converted into bytes and back again? That's the topic of our next chapter.</p>
 <p>Next up: <a href="../05_rpc_data_marshalling_unmarshalling_/">RPC Data Marshalling/Unmarshalling</a></p>
 <hr/>
-<p>Generated by <a href="https://github.com/The-Pocket/Tutorial-Codebase-Knowledge">AI Codebase Knowledge Builder</a></p>
 </article>
 </div>
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
@@ -602,6 +600,5 @@ end
 </div>
 <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
 <script src="../../assets/javascripts/bundle.c8b220af.min.js"></script>
-<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
-mermaid.initialize({});</script></body>
+</body>
 </html>

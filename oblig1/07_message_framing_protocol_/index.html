@@ -6,7 +6,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <link href="../06_messaging_connection_/" rel="prev"/>
-<link href="../../oblig2/01_message_hierarchy__communication_protocol__/" rel="next"/>
+<link href="../oblig1_index/" rel="next"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
 <meta content="mkdocs-1.6.1, mkdocs-material-9.6.12" name="generator"/>
 <title>Chapter 7: Message Framing Protocol - dat110 notes</title>
@@ -101,7 +101,7 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="../..">
 <span class="md-ellipsis">
-    Quem invecta sonantem gravidamve nascentur nimium
+    Home
     
   </span>
 </a>
@@ -121,14 +121,6 @@
             Oblig1
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../">
-<span class="md-ellipsis">
-    Tutorial: dat110-project1-gruppe69
-    
-  </span>
-</a>
-</li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="../01_rpc_client_stub_/">
 <span class="md-ellipsis">
@@ -235,6 +227,14 @@
 </li>
 </ul>
 </nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../oblig1_index/">
+<span class="md-ellipsis">
+    Tutorial: dat110-project1-gruppe69
+    
+  </span>
+</a>
 </li>
 </ul>
 </nav>
@@ -405,7 +405,7 @@
 <li><strong>Padding:</strong> Since the segment <em>must</em> be 128 bytes, but the payload might be shorter (e.g., only 10 bytes), the remaining bytes in the segment after the payload are just <strong>padding</strong>. They are sent but ignored by the receiver.</li>
 </ol>
 <p>Here's what our 128-byte "envelope" (segment) looks like:</p>
-<div class="mermaid">graph LR
+<pre class="mermaid"><code>graph LR
     A[Segment (128 bytes total)] --&gt; B(Byte 1: Length L);
     A --&gt; C(Bytes 2 to L+1: Payload Data);
     A --&gt; D(Bytes L+2 to 128: Padding);
@@ -413,8 +413,7 @@
         direction LR
         B --- C --- D;
     end
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-</div>
+    style A fill:#f9f,stroke:#333,stroke-width:2px</code></pre>
 <ul>
 <li>The first byte tells us <code>L</code>, the length of the <em>real</em> data.</li>
 <li>The next <code>L</code> bytes are the actual payload we care about.</li>
@@ -424,30 +423,30 @@
 <p>The rules of our protocol are implemented in the helper methods of the <code>MessageUtils.java</code> class, specifically <code>encapsulate</code> and <code>decapsulate</code>. These are the methods used internally by <code>MessageConnection</code>'s <code>send</code> and <code>receive</code>.</p>
 <p><strong>1. Packing the Envelope (<code>encapsulate</code>)</strong></p>
 <p>When <code>MessageConnection.send(message)</code> is called, it needs to take the <code>message</code>'s data and put it into our standard 128-byte envelope format. It uses <code>MessageUtils.encapsulate</code> for this.</p>
-<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/messaging/MessageUtils.java (Encapsulate)
-
-public class MessageUtils {
-
-    public static final int SEGMENTSIZE = 128; // Our fixed envelope size
-
-    // Takes the message payload and puts it into a 128-byte segment
-    public static byte[] encapsulate(Message message) {
-        byte[] data = message.getData(); // Get the raw payload bytes (0-127 bytes)
-        byte[] segment = new byte[SEGMENTSIZE]; // Create the 128-byte empty envelope
-
-        // Rule 1: Put the length of the payload in the first byte
-        segment[0] = (byte) data.length;
-
-        // Rule 2: Copy the payload data into the segment, starting from byte 1
-        System.arraycopy(data, 0, segment, 1, data.length);
-
-        // Rule 3: The rest of 'segment' is padding (already 0s)
-        return segment; // Return the filled 128-byte envelope
-    }
-
-    // ... decapsulate method ...
-}
-</code></pre>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-0-1"><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1">// File: src/main/java/no/hvl/dat110/messaging/MessageUtils.java (Encapsulate)</span>
+</span><span id="__span-0-2"><a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MessageUtils</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-4"><a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">SEGMENTSIZE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">128</span><span class="p">;</span><span class="w"> </span><span class="c1">// Our fixed envelope size</span>
+</span><span id="__span-0-6"><a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">    </span><span class="c1">// Takes the message payload and puts it into a 128-byte segment</span>
+</span><span id="__span-0-8"><a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="nf">encapsulate</span><span class="p">(</span><span class="n">Message</span><span class="w"> </span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-9"><a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">message</span><span class="p">.</span><span class="na">getData</span><span class="p">();</span><span class="w"> </span><span class="c1">// Get the raw payload bytes (0-127 bytes)</span>
+</span><span id="__span-0-10"><a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">segment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">byte</span><span class="o">[</span><span class="n">SEGMENTSIZE</span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="c1">// Create the 128-byte empty envelope</span>
+</span><span id="__span-0-11"><a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w">        </span><span class="c1">// Rule 1: Put the length of the payload in the first byte</span>
+</span><span id="__span-0-13"><a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="w">        </span><span class="n">segment</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">byte</span><span class="p">)</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="na">length</span><span class="p">;</span>
+</span><span id="__span-0-14"><a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+</span><span id="__span-0-15"><a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="w">        </span><span class="c1">// Rule 2: Copy the payload data into the segment, starting from byte 1</span>
+</span><span id="__span-0-16"><a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">arraycopy</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">segment</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="na">length</span><span class="p">);</span>
+</span><span id="__span-0-17"><a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>
+</span><span id="__span-0-18"><a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="w">        </span><span class="c1">// Rule 3: The rest of 'segment' is padding (already 0s)</span>
+</span><span id="__span-0-19"><a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">segment</span><span class="p">;</span><span class="w"> </span><span class="c1">// Return the filled 128-byte envelope</span>
+</span><span id="__span-0-20"><a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-21"><a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>
+</span><span id="__span-0-22"><a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="w">    </span><span class="c1">// ... decapsulate method ...</span>
+</span><span id="__span-0-23"><a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="p">}</span>
+</span></code></pre></div>
 <p>Let's break it down:
 *   It gets the payload <code>data</code> from the <code>Message</code> object. Remember from <code>Message.java</code>, this <code>data</code> is guaranteed to be 127 bytes or less.
 *   It creates a brand new byte array called <code>segment</code> that is exactly 128 bytes long.
@@ -456,43 +455,43 @@ public class MessageUtils {
 *   The method returns the 128-byte <code>segment</code>. This is what <code>MessageConnection</code> actually writes to the network stream.</p>
 <p><strong>2. Unpacking the Envelope (<code>decapsulate</code>)</strong></p>
 <p>When <code>MessageConnection.receive()</code> is called, it first reads exactly 128 bytes from the network stream (because it knows all messages arrive in 128-byte segments). It then needs to extract the <em>actual</em> payload from this 128-byte segment. It uses <code>MessageUtils.decapsulate</code> for this.</p>
-<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/messaging/MessageUtils.java (Decapsulate)
-
-import java.util.Arrays; // Used for array copying
-
-public class MessageUtils {
-    // ... SEGMENTSIZE constant and encapsulate method ...
-
-    // Takes a 128-byte segment and extracts the original payload data
-    public static Message decapsulate(byte[] segment) {
-
-        // Basic checks for valid segment
-        if (segment == null || segment.length != SEGMENTSIZE) {
-           throw new IllegalArgumentException("Invalid segment received");
-        }
-
-        // Rule 1: Read the payload length from the first byte
-        // (&amp; 0xFF ensures we treat the byte as unsigned, 0-255)
-        int length = segment[0] &amp; 0xFF;
-
-        // Sanity check: Length shouldn't exceed allowed payload size
-        if (length &gt; SEGMENTSIZE - 1) { // Max payload is 127
-             throw new IllegalArgumentException("Segment length field is too large");
-        }
-
-        // Rule 2: Extract the payload data
-        // Create a new array of the correct size ('length')
-        byte[] data = new byte[length];
-        // Copy 'length' bytes from the segment, starting from byte 1
-        System.arraycopy(segment, 1, data, 0, length);
-
-        // Rule 3: The padding is ignored!
-
-        // Create and return a new Message containing only the extracted data
-        return new Message(data);
-    }
-}
-</code></pre>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-1-1"><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1">// File: src/main/java/no/hvl/dat110/messaging/MessageUtils.java (Decapsulate)</span>
+</span><span id="__span-1-2"><a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.Arrays</span><span class="p">;</span><span class="w"> </span><span class="c1">// Used for array copying</span>
+</span><span id="__span-1-4"><a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MessageUtils</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-6"><a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w">    </span><span class="c1">// ... SEGMENTSIZE constant and encapsulate method ...</span>
+</span><span id="__span-1-7"><a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>
+</span><span id="__span-1-8"><a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="w">    </span><span class="c1">// Takes a 128-byte segment and extracts the original payload data</span>
+</span><span id="__span-1-9"><a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="nf">decapsulate</span><span class="p">(</span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">segment</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-10"><a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>
+</span><span id="__span-1-11"><a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="w">        </span><span class="c1">// Basic checks for valid segment</span>
+</span><span id="__span-1-12"><a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">segment</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">segment</span><span class="p">.</span><span class="na">length</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">SEGMENTSIZE</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-13"><a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="w">           </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">IllegalArgumentException</span><span class="p">(</span><span class="s">"Invalid segment received"</span><span class="p">);</span>
+</span><span id="__span-1-14"><a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-1-15"><a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>
+</span><span id="__span-1-16"><a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a><span class="w">        </span><span class="c1">// Rule 1: Read the payload length from the first byte</span>
+</span><span id="__span-1-17"><a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="w">        </span><span class="c1">// (&amp; 0xFF ensures we treat the byte as unsigned, 0-255)</span>
+</span><span id="__span-1-18"><a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">segment</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xFF</span><span class="p">;</span>
+</span><span id="__span-1-19"><a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>
+</span><span id="__span-1-20"><a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a><span class="w">        </span><span class="c1">// Sanity check: Length shouldn't exceed allowed payload size</span>
+</span><span id="__span-1-21"><a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">length</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">SEGMENTSIZE</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// Max payload is 127</span>
+</span><span id="__span-1-22"><a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a><span class="w">             </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">IllegalArgumentException</span><span class="p">(</span><span class="s">"Segment length field is too large"</span><span class="p">);</span>
+</span><span id="__span-1-23"><a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-1-24"><a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>
+</span><span id="__span-1-25"><a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a><span class="w">        </span><span class="c1">// Rule 2: Extract the payload data</span>
+</span><span id="__span-1-26"><a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a><span class="w">        </span><span class="c1">// Create a new array of the correct size ('length')</span>
+</span><span id="__span-1-27"><a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">byte</span><span class="o">[</span><span class="n">length</span><span class="o">]</span><span class="p">;</span>
+</span><span id="__span-1-28"><a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a><span class="w">        </span><span class="c1">// Copy 'length' bytes from the segment, starting from byte 1</span>
+</span><span id="__span-1-29"><a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">arraycopy</span><span class="p">(</span><span class="n">segment</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">);</span>
+</span><span id="__span-1-30"><a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a>
+</span><span id="__span-1-31"><a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a><span class="w">        </span><span class="c1">// Rule 3: The padding is ignored!</span>
+</span><span id="__span-1-32"><a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a>
+</span><span id="__span-1-33"><a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a><span class="w">        </span><span class="c1">// Create and return a new Message containing only the extracted data</span>
+</span><span id="__span-1-34"><a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Message</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
+</span><span id="__span-1-35"><a href="#__codelineno-1-35" id="__codelineno-1-35" name="__codelineno-1-35"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-36"><a href="#__codelineno-1-36" id="__codelineno-1-36" name="__codelineno-1-36"></a><span class="p">}</span>
+</span></code></pre></div>
 <p>Here's how it works:
 *   It receives the 128-byte <code>segment</code> that was read from the network.
 *   <code>int length = segment[0] &amp; 0xFF;</code> reads the first byte to figure out how long the <em>actual</em> payload is. (The <code>&amp; 0xFF</code> is a technical detail to handle Java's byte representation correctly).
@@ -527,7 +526,6 @@ public class MessageUtils {
 <p>The <code>MessageUtils.encapsulate</code> and <code>MessageUtils.decapsulate</code> methods implement this protocol, allowing our <a href="../06_messaging_connection_/">Messaging Connection</a> layer to provide a clean <code>send(Message)</code> and <code>receive()</code> interface to the higher RPC layers.</p>
 <p>With this final piece, we've explored the entire stack, from the high-level convenience of RPC Stubs down to the details of packaging bytes for reliable network transmission. Congratulations on completing the tutorial for <code>dat110-project1-gruppe69</code>!</p>
 <hr/>
-<p>Generated by <a href="https://github.com/The-Pocket/Tutorial-Codebase-Knowledge">AI Codebase Knowledge Builder</a></p>
 </article>
 </div>
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
@@ -553,6 +551,5 @@ public class MessageUtils {
 </div>
 <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
 <script src="../../assets/javascripts/bundle.c8b220af.min.js"></script>
-<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
-mermaid.initialize({});</script></body>
+</body>
 </html>
