@@ -1,0 +1,551 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="../01_rpc_client_stub_/" rel="prev"/>
+<link href="../03_rpc_client_/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.6.12" name="generator"/>
+<title>Chapter 2: RPC Server Implementation (Skeleton) - dat110 notes</title>
+<link href="../../assets/stylesheets/main.2afb09e1.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#chapter-2-rpc-server-implementation-skeleton">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="dat110 notes" class="md-header__button md-logo" data-md-component="logo" href="../.." title="dat110 notes">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            dat110 notes
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Chapter 2: RPC Server Implementation (Skeleton)
+            
+          </span>
+</div>
+</div>
+</div>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="dat110 notes" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="dat110 notes">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    dat110 notes
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    Home
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Oblig1
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            Oblig1
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../01_rpc_client_stub_/">
+<span class="md-ellipsis">
+    Chapter 1: RPC Client Stub
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    Chapter 2: RPC Server Implementation (Skeleton)
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    Chapter 2: RPC Server Implementation (Skeleton)
+    
+  </span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-is-an-rpc-server-implementation-skeleton">
+<span class="md-ellipsis">
+      What is an RPC Server Implementation (Skeleton)?
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#the-invoke-method-where-the-magic-happens">
+<span class="md-ellipsis">
+      The invoke Method: Where the Magic Happens
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-handling-the-read-request-in-sensorimpl">
+<span class="md-ellipsis">
+      Example: Handling the read() Request in SensorImpl
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#how-the-rpc-server-uses-the-skeleton">
+<span class="md-ellipsis">
+      How the RPC Server Uses the Skeleton
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#conclusion">
+<span class="md-ellipsis">
+      Conclusion
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../03_rpc_client_/">
+<span class="md-ellipsis">
+    Chapter 3: RPC Client
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../04_rpc_server_/">
+<span class="md-ellipsis">
+    Chapter 4: RPC Server
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../05_rpc_data_marshalling_unmarshalling_/">
+<span class="md-ellipsis">
+    Chapter 5: RPC Data Marshalling/Unmarshalling
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../06_messaging_connection_/">
+<span class="md-ellipsis">
+    Chapter 6: Messaging Connection
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../07_message_framing_protocol_/">
+<span class="md-ellipsis">
+    Chapter 7: Message Framing Protocol
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../oblig1_index/">
+<span class="md-ellipsis">
+    Tutorial: dat110-project1-gruppe69
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Oblig2
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            Oblig2
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/01_message_hierarchy__communication_protocol__/">
+<span class="md-ellipsis">
+    Chapter 1: Message Hierarchy (Communication Protocol)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/02_client__network_interaction_logic__/">
+<span class="md-ellipsis">
+    Chapter 2: Client (Network Interaction Logic)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/03_chapp__application_entry_point__/">
+<span class="md-ellipsis">
+    Chapter 3: Chapp (Application Entry Point)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/04_ui_areas__commandarea___messagearea__/">
+<span class="md-ellipsis">
+    Chapter 4: UI Areas (CommandArea &amp; MessageArea)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/05_controller__ui_logic_coordinator__/">
+<span class="md-ellipsis">
+    Chapter 5: Controller (UI Logic Coordinator)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/06_transportmessage__network_data_framing__/">
+<span class="md-ellipsis">
+    Chapter 6: TransportMessage (Network Data Framing)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/07_connection__network_stream_handling__/">
+<span class="md-ellipsis">
+    Chapter 7: Connection (Network Stream Handling)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/08_messageutils__serialization_deserialization__/">
+<span class="md-ellipsis">
+    Chapter 8: MessageUtils (Serialization/Deserialization)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/oblig2_index/">
+<span class="md-ellipsis">
+    Tutorial: dat110-project2-javafx-chatapp
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-is-an-rpc-server-implementation-skeleton">
+<span class="md-ellipsis">
+      What is an RPC Server Implementation (Skeleton)?
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#the-invoke-method-where-the-magic-happens">
+<span class="md-ellipsis">
+      The invoke Method: Where the Magic Happens
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-handling-the-read-request-in-sensorimpl">
+<span class="md-ellipsis">
+      Example: Handling the read() Request in SensorImpl
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#how-the-rpc-server-uses-the-skeleton">
+<span class="md-ellipsis">
+      How the RPC Server Uses the Skeleton
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#conclusion">
+<span class="md-ellipsis">
+      Conclusion
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-2-rpc-server-implementation-skeleton">Chapter 2: RPC Server Implementation (Skeleton)</h1>
+<p>In the <a href="../01_rpc_client_stub_/">previous chapter</a>, we saw how the <strong>RPC Client Stub</strong> acts like a local travel agent, making a request to a remote service (like getting the temperature from a Sensor) look like a simple local function call (<code>sensor.read()</code>).</p>
+<p>But what happens on the <em>other side</em>? When the request travels across the network and arrives at the Sensor application (the RPC Server), who actually handles it? How does the server know what to do and how to perform the requested action?</p>
+<p>That's where the <strong>RPC Server Implementation (Skeleton)</strong> comes in.</p>
+<h2 id="what-is-an-rpc-server-implementation-skeleton">What is an RPC Server Implementation (Skeleton)?</h2>
+<p>Think back to our travel agent analogy from Chapter 1. You (the Controller) told your local agent (the Client Stub) you wanted the temperature. The agent sent the request over the network. Now, the request arrives at the "remote travel agency" (the RPC Server).</p>
+<p>The agency manager (the <a href="../04_rpc_server_/">RPC Server</a>) receives the request, which says "Execute action #1" (the <code>READ_RPCID</code>). The manager doesn't handle temperature readings directly. Instead, they look up who <em>specializes</em> in action #1 and forward the request to that specific department.</p>
+<p>This specialist department is the <strong>RPC Server Implementation (Skeleton)</strong>. In our case, it's the <code>SensorImpl</code> object.</p>
+<p>So, the <strong>RPC Server Implementation (Skeleton)</strong> is:</p>
+<ol>
+<li><strong>A Server-Side Object:</strong> It lives inside the server application (e.g., the Sensor application).</li>
+<li><strong>A Specialist:</strong> It contains the <em>actual code</em> to perform a specific remote procedure (e.g., the real <code>read()</code> method that gets the temperature).</li>
+<li><strong>An Action Handler:</strong> It knows how to unpack the request details (unmarshalling), run the correct code, and package the result (marshalling) to send back.</li>
+</ol>
+<p>It's the component that bridges the gap between a generic network request and the specific application logic that needs to run.</p>
+<h2 id="the-invoke-method-where-the-magic-happens">The <code>invoke</code> Method: Where the Magic Happens</h2>
+<p>Every "specialist department" (Skeleton) needs a standard way for the manager (RPC Server) to give it work. In our project, this standard way is a method called <code>invoke</code>.</p>
+<p>Every Skeleton class (like <code>SensorImpl</code>) must:</p>
+<ol>
+<li><strong>Extend <code>RPCRemoteImpl</code>:</strong> This is a base class that provides some common setup. We'll see it briefly later.</li>
+<li><strong>Implement the <code>invoke</code> method:</strong> This method is the entry point for the <a href="../04_rpc_server_/">RPC Server</a>. When the server receives a request matching this skeleton's ID (like <code>READ_RPCID</code>), it calls this <code>invoke</code> method.</li>
+</ol>
+<p>What does the <code>invoke</code> method do?</p>
+<ol>
+<li><strong>Receives Raw Data:</strong> It gets the parameters sent by the client stub as a chunk of raw bytes (<code>byte[]</code>).</li>
+<li><strong>Unmarshalls Parameters:</strong> It uses helper functions (from <a href="../05_rpc_data_marshalling_unmarshalling_/">RPC Data Marshalling/Unmarshalling</a>) to convert these bytes back into meaningful data (like knowing the client wants to call <code>read</code> which takes no arguments).</li>
+<li><strong>Calls the Real Method:</strong> It calls the actual application logic method within the same class (e.g., it calls the <code>read()</code> method inside <code>SensorImpl</code>).</li>
+<li><strong>Gets the Result:</strong> It receives the return value from the real method (e.g., the integer temperature).</li>
+<li><strong>Marshalls Return Value:</strong> It uses helper functions again to convert the return value back into raw bytes.</li>
+<li><strong>Returns Raw Data:</strong> It gives the marshalled bytes back to the <a href="../04_rpc_server_/">RPC Server</a>, which will send them back over the network to the client.</li>
+</ol>
+<h2 id="example-handling-the-read-request-in-sensorimpl">Example: Handling the <code>read()</code> Request in <code>SensorImpl</code></h2>
+<p>Let's look at how <code>SensorImpl.java</code> acts as the skeleton for the Sensor's <code>read</code> method.</p>
+<p>First, the base class <code>RPCRemoteImpl</code>: All skeletons extend this. Its main job in the constructor is to tell the main <a href="../04_rpc_server_/">RPC Server</a> "Hey, I exist, and I handle requests with this specific ID."</p>
+<p><div class="language-java highlight"><pre><span></span><code><span id="__span-0-1"><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1">// File: src/main/java/no/hvl/dat110/rpc/RPCRemoteImpl.java</span>
+</span><span id="__span-0-2"><a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="kn">package</span><span class="w"> </span><span class="nn">no.hvl.dat110.rpc</span><span class="p">;</span>
+</span><span id="__span-0-3"><a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="kd">public</span><span class="w"> </span><span class="kd">abstract</span><span class="w"> </span><span class="kd">class</span> <span class="nc">RPCRemoteImpl</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-5"><a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="w">    </span><span class="c1">// Constructor called by subclasses (like SensorImpl)</span>
+</span><span id="__span-0-7"><a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">RPCRemoteImpl</span><span class="p">(</span><span class="kt">byte</span><span class="w"> </span><span class="n">rpcid</span><span class="p">,</span><span class="w"> </span><span class="n">RPCServer</span><span class="w"> </span><span class="n">rpcserver</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-8"><a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w">        </span><span class="c1">// Register this implementation with the server,</span>
+</span><span id="__span-0-9"><a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="w">        </span><span class="c1">// associating it with the given rpcid</span>
+</span><span id="__span-0-10"><a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w">        </span><span class="n">rpcserver</span><span class="p">.</span><span class="na">register</span><span class="p">(</span><span class="n">rpcid</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">);</span>
+</span><span id="__span-0-11"><a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-12"><a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+</span><span id="__span-0-13"><a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="w">    </span><span class="c1">// The method subclasses MUST implement to handle requests</span>
+</span><span id="__span-0-14"><a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">abstract</span><span class="w"> </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="nf">invoke</span><span class="p">(</span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">params</span><span class="p">);</span>
+</span><span id="__span-0-15"><a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="p">}</span>
+</span></code></pre></div>
+This code tells us that any class extending <code>RPCRemoteImpl</code> needs to provide its own <code>invoke</code> method. The constructor ensures the <a href="../04_rpc_server_/">RPC Server</a> knows which skeleton handles which ID.</p>
+<p>Now, the <code>SensorImpl</code> itself:</p>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-1-1"><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1">// File: src/main/java/no/hvl/dat110/system/sensor/SensorImpl.java</span>
+</span><span id="__span-1-2"><a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="kn">package</span><span class="w"> </span><span class="nn">no.hvl.dat110.system.sensor</span><span class="p">;</span>
+</span><span id="__span-1-3"><a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">no.hvl.dat110.rpc.*</span><span class="p">;</span><span class="w"> </span><span class="c1">// Import necessary RPC classes</span>
+</span><span id="__span-1-5"><a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>
+</span><span id="__span-1-6"><a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SensorImpl</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">RPCRemoteImpl</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// Extends the base class</span>
+</span><span id="__span-1-7"><a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>
+</span><span id="__span-1-8"><a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="w">    </span><span class="c1">// Constructor: tells the base class its ID (READ_RPCID)</span>
+</span><span id="__span-1-9"><a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="w">    </span><span class="c1">// and which RPCServer it belongs to.</span>
+</span><span id="__span-1-10"><a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">SensorImpl</span><span class="p">(</span><span class="kt">byte</span><span class="w"> </span><span class="n">rpcid</span><span class="p">,</span><span class="w"> </span><span class="n">RPCServer</span><span class="w"> </span><span class="n">rpcserver</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-11"><a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="n">rpcid</span><span class="p">,</span><span class="w"> </span><span class="n">rpcserver</span><span class="p">);</span><span class="w"> </span><span class="c1">// Calls the RPCRemoteImpl constructor</span>
+</span><span id="__span-1-12"><a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-13"><a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>
+</span><span id="__span-1-14"><a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="w">    </span><span class="c1">// The ACTUAL application logic for reading the sensor</span>
+</span><span id="__span-1-15"><a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">read</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-16"><a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a><span class="w">        </span><span class="c1">// Simulate getting a temperature reading</span>
+</span><span id="__span-1-17"><a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="n">Math</span><span class="p">.</span><span class="na">ceil</span><span class="p">(</span><span class="mi">20</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Math</span><span class="p">.</span><span class="na">sin</span><span class="p">(</span><span class="n">System</span><span class="p">.</span><span class="na">currentTimeMillis</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">1000.0</span><span class="p">));</span>
+</span><span id="__span-1-18"><a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">"Sensor read temperature: "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">temp</span><span class="p">);</span>
+</span><span id="__span-1-19"><a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">temp</span><span class="p">;</span>
+</span><span id="__span-1-20"><a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-21"><a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>
+</span><span id="__span-1-22"><a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a><span class="w">    </span><span class="c1">// The invoke method called by the RPCServer for READ_RPCID</span>
+</span><span id="__span-1-23"><a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a><span class="w">    </span><span class="nd">@Override</span>
+</span><span id="__span-1-24"><a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="nf">invoke</span><span class="p">(</span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-25"><a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a><span class="w">        </span><span class="c1">// 1. Unmarshall Parameters: 'read' expects no arguments (void).</span>
+</span><span id="__span-1-26"><a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a><span class="w">        </span><span class="n">RPCUtils</span><span class="p">.</span><span class="na">unmarshallVoid</span><span class="p">(</span><span class="n">param</span><span class="p">);</span><span class="w"> </span><span class="c1">// Check param is correctly 'void'</span>
+</span><span id="__span-1-27"><a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>
+</span><span id="__span-1-28"><a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a><span class="w">        </span><span class="c1">// 2. Call the Real Method: Execute the actual sensor reading logic.</span>
+</span><span id="__span-1-29"><a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">temperature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">read</span><span class="p">();</span>
+</span><span id="__span-1-30"><a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a>
+</span><span id="__span-1-31"><a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a><span class="w">        </span><span class="c1">// 3. Marshall Return Value: Convert the integer result into bytes.</span>
+</span><span id="__span-1-32"><a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">returnval</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RPCUtils</span><span class="p">.</span><span class="na">marshallInteger</span><span class="p">(</span><span class="n">temperature</span><span class="p">);</span>
+</span><span id="__span-1-33"><a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a>
+</span><span id="__span-1-34"><a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a><span class="w">        </span><span class="c1">// 4. Return marshalled bytes to the RPC Server</span>
+</span><span id="__span-1-35"><a href="#__codelineno-1-35" id="__codelineno-1-35" name="__codelineno-1-35"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">returnval</span><span class="p">;</span>
+</span><span id="__span-1-36"><a href="#__codelineno-1-36" id="__codelineno-1-36" name="__codelineno-1-36"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-37"><a href="#__codelineno-1-37" id="__codelineno-1-37" name="__codelineno-1-37"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Let's break down <code>SensorImpl</code>:</p>
+<ol>
+<li><strong><code>extends RPCRemoteImpl</code></strong>: Marks this as a server-side implementation skeleton.</li>
+<li><strong>Constructor</strong>: When a <code>SensorImpl</code> object is created, it registers itself with the main <a href="../04_rpc_server_/">RPC Server</a> using the RPC ID provided (e.g., <code>Common.READ_RPCID</code>).</li>
+<li><strong><code>read()</code> method</strong>: This is the <em>actual</em> Java method that performs the sensor reading. This is the core application logic. It returns a simple integer.</li>
+<li><strong><code>invoke(byte[] param)</code> method</strong>: This is the method the <a href="../04_rpc_server_/">RPC Server</a> calls when a request with <code>Common.READ_RPCID</code> arrives.<ul>
+<li>It first <em>unmarshalls</em> the <code>param</code> byte array. Since <code>read()</code> takes no arguments, <code>RPCUtils.unmarshallVoid</code> just checks that the received parameters represent "nothing".</li>
+<li>It then calls the <em>local</em> <code>read()</code> method within the same <code>SensorImpl</code> object to get the actual temperature.</li>
+<li>It takes the integer <code>temperature</code> returned by <code>read()</code>.</li>
+<li>It <em>marshalls</em> this integer into a byte array using <code>RPCUtils.marshallInteger</code>. (More on this in <a href="../05_rpc_data_marshalling_unmarshalling_/">RPC Data Marshalling/Unmarshalling</a>).</li>
+<li>Finally, it returns the marshalled byte array. The <a href="../04_rpc_server_/">RPC Server</a> will take these bytes and send them back as the response.</li>
+</ul>
+</li>
+</ol>
+<h2 id="how-the-rpc-server-uses-the-skeleton">How the RPC Server Uses the Skeleton</h2>
+<p>Imagine the <a href="../04_rpc_server_/">RPC Server</a> receives a network message. It unpacks it and finds it's an RPC request with ID <code>1</code> (let's say <code>Common.READ_RPCID</code> is 1) and some parameter bytes.</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant ClientStub as Client Stub
+    participant Network
+    participant RpcServer as RPC Server
+    participant Skeleton as SensorImpl (Skeleton)
+    participant AppLogic as SensorImpl.read()
+
+    ClientStub-&gt;&gt;Network: Send Request (ID=1, void_bytes)
+    Network-&gt;&gt;RpcServer: Receive Request (ID=1, void_bytes)
+    Note over RpcServer: Look up ID=1 -&gt; finds SensorImpl
+    RpcServer-&gt;&gt;Skeleton: invoke(void_bytes)
+    Note over Skeleton: Unmarshall void_bytes
+    Skeleton-&gt;&gt;AppLogic: Call real read() method
+    AppLogic--&gt;&gt;Skeleton: return temperature (e.g., 17)
+    Note over Skeleton: Marshall integer 17 -&gt; temp_bytes
+    Skeleton--&gt;&gt;RpcServer: return temp_bytes
+    RpcServer-&gt;&gt;Network: Send Response (temp_bytes)
+    Network-&gt;&gt;ClientStub: Receive Response (temp_bytes)</code></pre>
+<p>The <a href="../04_rpc_server_/">RPC Server</a> maintains a registry (a map) where it stored the <code>SensorImpl</code> object when it was created, associating it with <code>READ_RPCID</code>.</p>
+<ol>
+<li>The server sees the ID <code>1</code>.</li>
+<li>It looks in its registry and finds the <code>SensorImpl</code> object associated with ID <code>1</code>.</li>
+<li>It calls the <code>invoke</code> method on that specific <code>SensorImpl</code> object, passing the parameter bytes (<code>void_bytes</code>).</li>
+<li>The <code>SensorImpl.invoke</code> method does its work (unmarshall, call <code>read</code>, marshall result) and returns the result bytes (<code>temp_bytes</code>).</li>
+<li>The server takes these <code>temp_bytes</code> and sends them back over the network.</li>
+</ol>
+<h2 id="conclusion">Conclusion</h2>
+<p>The <strong>RPC Server Implementation (Skeleton)</strong>, like <code>SensorImpl</code>, is the server-side specialist that handles a specific remote procedure call. It extends <code>RPCRemoteImpl</code> and implements the crucial <code>invoke</code> method. Inside <code>invoke</code>, it acts as a bridge: unmarshalling incoming request parameters, calling the actual application logic (like the real <code>read()</code> method), and marshalling the result to be sent back. It ensures that when a request arrives at the server, the correct piece of code is executed.</p>
+<p>We've now seen the client-side stub that initiates the call and the server-side skeleton that executes the call. But how does the message actually get from the stub to the server? We need components that manage the network connection and the sending/receiving of these requests and replies.</p>
+<p>Next up, we'll look at the client-side component responsible for managing this network communication: the <a href="../03_rpc_client_/">RPC Client</a>.</p>
+<hr/>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.c8b220af.min.js"></script>
+</body>
+</html>
