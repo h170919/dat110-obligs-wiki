@@ -1,0 +1,791 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../01_message_hierarchy__communication_protocol__/">
+      
+      
+        <link rel="next" href="../03_chapp__application_entry_point__/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
+    
+    
+      
+        <title>Chapter 2: Client (Network Interaction Logic) - 110-notes</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2afb09e1.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-2-client-network-interaction-logic" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="110-notes" class="md-header__button md-logo" aria-label="110-notes" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            110-notes
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 2: Client (Network Interaction Logic)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="110-notes" class="md-nav__button md-logo" aria-label="110-notes" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    110-notes
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial: dat110-project2-javafx-chatapp
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_message_hierarchy__communication_protocol__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 1: Message Hierarchy (Communication Protocol)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Chapter 2: Client (Network Interaction Logic)
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 2: Client (Network Interaction Logic)
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-the-client-our-applications-messenger" class="md-nav__link">
+    <span class="md-ellipsis">
+      What is the Client? Our Application's Messenger
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-use-the-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      How to Use the Client
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#under-the-hood-how-does-connect-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      Under the Hood: How Does connect() Work?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_chapp__application_entry_point__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 3: Chapp (Application Entry Point)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_ui_areas__commandarea___messagearea__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 4: UI Areas (CommandArea &amp; MessageArea)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_controller__ui_logic_coordinator__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 5: Controller (UI Logic Coordinator)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_transportmessage__network_data_framing__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 6: TransportMessage (Network Data Framing)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07_connection__network_stream_handling__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 7: Connection (Network Stream Handling)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08_messageutils__serialization_deserialization__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 8: MessageUtils (Serialization/Deserialization)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-the-client-our-applications-messenger" class="md-nav__link">
+    <span class="md-ellipsis">
+      What is the Client? Our Application's Messenger
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-use-the-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      How to Use the Client
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#under-the-hood-how-does-connect-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      Under the Hood: How Does connect() Work?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="chapter-2-client-network-interaction-logic">Chapter 2: Client (Network Interaction Logic)</h1>
+<p>In <a href="../01_message_hierarchy__communication_protocol__/">Chapter 1: Message Hierarchy (Communication Protocol)</a>, we learned how to create different types of messages (<code>ConnectMsg</code>, <code>PublishMsg</code>, etc.) to represent specific actions. This is like having different kinds of pre-printed forms for different requests.</p>
+<p>But how do we actually <em>send</em> these forms (messages) to the central server? And how do we receive replies or messages from others? We need someone – or something – dedicated to handling the communication with the server over the network. That's where the <code>Client</code> class comes in!</p>
+<h2 id="what-is-the-client-our-applications-messenger">What is the <code>Client</code>? Our Application's Messenger</h2>
+<p>Imagine you live in a big apartment building (your application) and want to communicate with the building manager (the server) who lives in a separate office. You wouldn't shout across the courtyard! You'd probably have a dedicated way to send and receive mail or messages.</p>
+<p>The <code>Client</code> class (<code>Client.java</code>) is like your application's <strong>personal messenger</strong>. Its main job is to manage the communication link between your chat application and the central chat server (often called a "broker").</p>
+<p>Here's what it does:</p>
+<ol>
+<li><strong>Knows the Server's Address:</strong> It stores the server's network address (like <code>localhost</code> or an IP address) and the specific "door number" (port number, e.g., <code>9091</code>) it needs to connect to.</li>
+<li><strong>Establishes the Connection:</strong> It handles the process of creating a network connection (like establishing a phone line) to the server.</li>
+<li><strong>Sends Messages:</strong> It takes the message objects we learned about in Chapter 1 (like <code>ConnectMsg</code>, <code>PublishMsg</code>) and sends them over the network to the server.</li>
+<li><strong>Receives Messages:</strong> It listens for incoming messages from the server and makes them available to the rest of the application.</li>
+</ol>
+<p>Essentially, the <code>Client</code> hides the messy details of network programming and gives the rest of our application simple commands like <code>connect()</code>, <code>publish("news", "hello everyone!")</code>, <code>subscribe("news")</code>.</p>
+<h2 id="how-to-use-the-client">How to Use the <code>Client</code></h2>
+<p>Let's see how we would use our messenger (<code>Client</code>) to connect to the server and then publish a message.</p>
+<p><strong>1. Creating the Messenger (<code>Client</code> object)</strong></p>
+<p>First, we need to create an instance of the <code>Client</code>, telling it who we are (our username) and where the server is.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// File: src/main/java/no/hvl/dat110/client/Client.java (Conceptual Usage)</span>
+
+<span class="n">String</span><span class="w"> </span><span class="n">username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">;</span>
+<span class="n">String</span><span class="w"> </span><span class="n">serverHost</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;localhost&quot;</span><span class="p">;</span><span class="w"> </span><span class="c1">// Often the same machine for testing</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">serverPort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">9091</span><span class="p">;</span><span class="w">         </span><span class="c1">// The port the server is listening on</span>
+
+<span class="c1">// Create a new Client instance</span>
+<span class="n">Client</span><span class="w"> </span><span class="n">chatClient</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Client</span><span class="p">(</span><span class="n">username</span><span class="p">,</span><span class="w"> </span><span class="n">serverHost</span><span class="p">,</span><span class="w"> </span><span class="n">serverPort</span><span class="p">);</span>
+
+<span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&quot;Chat client created for user: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">username</span><span class="p">);</span>
+</code></pre></div>
+<ul>
+<li>We provide the <code>username</code>, the <code>serverHost</code> (where the server is located), and the <code>serverPort</code>.</li>
+<li>This creates our <code>chatClient</code> object, ready to communicate but not yet connected.</li>
+</ul>
+<p><strong>2. Connecting to the Server</strong></p>
+<p>Now, we tell our messenger to establish the connection.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// File: src/main/java/no/hvl/dat110/client/Client.java (Conceptual Usage)</span>
+
+<span class="c1">// Tell the client to connect to the server</span>
+<span class="kt">boolean</span><span class="w"> </span><span class="n">success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">chatClient</span><span class="p">.</span><span class="na">connect</span><span class="p">();</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">success</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&quot;Successfully connected to the server!&quot;</span><span class="p">);</span>
+<span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&quot;Failed to connect to the server.&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<ul>
+<li>Calling <code>chatClient.connect()</code> initiates the network connection process.</li>
+<li>It returns <code>true</code> if the connection was successful, <code>false</code> otherwise. Behind the scenes, this involves sending a <code>ConnectMsg</code> (from Chapter 1) to the server.</li>
+</ul>
+<p><strong>3. Publishing a Message</strong></p>
+<p>Once connected, we can send messages to topics.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// File: src/main/java/no/hvl/dat110/client/Client.java (Conceptual Usage)</span>
+
+<span class="n">String</span><span class="w"> </span><span class="n">topic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;general&quot;</span><span class="p">;</span>
+<span class="n">String</span><span class="w"> </span><span class="n">messageContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Hello from Alice!&quot;</span><span class="p">;</span>
+
+<span class="c1">// Tell the client to publish a message to the &#39;general&#39; topic</span>
+<span class="n">chatClient</span><span class="p">.</span><span class="na">publish</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span><span class="w"> </span><span class="n">messageContent</span><span class="p">);</span>
+
+<span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&quot;Sent message to topic &#39;&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">topic</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;&#39;&quot;</span><span class="p">);</span>
+</code></pre></div>
+<ul>
+<li>We call <code>chatClient.publish()</code> with the desired <code>topic</code> and the <code>messageContent</code>.</li>
+<li>The <code>Client</code> takes care of creating the correct <code>PublishMsg</code> object (using our username "Alice") and sending it over the established connection.</li>
+</ul>
+<p><strong>4. Other Actions</strong></p>
+<p>The <code>Client</code> provides similar simple methods for other actions:</p>
+<ul>
+<li><code>subscribe(String topic)</code>: To start receiving messages from a topic.</li>
+<li><code>unsubscribe(String topic)</code>: To stop receiving messages.</li>
+<li><code>createTopic(String topic)</code>: To ask the server to create a new topic.</li>
+<li><code>deleteTopic(String topic)</code>: To ask the server to delete a topic.</li>
+<li><code>disconnect()</code>: To gracefully close the connection and inform the server.</li>
+<li><code>receive()</code>: To check for and retrieve any incoming messages sent <em>from</em> the server.</li>
+</ul>
+<p>All these methods use the appropriate message types from Chapter 1 under the hood.</p>
+<h2 id="under-the-hood-how-does-connect-work">Under the Hood: How Does <code>connect()</code> Work?</h2>
+<p>Let's peek behind the curtain when you call <code>chatClient.connect()</code>. It's a team effort involving a few components:</p>
+<ol>
+<li><strong><code>Client</code> (<code>Client.java</code>):</strong> Your main messenger object.</li>
+<li><strong><code>MessagingClient</code> (<code>MessagingClient.java</code>):</strong> A helper specifically focused on the initial network socket setup.</li>
+<li><strong><code>Connection</code> (<code>Connection.java</code>):</strong> An object that wraps the actual network socket and handles reading/writing raw byte data. (We'll learn more in the <a href="../07_connection__network_stream_handling__/">Connection (Network Stream Handling)</a> chapter).</li>
+<li><strong><code>MessageUtils</code> (<code>MessageUtils.java</code>):</strong> A utility to convert our <code>Message</code> objects into raw data suitable for network transport, and vice-versa. (Covered in the <a href="../08_messageutils__serialization_deserialization__/">MessageUtils (Serialization/Deserialization)</a> chapter).</li>
+</ol>
+<p>Here’s a simplified sequence of events:</p>
+<div class="highlight"><pre><span></span><code>sequenceDiagram
+    participant App as Your Application Code
+    participant Cl as Client (chatClient)
+    participant MC as MessagingClient
+    participant Srv as Server
+    participant Conn as Connection
+
+    App-&gt;&gt;Cl: connect()
+    Cl-&gt;&gt;MC: connect(server, port)
+    MC-&gt;&gt;Srv: Establish TCP Socket
+    Srv--&gt;&gt;MC: Socket established
+    MC-&gt;&gt;Conn: new Connection(socket)
+    Conn--&gt;&gt;MC: Connection object created
+    MC--&gt;&gt;Cl: return Connection object
+    Cl-&gt;&gt;Cl: Create ConnectMsg(&quot;Alice&quot;)
+    Note right of Cl: Using the username provided earlier
+    Cl-&gt;&gt;Conn: send(ConnectMsg data)
+    Note right of Cl: MessageUtils helps prepare data (details later)
+    Conn-&gt;&gt;Srv: Send ConnectMsg raw data
+    Cl--&gt;&gt;App: return true (if all steps ok)
+</code></pre></div>
+<p><strong>Code Glimpse:</strong></p>
+<p>Let's look at parts of the <code>Client.java</code> code.</p>
+<ul>
+<li>
+<p><strong>Constructor:</strong> Stores the server info using <code>MessagingClient</code>.</p>
+<p><div class="highlight"><pre><span></span><code><span class="c1">// File: src/main/java/no/hvl/dat110/client/Client.java</span>
+
+<span class="kd">private</span><span class="w"> </span><span class="n">MessagingClient</span><span class="w"> </span><span class="n">client</span><span class="p">;</span><span class="w"> </span><span class="c1">// Helper for initial connection</span>
+<span class="kd">private</span><span class="w"> </span><span class="n">Connection</span><span class="w"> </span><span class="n">connection</span><span class="p">;</span><span class="w">   </span><span class="c1">// Handles the active connection</span>
+<span class="kd">private</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">user</span><span class="p">;</span><span class="w">           </span><span class="c1">// Stores the username</span>
+
+<span class="kd">public</span><span class="w"> </span><span class="nf">Client</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">user</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">server</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">port</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Creates the MessagingClient helper with server details</span>
+<span class="w">    </span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MessagingClient</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="w"> </span><span class="n">port</span><span class="p">);</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="na">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">user</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+*   The constructor just sets up the <code>MessagingClient</code> helper and stores the <code>user</code>.</p>
+</li>
+<li>
+<p><strong><code>connect()</code> Method:</strong> Uses <code>MessagingClient</code> to get a <code>Connection</code> and then sends the <code>ConnectMsg</code>.</p>
+<p><div class="highlight"><pre><span></span><code><span class="c1">// File: src/main/java/no/hvl/dat110/client/Client.java</span>
+
+<span class="kd">public</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="nf">connect</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">boolean</span><span class="w"> </span><span class="n">connected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// Ask MessagingClient helper to establish the network link</span>
+<span class="w">    </span><span class="n">connection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="na">connect</span><span class="p">();</span><span class="w"> </span><span class="c1">// Returns a Connection object</span>
+
+<span class="w">    </span><span class="c1">// Create the specific message for connecting</span>
+<span class="w">    </span><span class="n">ConnectMsg</span><span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ConnectMsg</span><span class="p">(</span><span class="n">user</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">connection</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// Check if connection succeeded</span>
+<span class="w">        </span><span class="c1">// If yes, send the ConnectMsg over the connection</span>
+<span class="w">        </span><span class="n">send</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span><span class="w"> </span><span class="c1">// Uses the private helper &#39;send&#39; method</span>
+<span class="w">        </span><span class="n">connected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">connected</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+*   <code>client.connect()</code> does the low-level network setup and gives us a <code>Connection</code> object.
+*   A <code>ConnectMsg</code> is created using the stored <code>user</code>.
+*   The <code>send()</code> helper method (shown next) is used to actually transmit the message.</p>
+</li>
+<li>
+<p><strong><code>send()</code> Helper Method:</strong> Prepares and sends <em>any</em> message.</p>
+<p><div class="highlight"><pre><span></span><code><span class="c1">// File: src/main/java/no/hvl/dat110/client/Client.java</span>
+
+<span class="c1">// Private helper method to send any type of Message</span>
+<span class="kd">private</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">send</span><span class="p">(</span><span class="n">Message</span><span class="w"> </span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Convert the Message object (e.g., ConnectMsg, PublishMsg)</span>
+<span class="w">    </span><span class="c1">// into a TransportMessage suitable for network sending.</span>
+<span class="w">    </span><span class="c1">// MessageUtils does this magic (details in Chapter 8).</span>
+<span class="w">    </span><span class="n">TransportMessage</span><span class="w"> </span><span class="n">transportMsg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MessageUtils</span><span class="p">.</span><span class="na">toTransportMessage</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Tell the Connection object to send the prepared data.</span>
+<span class="w">    </span><span class="c1">// Connection handles the raw network sending (details in Chapter 7).</span>
+<span class="w">    </span><span class="n">connection</span><span class="p">.</span><span class="na">send</span><span class="p">(</span><span class="n">transportMsg</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+*   This method takes any <code>Message</code> (like <code>ConnectMsg</code>, <code>PublishMsg</code>).
+*   It uses <code>MessageUtils</code> to package the message for network travel (see <a href="../08_messageutils__serialization_deserialization__/">MessageUtils (Serialization/Deserialization)</a>). The result is a <code>TransportMessage</code> (see <a href="../06_transportmessage__network_data_framing__/">TransportMessage (Network Data Framing)</a>).
+*   It then tells the <code>Connection</code> object to actually send the packaged data over the wire (see <a href="../07_connection__network_stream_handling__/">Connection (Network Stream Handling)</a>).</p>
+</li>
+<li>
+<p><strong><code>publish()</code> Method:</strong> Creates a <code>PublishMsg</code> and uses <code>send()</code>.</p>
+<p><div class="highlight"><pre><span></span><code><span class="c1">// File: src/main/java/no/hvl/dat110/client/Client.java</span>
+
+<span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">publish</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">topic</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Create the specific message type for publishing</span>
+<span class="w">    </span><span class="n">PublishMsg</span><span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PublishMsg</span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="w"> </span><span class="n">topic</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Use the same send helper to transmit it</span>
+<span class="w">    </span><span class="n">send</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+*   Very straightforward: creates the <code>PublishMsg</code> with the user, topic, and message content.
+*   Calls the <code>send()</code> helper method to handle the rest.</p>
+</li>
+</ul>
+<p>All other action methods (<code>subscribe</code>, <code>unsubscribe</code>, etc.) work similarly: create the specific <code>Message</code> object and call <code>send()</code>. The <code>receive()</code> method works in reverse, getting data from the <code>Connection</code> and using <code>MessageUtils</code> to turn it back into a <code>Message</code> object.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>The <code>Client</code> class acts as a crucial bridge between the high-level logic of our chat application (like wanting to connect or send a message) and the lower-level details of network communication. It provides simple methods (<code>connect</code>, <code>publish</code>, <code>subscribe</code>, etc.) that internally create the correct message types (from Chapter 1) and use helper components (<code>MessagingClient</code>, <code>Connection</code>, <code>MessageUtils</code>) to handle the actual sending and receiving over the network.</p>
+<p>You now understand how our application prepares to talk to the server. But how does the application actually start up, create this <code>Client</code>, and manage the user interface? That's the role of the application's entry point.</p>
+<p>In the next chapter, we'll look at <a href="../03_chapp__application_entry_point__/">Chapp (Application Entry Point)</a>, which ties everything together and launches the chat window.</p>
+<hr />
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["mermaid"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+    
+  </body>
+</html>
