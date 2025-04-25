@@ -1,616 +1,332 @@
 
-<!doctype html>
-<html lang="en" class="no-js">
-  <head>
-    
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width,initial-scale=1">
-      
-      
-      
-      
-        <link rel="prev" href="../07_connection__network_stream_handling__/">
-      
-      
-      
-      <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
-    
-    
-      
-        <title>Chapter 8: MessageUtils (Serialization/Deserialization) - dat110 notes</title>
-      
-    
-    
-      <link rel="stylesheet" href="../assets/stylesheets/main.2afb09e1.min.css">
-      
-      
+<!DOCTYPE html>
 
-
-    
-    
-      
-    
-    
-      
-        
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
-      
-    
-    
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
-    
-      
-
-    
-    
-    
-  </head>
-  
-  
-    <body dir="ltr">
-  
-    
-    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
-    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
-    <label class="md-overlay" for="__drawer"></label>
-    <div data-md-component="skip">
-      
-        
-        <a href="#chapter-8-messageutils-serializationdeserialization" class="md-skip">
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="../07_connection__network_stream_handling__/" rel="prev"/>
+<link href="../test/" rel="next"/>
+<link href="../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.6.12" name="generator"/>
+<title>Chapter 8: MessageUtils (Serialization/Deserialization) - dat110 notes</title>
+<link href="../assets/stylesheets/main.2afb09e1.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#chapter-8-messageutils-serializationdeserialization">
           Skip to content
         </a>
-      
-    </div>
-    <div data-md-component="announce">
-      
-    </div>
-    
-    
-      
-
-  
-
+</div>
+<div data-md-component="announce">
+</div>
 <header class="md-header md-header--shadow" data-md-component="header">
-  <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="dat110 notes" class="md-header__button md-logo" aria-label="dat110 notes" data-md-component="logo">
-      
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
-
-    </a>
-    <label class="md-header__button md-icon" for="__drawer">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
-    </label>
-    <div class="md-header__title" data-md-component="header-title">
-      <div class="md-header__ellipsis">
-        <div class="md-header__topic">
-          <span class="md-ellipsis">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="dat110 notes" class="md-header__button md-logo" data-md-component="logo" href=".." title="dat110 notes">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
             dat110 notes
           </span>
-        </div>
-        <div class="md-header__topic" data-md-component="header-topic">
-          <span class="md-ellipsis">
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
             
               Chapter 8: MessageUtils (Serialization/Deserialization)
             
           </span>
-        </div>
-      </div>
-    </div>
-    
-    
-      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
-    
-    
-    
-      
-      
-        <label class="md-header__button md-icon" for="__search">
-          
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
-        </label>
-        <div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
-      <label class="md-search__icon md-icon" for="__search">
-        
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
-        
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
-      </label>
-      <nav class="md-search__options" aria-label="Search">
-        
-        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
-          
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-        </button>
-      </nav>
-      
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="search-result">
-          <div class="md-search-result__meta">
+</div>
+</div>
+</div>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
             Initializing search
           </div>
-          <ol class="md-search-result__list" role="presentation"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
+<ol class="md-search-result__list" role="presentation"></ol>
 </div>
-      
-    
-    
-  </nav>
-  
+</div>
+</div>
+</div>
+</div>
+</nav>
 </header>
-    
-    <div class="md-container" data-md-component="container">
-      
-      
-        
-          
-        
-      
-      <main class="md-main" data-md-component="main">
-        <div class="md-main__inner md-grid">
-          
-            
-              
-              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-
-
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
-  <label class="md-nav__title" for="__drawer">
-    <a href=".." title="dat110 notes" class="md-nav__button md-logo" aria-label="dat110 notes" data-md-component="logo">
-      
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
-
-    </a>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="dat110 notes" class="md-nav__button md-logo" data-md-component="logo" href=".." title="dat110 notes">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
     dat110 notes
   </label>
-  
-  <ul class="md-nav__list" data-md-scrollfix>
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="..">
+<span class="md-ellipsis">
     Tutorial: dat110-project2-javafx-chatapp
     
   </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../01_message_hierarchy__communication_protocol__/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../01_message_hierarchy__communication_protocol__/">
+<span class="md-ellipsis">
     Chapter 1: Message Hierarchy (Communication Protocol)
     
   </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../02_client__network_interaction_logic__/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../02_client__network_interaction_logic__/">
+<span class="md-ellipsis">
     Chapter 2: Client (Network Interaction Logic)
     
   </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../03_chapp__application_entry_point__/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../03_chapp__application_entry_point__/">
+<span class="md-ellipsis">
     Chapter 3: Chapp (Application Entry Point)
     
   </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../04_ui_areas__commandarea___messagearea__/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../04_ui_areas__commandarea___messagearea__/">
+<span class="md-ellipsis">
     Chapter 4: UI Areas (CommandArea &amp; MessageArea)
     
   </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../05_controller__ui_logic_coordinator__/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../05_controller__ui_logic_coordinator__/">
+<span class="md-ellipsis">
     Chapter 5: Controller (UI Logic Coordinator)
     
   </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../06_transportmessage__network_data_framing__/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../06_transportmessage__network_data_framing__/">
+<span class="md-ellipsis">
     Chapter 6: TransportMessage (Network Data Framing)
     
   </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../07_connection__network_stream_handling__/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../07_connection__network_stream_handling__/">
+<span class="md-ellipsis">
     Chapter 7: Connection (Network Stream Handling)
     
   </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
     Chapter 8: MessageUtils (Serialization/Deserialization)
     
   </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  
-  <span class="md-ellipsis">
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
     Chapter 8: MessageUtils (Serialization/Deserialization)
     
   </span>
-  
-
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
       Table of contents
     </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#the-translator-and-packager-messageutils" class="md-nav__link">
-    <span class="md-ellipsis">
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#the-translator-and-packager-messageutils">
+<span class="md-ellipsis">
       The Translator and Packager: MessageUtils
     </span>
-  </a>
-  
+</a>
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#why-json-a-universal-language" class="md-nav__link">
-    <span class="md-ellipsis">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#why-json-a-universal-language">
+<span class="md-ellipsis">
       Why JSON? A Universal Language
     </span>
-  </a>
-  
+</a>
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#using-gson-our-json-translator-tool" class="md-nav__link">
-    <span class="md-ellipsis">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#using-gson-our-json-translator-tool">
+<span class="md-ellipsis">
       Using GSON: Our JSON Translator Tool
     </span>
-  </a>
-  
+</a>
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#serialization-object-json-bytes" class="md-nav__link">
-    <span class="md-ellipsis">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#serialization-object-json-bytes">
+<span class="md-ellipsis">
       Serialization: Object -&gt; JSON -&gt; Bytes
     </span>
-  </a>
-  
+</a>
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#deserialization-bytes-json-object" class="md-nav__link">
-    <span class="md-ellipsis">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#deserialization-bytes-json-object">
+<span class="md-ellipsis">
       Deserialization: Bytes -&gt; JSON -&gt; Object
     </span>
-  </a>
-  
+</a>
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#convenience-methods-send-and-receive" class="md-nav__link">
-    <span class="md-ellipsis">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#convenience-methods-send-and-receive">
+<span class="md-ellipsis">
       Convenience Methods: send and receive
     </span>
-  </a>
-  
+</a>
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#under-the-hood-gson-at-work" class="md-nav__link">
-    <span class="md-ellipsis">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#under-the-hood-gson-at-work">
+<span class="md-ellipsis">
       Under the Hood: GSON at Work
     </span>
-  </a>
-  
+</a>
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#conclusion" class="md-nav__link">
-    <span class="md-ellipsis">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#conclusion">
+<span class="md-ellipsis">
       Conclusion
     </span>
-  </a>
-  
+</a>
 </li>
-      
-    </ul>
-  
+</ul>
 </nav>
-      
-    </li>
-  
-
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../test/">
+<span class="md-ellipsis">
+    Test
     
-  </ul>
+  </span>
+</a>
+</li>
+</ul>
 </nav>
-                  </div>
-                </div>
-              </div>
-            
-            
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
       Table of contents
     </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#the-translator-and-packager-messageutils" class="md-nav__link">
-    <span class="md-ellipsis">
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#the-translator-and-packager-messageutils">
+<span class="md-ellipsis">
       The Translator and Packager: MessageUtils
     </span>
-  </a>
-  
+</a>
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#why-json-a-universal-language" class="md-nav__link">
-    <span class="md-ellipsis">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#why-json-a-universal-language">
+<span class="md-ellipsis">
       Why JSON? A Universal Language
     </span>
-  </a>
-  
+</a>
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#using-gson-our-json-translator-tool" class="md-nav__link">
-    <span class="md-ellipsis">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#using-gson-our-json-translator-tool">
+<span class="md-ellipsis">
       Using GSON: Our JSON Translator Tool
     </span>
-  </a>
-  
+</a>
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#serialization-object-json-bytes" class="md-nav__link">
-    <span class="md-ellipsis">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#serialization-object-json-bytes">
+<span class="md-ellipsis">
       Serialization: Object -&gt; JSON -&gt; Bytes
     </span>
-  </a>
-  
+</a>
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#deserialization-bytes-json-object" class="md-nav__link">
-    <span class="md-ellipsis">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#deserialization-bytes-json-object">
+<span class="md-ellipsis">
       Deserialization: Bytes -&gt; JSON -&gt; Object
     </span>
-  </a>
-  
+</a>
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#convenience-methods-send-and-receive" class="md-nav__link">
-    <span class="md-ellipsis">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#convenience-methods-send-and-receive">
+<span class="md-ellipsis">
       Convenience Methods: send and receive
     </span>
-  </a>
-  
+</a>
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#under-the-hood-gson-at-work" class="md-nav__link">
-    <span class="md-ellipsis">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#under-the-hood-gson-at-work">
+<span class="md-ellipsis">
       Under the Hood: GSON at Work
     </span>
-  </a>
-  
+</a>
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#conclusion" class="md-nav__link">
-    <span class="md-ellipsis">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#conclusion">
+<span class="md-ellipsis">
       Conclusion
     </span>
-  </a>
-  
+</a>
 </li>
-      
-    </ul>
-  
+</ul>
 </nav>
-                  </div>
-                </div>
-              </div>
-            
-          
-          
-            <div class="md-content" data-md-component="content">
-              <article class="md-content__inner md-typeset">
-                
-                  
-
-
-
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
 <h1 id="chapter-8-messageutils-serializationdeserialization">Chapter 8: MessageUtils (Serialization/Deserialization)</h1>
 <p>Welcome to the final chapter of our core tutorial! In <a href="../07_connection__network_stream_handling__/">Chapter 7: Connection (Network Stream Handling)</a>, we saw how the <code>Connection</code> class acts like a delivery truck, sending and receiving standard-sized 128-byte packages (<code>TransportMessage</code> from <a href="../06_transportmessage__network_data_framing__/">Chapter 6</a>) over the network.</p>
 <p>However, there's a crucial step we haven't fully explored. Inside those 128-byte packages are the raw <em>payload bytes</em>. When we <em>send</em> a message, how do we convert our meaningful Java <code>Message</code> objects (like <code>PublishMsg</code> from <a href="../01_message_hierarchy__communication_protocol__/">Chapter 1</a>) into those raw bytes? And when we <em>receive</em> a package, how do we turn the payload bytes back into a usable <code>Message</code> object that our application logic (<a href="../05_controller__ui_logic_coordinator__/">Chapter 5: Controller</a>) can understand?</p>
@@ -630,13 +346,13 @@
 <h2 id="why-json-a-universal-language">Why JSON? A Universal Language</h2>
 <p>Instead of inventing our own complex way to represent message objects as bytes, we use a popular, standard format called <strong>JSON (JavaScript Object Notation)</strong>.</p>
 <p>JSON is human-readable text that uses key-value pairs. A <code>PublishMsg</code> object might look like this in JSON:</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PUBLISH&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;topic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;general&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Hello there!&quot;</span>
-<span class="p">}</span>
-</code></pre></div>
+<pre><code class="language-json">{
+  "type": "PUBLISH",
+  "user": "Alice",
+  "topic": "general",
+  "message": "Hello there!"
+}
+</code></pre>
 <p>Why use JSON?
 *   <strong>Readable:</strong> Humans can easily read and understand it (great for debugging!).
 *   <strong>Standard:</strong> Many programming languages and systems understand JSON, making it great for communication.
@@ -648,266 +364,282 @@
 <p>Let's see how <code>MessageUtils</code> handles serialization when we want to send a message.</p>
 <p><strong>Step 1: Object to JSON String (<code>toJson</code>)</strong></p>
 <p>This method takes any <code>Message</code> object and uses GSON to turn it into a JSON string.</p>
-<p><div class="highlight"><pre><span></span><code><span class="c1">// File: src/main/java/no/hvl/dat110/messages/MessageUtils.java</span>
+<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/messages/MessageUtils.java
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">com.google.gson.Gson</span><span class="p">;</span><span class="w"> </span><span class="c1">// Import the GSON library</span>
+import com.google.gson.Gson; // Import the GSON library
 
-<span class="c1">// ... other imports ...</span>
+// ... other imports ...
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MessageUtils</span><span class="w"> </span><span class="p">{</span>
+public class MessageUtils {
 
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">toJson</span><span class="p">(</span><span class="n">Message</span><span class="w"> </span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="c1">// Create a GSON translator instance</span>
-<span class="w">        </span><span class="n">Gson</span><span class="w"> </span><span class="n">gson</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Gson</span><span class="p">();</span>
-<span class="w">        </span><span class="c1">// Tell GSON to convert the Message object into a JSON string</span>
-<span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">json</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gson</span><span class="p">.</span><span class="na">toJson</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
-<span class="w">        </span><span class="c1">// Return the resulting JSON string</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">json</span><span class="p">;</span>
-<span class="w">    </span><span class="p">}</span>
+    public static String toJson(Message msg) {
+        // Create a GSON translator instance
+        Gson gson = new Gson();
+        // Tell GSON to convert the Message object into a JSON string
+        String json = gson.toJson(msg);
+        // Return the resulting JSON string
+        return json;
+    }
 
-<span class="w">    </span><span class="c1">// ... other methods ...</span>
-<span class="p">}</span>
-</code></pre></div>
-*   Input: A <code>Message</code> object (e.g., <code>new PublishMsg("Alice", "general", "Hello!")</code>).
-*   Output: A JSON string (e.g., <code>{"type":"PUBLISH","user":"Alice","topic":"general","message":"Hello there!"}</code>).
-*   How: It simply uses <code>gson.toJson(msg)</code>. GSON automatically looks at the fields in the <code>msg</code> object and creates the corresponding JSON structure.</p>
+    // ... other methods ...
+}
+</code></pre>
+<ul>
+<li>Input: A <code>Message</code> object (e.g., <code>new PublishMsg("Alice", "general", "Hello!")</code>).</li>
+<li>Output: A JSON string (e.g., <code>{"type":"PUBLISH","user":"Alice","topic":"general","message":"Hello there!"}</code>).</li>
+<li>How: It simply uses <code>gson.toJson(msg)</code>. GSON automatically looks at the fields in the <code>msg</code> object and creates the corresponding JSON structure.</li>
+</ul>
 <p><strong>Step 2: JSON String to Bytes (<code>getBytes</code>)</strong></p>
 <p>Now that we have the JSON string, we need to convert it into the raw bytes that can be sent over the network. Java strings have a built-in method for this.</p>
-<p><div class="highlight"><pre><span></span><code><span class="c1">// File: src/main/java/no/hvl/dat110/messages/MessageUtils.java</span>
+<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/messages/MessageUtils.java
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MessageUtils</span><span class="w"> </span><span class="p">{</span>
+public class MessageUtils {
 
-<span class="w">    </span><span class="c1">// ... toJson method ...</span>
+    // ... toJson method ...
 
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="nf">getBytes</span><span class="p">(</span><span class="n">Message</span><span class="w"> </span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="c1">// First, convert the Message object to a JSON string</span>
-<span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">jsonString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">toJson</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
-<span class="w">        </span><span class="c1">// Then, convert the string into an array of bytes</span>
-<span class="w">        </span><span class="c1">// using the default character encoding (usually UTF-8)</span>
-<span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">bytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">jsonString</span><span class="p">.</span><span class="na">getBytes</span><span class="p">();</span>
-<span class="w">        </span><span class="c1">// Return the byte array</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">bytes</span><span class="p">;</span>
-<span class="w">    </span><span class="p">}</span>
+    public static byte[] getBytes(Message msg) {
+        // First, convert the Message object to a JSON string
+        String jsonString = toJson(msg);
+        // Then, convert the string into an array of bytes
+        // using the default character encoding (usually UTF-8)
+        byte[] bytes = jsonString.getBytes();
+        // Return the byte array
+        return bytes;
+    }
 
-<span class="w">    </span><span class="c1">// ... other methods ...</span>
-<span class="p">}</span>
-</code></pre></div>
-*   Input: A <code>Message</code> object.
-*   Output: A <code>byte[]</code> array representing the JSON string.
-*   How: It calls <code>toJson()</code> first, then calls the standard Java <code>.getBytes()</code> method on the resulting string.</p>
+    // ... other methods ...
+}
+</code></pre>
+<ul>
+<li>Input: A <code>Message</code> object.</li>
+<li>Output: A <code>byte[]</code> array representing the JSON string.</li>
+<li>How: It calls <code>toJson()</code> first, then calls the standard Java <code>.getBytes()</code> method on the resulting string.</li>
+</ul>
 <p><strong>Step 3: Bytes into a TransportMessage (<code>toTransportMessage</code>)</strong></p>
 <p>Finally, we take these bytes and put them into the <code>TransportMessage</code> frame we learned about in <a href="../06_transportmessage__network_data_framing__/">Chapter 6</a>.</p>
-<p><div class="highlight"><pre><span></span><code><span class="c1">// File: src/main/java/no/hvl/dat110/messages/MessageUtils.java</span>
+<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/messages/MessageUtils.java
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">no.hvl.dat110.messagetransport.TransportMessage</span><span class="p">;</span><span class="w"> </span><span class="c1">// Import TransportMessage</span>
+import no.hvl.dat110.messagetransport.TransportMessage; // Import TransportMessage
 
-<span class="c1">// ... other imports ...</span>
+// ... other imports ...
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MessageUtils</span><span class="w"> </span><span class="p">{</span>
+public class MessageUtils {
 
-<span class="w">    </span><span class="c1">// ... toJson, getBytes methods ...</span>
+    // ... toJson, getBytes methods ...
 
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">TransportMessage</span><span class="w"> </span><span class="nf">toTransportMessage</span><span class="p">(</span><span class="n">Message</span><span class="w"> </span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="c1">// 1. Convert the Message object to bytes (via JSON)</span>
-<span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">payloadBytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getBytes</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
-<span class="w">        </span><span class="c1">// 2. Create a new TransportMessage containing these bytes as payload</span>
-<span class="w">        </span><span class="n">TransportMessage</span><span class="w"> </span><span class="n">transportMsg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TransportMessage</span><span class="p">(</span><span class="n">payloadBytes</span><span class="p">);</span>
-<span class="w">        </span><span class="c1">// Return the prepared TransportMessage</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">transportMsg</span><span class="p">;</span>
-<span class="w">    </span><span class="p">}</span>
+    public static TransportMessage toTransportMessage(Message msg) {
+        // 1. Convert the Message object to bytes (via JSON)
+        byte[] payloadBytes = getBytes(msg);
+        // 2. Create a new TransportMessage containing these bytes as payload
+        TransportMessage transportMsg = new TransportMessage(payloadBytes);
+        // Return the prepared TransportMessage
+        return transportMsg;
+    }
 
-<span class="w">    </span><span class="c1">// ... other methods ...</span>
-<span class="p">}</span>
-</code></pre></div>
-*   Input: A <code>Message</code> object.
-*   Output: A <code>TransportMessage</code> object ready to be sent by the <code>Connection</code>.
-*   How: It calls <code>getBytes()</code> to get the payload, then creates a <code>new TransportMessage()</code> using those bytes.</p>
+    // ... other methods ...
+}
+</code></pre>
+<ul>
+<li>Input: A <code>Message</code> object.</li>
+<li>Output: A <code>TransportMessage</code> object ready to be sent by the <code>Connection</code>.</li>
+<li>How: It calls <code>getBytes()</code> to get the payload, then creates a <code>new TransportMessage()</code> using those bytes.</li>
+</ul>
 <p>This <code>toTransportMessage</code> method is the primary serialization helper used by the <code>Client</code> before sending.</p>
 <h2 id="deserialization-bytes-json-object">Deserialization: Bytes -&gt; JSON -&gt; Object</h2>
 <p>Now let's look at the reverse process when we receive data. The <code>Connection</code> gives us a <code>TransportMessage</code> containing payload bytes.</p>
 <p><strong>Step 1: Extract Bytes from TransportMessage (<code>fromTransportMessage</code>)</strong></p>
 <p>This method takes the received <code>TransportMessage</code> and extracts the raw payload bytes.</p>
-<p><div class="highlight"><pre><span></span><code><span class="c1">// File: src/main/java/no/hvl/dat110/messages/MessageUtils.java</span>
+<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/messages/MessageUtils.java
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MessageUtils</span><span class="w"> </span><span class="p">{</span>
+public class MessageUtils {
 
-<span class="w">    </span><span class="c1">// ... serialization methods ...</span>
+    // ... serialization methods ...
 
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="nf">fromTransportMessage</span><span class="p">(</span><span class="n">TransportMessage</span><span class="w"> </span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="c1">// 1. Get the raw payload bytes from the TransportMessage</span>
-<span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">payloadBytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">msg</span><span class="p">.</span><span class="na">getData</span><span class="p">();</span>
-<span class="w">        </span><span class="c1">// 2. Convert these bytes back into a Message object</span>
-<span class="w">        </span><span class="n">Message</span><span class="w"> </span><span class="n">originalMessage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fromBytes</span><span class="p">(</span><span class="n">payloadBytes</span><span class="p">);</span>
-<span class="w">        </span><span class="c1">// Return the reconstructed Message object</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">originalMessage</span><span class="p">;</span>
-<span class="w">    </span><span class="p">}</span>
+    public static Message fromTransportMessage(TransportMessage msg) {
+        // 1. Get the raw payload bytes from the TransportMessage
+        byte[] payloadBytes = msg.getData();
+        // 2. Convert these bytes back into a Message object
+        Message originalMessage = fromBytes(payloadBytes);
+        // Return the reconstructed Message object
+        return originalMessage;
+    }
 
-<span class="w">    </span><span class="c1">// ... other methods ...</span>
-<span class="p">}</span>
-</code></pre></div>
-*   Input: A <code>TransportMessage</code> received from the <code>Connection</code>.
-*   Output: The reconstructed <code>Message</code> object.
-*   How: It calls <code>msg.getData()</code> to get the payload bytes, then passes these bytes to the <code>fromBytes</code> method (explained next).</p>
+    // ... other methods ...
+}
+</code></pre>
+<ul>
+<li>Input: A <code>TransportMessage</code> received from the <code>Connection</code>.</li>
+<li>Output: The reconstructed <code>Message</code> object.</li>
+<li>How: It calls <code>msg.getData()</code> to get the payload bytes, then passes these bytes to the <code>fromBytes</code> method (explained next).</li>
+</ul>
 <p><strong>Step 2: Bytes to JSON String (<code>fromBytes</code>)</strong></p>
 <p>This method takes the raw bytes and converts them back into a JSON string.</p>
-<p><div class="highlight"><pre><span></span><code><span class="c1">// File: src/main/java/no/hvl/dat110/messages/MessageUtils.java</span>
+<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/messages/MessageUtils.java
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MessageUtils</span><span class="w"> </span><span class="p">{</span>
+public class MessageUtils {
 
-<span class="w">    </span><span class="c1">// ... fromTransportMessage method ...</span>
+    // ... fromTransportMessage method ...
 
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="nf">fromBytes</span><span class="p">(</span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">payload</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="c1">// Convert the byte array back into a String</span>
-<span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">jsonString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="n">payload</span><span class="p">);</span>
-<span class="w">        </span><span class="c1">// Convert the JSON string into a Message object</span>
-<span class="w">        </span><span class="n">Message</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fromJson</span><span class="p">(</span><span class="n">jsonString</span><span class="p">);</span>
-<span class="w">        </span><span class="c1">// Return the reconstructed object</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">message</span><span class="p">;</span>
-<span class="w">    </span><span class="p">}</span>
+    public static Message fromBytes(byte[] payload) {
+        // Convert the byte array back into a String
+        String jsonString = new String(payload);
+        // Convert the JSON string into a Message object
+        Message message = fromJson(jsonString);
+        // Return the reconstructed object
+        return message;
+    }
 
-<span class="w">    </span><span class="c1">// ... fromJson method ...</span>
-<span class="p">}</span>
-</code></pre></div>
-*   Input: A <code>byte[]</code> array (the payload).
-*   Output: A <code>Message</code> object.
-*   How: It uses <code>new String(payload)</code> to turn the bytes back into a string (assuming the same character encoding, usually UTF-8). Then, it calls <code>fromJson()</code> (explained next) to parse this string.</p>
+    // ... fromJson method ...
+}
+</code></pre>
+<ul>
+<li>Input: A <code>byte[]</code> array (the payload).</li>
+<li>Output: A <code>Message</code> object.</li>
+<li>How: It uses <code>new String(payload)</code> to turn the bytes back into a string (assuming the same character encoding, usually UTF-8). Then, it calls <code>fromJson()</code> (explained next) to parse this string.</li>
+</ul>
 <p><strong>Step 3: JSON String to Object (<code>fromJson</code>)</strong></p>
 <p>This is the core of deserialization where GSON reconstructs the specific <code>Message</code> object. Since the JSON only tells us the <code>type</code> (like "PUBLISH"), we need to help GSON figure out <em>which</em> Java class to create (<code>PublishMsg</code>, <code>ConnectMsg</code>, etc.).</p>
-<p><div class="highlight"><pre><span></span><code><span class="c1">// File: src/main/java/no/hvl/dat110/messages/MessageUtils.java</span>
+<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/messages/MessageUtils.java
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">com.google.gson.*</span><span class="p">;</span><span class="w"> </span><span class="c1">// Need more GSON classes here</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">no.hvl.dat110.messages.MessageType</span><span class="p">;</span><span class="w"> </span><span class="c1">// Need the enum</span>
+import com.google.gson.*; // Need more GSON classes here
+import no.hvl.dat110.messages.MessageType; // Need the enum
 
-<span class="c1">// ... other imports ...</span>
+// ... other imports ...
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MessageUtils</span><span class="w"> </span><span class="p">{</span>
+public class MessageUtils {
 
-<span class="w">    </span><span class="c1">// ... fromBytes method ...</span>
+    // ... fromBytes method ...
 
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="nf">fromJson</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">msgJson</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+    public static Message fromJson(String msgJson) {
 
-<span class="w">        </span><span class="c1">// 1. Parse the raw JSON string into a generic JSON object structure</span>
-<span class="w">        </span><span class="n">JsonParser</span><span class="w"> </span><span class="n">jsonParser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">JsonParser</span><span class="p">();</span>
-<span class="w">        </span><span class="n">JsonObject</span><span class="w"> </span><span class="n">json</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">jsonParser</span><span class="p">.</span><span class="na">parse</span><span class="p">(</span><span class="n">msgJson</span><span class="p">).</span><span class="na">getAsJsonObject</span><span class="p">();</span>
+        // 1. Parse the raw JSON string into a generic JSON object structure
+        JsonParser jsonParser = new JsonParser();
+        JsonObject json = jsonParser.parse(msgJson).getAsJsonObject();
 
-<span class="w">        </span><span class="c1">// 2. Look inside the JSON to find the &quot;type&quot; field&#39;s value</span>
-<span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">typestr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">json</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="s">&quot;type&quot;</span><span class="p">).</span><span class="na">getAsString</span><span class="p">();</span><span class="w"> </span><span class="c1">// e.g., &quot;PUBLISH&quot;</span>
+        // 2. Look inside the JSON to find the "type" field's value
+        String typestr = json.get("type").getAsString(); // e.g., "PUBLISH"
 
-<span class="w">        </span><span class="c1">// 3. Convert the type string into our MessageType enum</span>
-<span class="w">        </span><span class="n">MessageType</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MessageType</span><span class="p">.</span><span class="na">valueOf</span><span class="p">(</span><span class="n">typestr</span><span class="p">);</span><span class="w"> </span><span class="c1">// e.g., MessageType.PUBLISH</span>
+        // 3. Convert the type string into our MessageType enum
+        MessageType type = MessageType.valueOf(typestr); // e.g., MessageType.PUBLISH
 
-<span class="w">        </span><span class="c1">// 4. Create a GSON instance</span>
-<span class="w">        </span><span class="n">Gson</span><span class="w"> </span><span class="n">gson</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Gson</span><span class="p">();</span>
-<span class="w">        </span><span class="n">Message</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span><span class="w"> </span><span class="c1">// Variable to hold the final object</span>
+        // 4. Create a GSON instance
+        Gson gson = new Gson();
+        Message message = null; // Variable to hold the final object
 
-<span class="w">        </span><span class="c1">// 5. Use a switch based on the type to tell GSON which class to build</span>
-<span class="w">        </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">type</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="n">CONNECT</span><span class="p">:</span>
-<span class="w">                </span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gson</span><span class="p">.</span><span class="na">fromJson</span><span class="p">(</span><span class="n">json</span><span class="p">,</span><span class="w"> </span><span class="n">ConnectMsg</span><span class="p">.</span><span class="na">class</span><span class="p">);</span>
-<span class="w">                </span><span class="k">break</span><span class="p">;</span>
-<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="n">PUBLISH</span><span class="p">:</span>
-<span class="w">                </span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gson</span><span class="p">.</span><span class="na">fromJson</span><span class="p">(</span><span class="n">json</span><span class="p">,</span><span class="w"> </span><span class="n">PublishMsg</span><span class="p">.</span><span class="na">class</span><span class="p">);</span>
-<span class="w">                </span><span class="k">break</span><span class="p">;</span>
-<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="n">SUBSCRIBE</span><span class="p">:</span>
-<span class="w">                </span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gson</span><span class="p">.</span><span class="na">fromJson</span><span class="p">(</span><span class="n">json</span><span class="p">,</span><span class="w"> </span><span class="n">SubscribeMsg</span><span class="p">.</span><span class="na">class</span><span class="p">);</span>
-<span class="w">                </span><span class="k">break</span><span class="p">;</span>
-<span class="w">            </span><span class="c1">// ... cases for all other MessageTypes ...</span>
-<span class="w">            </span><span class="k">default</span><span class="p">:</span>
-<span class="w">                </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&quot;fromJson - unknown message type: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">typestr</span><span class="p">);</span>
-<span class="w">                </span><span class="k">break</span><span class="p">;</span>
-<span class="w">        </span><span class="p">}</span>
+        // 5. Use a switch based on the type to tell GSON which class to build
+        switch (type) {
+            case CONNECT:
+                message = gson.fromJson(json, ConnectMsg.class);
+                break;
+            case PUBLISH:
+                message = gson.fromJson(json, PublishMsg.class);
+                break;
+            case SUBSCRIBE:
+                message = gson.fromJson(json, SubscribeMsg.class);
+                break;
+            // ... cases for all other MessageTypes ...
+            default:
+                System.out.println("fromJson - unknown message type: " + typestr);
+                break;
+        }
 
-<span class="w">        </span><span class="c1">// Return the specific Message object (e.g., a PublishMsg instance)</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">message</span><span class="p">;</span>
-<span class="w">    </span><span class="p">}</span>
+        // Return the specific Message object (e.g., a PublishMsg instance)
+        return message;
+    }
 
-<span class="w">    </span><span class="c1">// ... other methods ...</span>
-<span class="p">}</span>
-</code></pre></div>
-*   Input: A JSON string (e.g., <code>{"type":"PUBLISH","user":"Alice",...}</code>).
-*   Output: A specific <code>Message</code> object (e.g., a <code>PublishMsg</code> instance).
-*   How:
-    *   It first parses the string into a general <code>JsonObject</code>.
-    *   It extracts the value of the <code>"type"</code> field.
-    *   It uses a <code>switch</code> statement based on this type.
-    *   Inside the correct <code>case</code>, it calls <code>gson.fromJson(json, SpecificMsgClass.class)</code>. This tells GSON: "Take the data from this <code>json</code> object and use it to create an instance of <em>this specific class</em> (e.g., <code>PublishMsg.class</code>)". GSON automatically matches JSON fields to the Java class fields.</p>
+    // ... other methods ...
+}
+</code></pre>
+<ul>
+<li>Input: A JSON string (e.g., <code>{"type":"PUBLISH","user":"Alice",...}</code>).</li>
+<li>Output: A specific <code>Message</code> object (e.g., a <code>PublishMsg</code> instance).</li>
+<li>How:<ul>
+<li>It first parses the string into a general <code>JsonObject</code>.</li>
+<li>It extracts the value of the <code>"type"</code> field.</li>
+<li>It uses a <code>switch</code> statement based on this type.</li>
+<li>Inside the correct <code>case</code>, it calls <code>gson.fromJson(json, SpecificMsgClass.class)</code>. This tells GSON: "Take the data from this <code>json</code> object and use it to create an instance of <em>this specific class</em> (e.g., <code>PublishMsg.class</code>)". GSON automatically matches JSON fields to the Java class fields.</li>
+</ul>
+</li>
+</ul>
 <p>This <code>fromTransportMessage</code> (which uses <code>fromBytes</code> and <code>fromJson</code>) is the primary deserialization helper used by the <code>Client</code> after receiving data.</p>
 <h2 id="convenience-methods-send-and-receive">Convenience Methods: <code>send</code> and <code>receive</code></h2>
 <p><code>MessageUtils</code> also provides two high-level convenience methods that combine the translation step with the actual network sending/receiving.</p>
-<p><div class="highlight"><pre><span></span><code><span class="c1">// File: src/main/java/no/hvl/dat110/messages/MessageUtils.java</span>
+<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/messages/MessageUtils.java
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">no.hvl.dat110.messagetransport.Connection</span><span class="p">;</span><span class="w"> </span><span class="c1">// Need Connection</span>
+import no.hvl.dat110.messagetransport.Connection; // Need Connection
 
-<span class="c1">// ... other imports ...</span>
+// ... other imports ...
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MessageUtils</span><span class="w"> </span><span class="p">{</span>
+public class MessageUtils {
 
-<span class="w">    </span><span class="c1">// ... all the conversion methods ...</span>
+    // ... all the conversion methods ...
 
-<span class="w">    </span><span class="c1">// Sends a Message object over a Connection</span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">send</span><span class="w"> </span><span class="p">(</span><span class="n">Connection</span><span class="w"> </span><span class="n">connection</span><span class="p">,</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="c1">// 1. Convert the Message object to a TransportMessage</span>
-<span class="w">        </span><span class="n">TransportMessage</span><span class="w"> </span><span class="n">transportMsg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">toTransportMessage</span><span class="p">(</span><span class="n">message</span><span class="p">);</span>
-<span class="w">        </span><span class="c1">// 2. Tell the connection to send it</span>
-<span class="w">        </span><span class="n">connection</span><span class="p">.</span><span class="na">send</span><span class="p">(</span><span class="n">transportMsg</span><span class="p">);</span>
-<span class="w">    </span><span class="p">}</span>
+    // Sends a Message object over a Connection
+    public static void send (Connection connection, Message message) {
+        // 1. Convert the Message object to a TransportMessage
+        TransportMessage transportMsg = toTransportMessage(message);
+        // 2. Tell the connection to send it
+        connection.send(transportMsg);
+    }
 
-<span class="w">    </span><span class="c1">// Receives the next Message object from a Connection</span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="nf">receive</span><span class="w"> </span><span class="p">(</span><span class="n">Connection</span><span class="w"> </span><span class="n">connection</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="c1">// 1. Tell the connection to receive the next 128-byte frame</span>
-<span class="w">        </span><span class="n">TransportMessage</span><span class="w"> </span><span class="n">transportMsg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">connection</span><span class="p">.</span><span class="na">receive</span><span class="p">();</span>
-<span class="w">        </span><span class="c1">// 2. If successful, convert the TransportMessage back to a Message object</span>
-<span class="w">        </span><span class="n">Message</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">transportMsg</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fromTransportMessage</span><span class="p">(</span><span class="n">transportMsg</span><span class="p">);</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">        </span><span class="c1">// Return the reconstructed Message object (or null if receive failed)</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">message</span><span class="p">;</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div>
-*   <code>send(connection, message)</code>: A shortcut that takes your <code>Message</code> object, serializes it into a <code>TransportMessage</code> using <code>toTransportMessage</code>, and then calls <code>connection.send()</code> to send it over the network.
-*   <code>receive(connection)</code>: A shortcut that calls <code>connection.receive()</code> to get the next <code>TransportMessage</code>, and if successful, deserializes it back into the original <code>Message</code> object using <code>fromTransportMessage</code>.</p>
+    // Receives the next Message object from a Connection
+    public static Message receive (Connection connection) {
+        // 1. Tell the connection to receive the next 128-byte frame
+        TransportMessage transportMsg = connection.receive();
+        // 2. If successful, convert the TransportMessage back to a Message object
+        Message message = null;
+        if (transportMsg != null) {
+            message = fromTransportMessage(transportMsg);
+        }
+        // Return the reconstructed Message object (or null if receive failed)
+        return message;
+    }
+}
+</code></pre>
+<ul>
+<li><code>send(connection, message)</code>: A shortcut that takes your <code>Message</code> object, serializes it into a <code>TransportMessage</code> using <code>toTransportMessage</code>, and then calls <code>connection.send()</code> to send it over the network.</li>
+<li><code>receive(connection)</code>: A shortcut that calls <code>connection.receive()</code> to get the next <code>TransportMessage</code>, and if successful, deserializes it back into the original <code>Message</code> object using <code>fromTransportMessage</code>.</li>
+</ul>
 <p>The <code>Client</code> primarily uses these <code>send</code> and <code>receive</code> methods for cleaner code.</p>
 <h2 id="under-the-hood-gson-at-work">Under the Hood: GSON at Work</h2>
 <p>Let's visualize the core GSON translation steps.</p>
 <p><strong>Serialization (<code>toJson</code>):</strong></p>
-<div class="highlight"><pre><span></span><code>sequenceDiagram
+<div class="mermaid">sequenceDiagram
     participant Client as Client Code
     participant MU as MessageUtils
     participant GSON as GSON Library
     participant PubMsg as PublishMsg Object
 
     Client-&gt;&gt;MU: toJson(myPublishMsg)
-    Note right of Client: myPublishMsg has user=&quot;Alice&quot;, topic=&quot;news&quot;, ...
+    Note right of Client: myPublishMsg has user="Alice", topic="news", ...
     MU-&gt;&gt;GSON: gson.toJson(myPublishMsg)
-    GSON-&gt;&gt;PubMsg: Read field &#39;type&#39; (PUBLISH)
-    GSON-&gt;&gt;PubMsg: Read field &#39;user&#39; (&quot;Alice&quot;)
-    GSON-&gt;&gt;PubMsg: Read field &#39;topic&#39; (&quot;news&quot;)
-    GSON-&gt;&gt;PubMsg: Read field &#39;message&#39; (&quot;Hello&quot;)
-    GSON--&gt;&gt;MU: Return JSON String: &quot;{\&quot;type\&quot;:\&quot;PUBLISH\&quot;,\&quot;user\&quot;:\&quot;Alice\&quot;,...}&quot;
+    GSON-&gt;&gt;PubMsg: Read field 'type' (PUBLISH)
+    GSON-&gt;&gt;PubMsg: Read field 'user' ("Alice")
+    GSON-&gt;&gt;PubMsg: Read field 'topic' ("news")
+    GSON-&gt;&gt;PubMsg: Read field 'message' ("Hello")
+    GSON--&gt;&gt;MU: Return JSON String: "{\"type\":\"PUBLISH\",\"user\":\"Alice\",...}"
     MU--&gt;&gt;Client: Return JSON String
-</code></pre></div>
+</div>
 <p><strong>Deserialization (<code>fromJson</code> for a PublishMsg):</strong></p>
-<div class="highlight"><pre><span></span><code>sequenceDiagram
+<div class="mermaid">sequenceDiagram
     participant Client as Client Code
     participant MU as MessageUtils
     participant Parser as JsonParser
     participant GSON as GSON Library
 
-    Client-&gt;&gt;MU: fromJson(&quot;{\&quot;type\&quot;:\&quot;PUBLISH\&quot;,\&quot;user\&quot;:\&quot;Alice\&quot;,...}&quot;)
+    Client-&gt;&gt;MU: fromJson("{\"type\":\"PUBLISH\",\"user\":\"Alice\",...}")
     MU-&gt;&gt;Parser: parser.parse(jsonString)
-    Parser--&gt;&gt;MU: Return JsonObject &#39;json&#39;
-    MU-&gt;&gt;MU: Get type from json (&quot;PUBLISH&quot;)
+    Parser--&gt;&gt;MU: Return JsonObject 'json'
+    MU-&gt;&gt;MU: Get type from json ("PUBLISH")
     MU-&gt;&gt;MU: Switch -&gt; case PUBLISH:
     MU-&gt;&gt;GSON: gson.fromJson(json, PublishMsg.class)
     GSON-&gt;&gt;GSON: Create new empty PublishMsg object
-    GSON-&gt;&gt;GSON: Find &quot;user&quot; in json, set object.user = &quot;Alice&quot;
-    GSON-&gt;&gt;GSON: Find &quot;topic&quot; in json, set object.topic = &quot;news&quot;
-    GSON-&gt;&gt;GSON: Find &quot;message&quot; in json, set object.message = &quot;Hello&quot;
+    GSON-&gt;&gt;GSON: Find "user" in json, set object.user = "Alice"
+    GSON-&gt;&gt;GSON: Find "topic" in json, set object.topic = "news"
+    GSON-&gt;&gt;GSON: Find "message" in json, set object.message = "Hello"
     GSON--&gt;&gt;MU: Return populated PublishMsg object
     MU--&gt;&gt;Client: Return Message object (as PublishMsg)
-</code></pre></div>
+</div>
 <h2 id="conclusion">Conclusion</h2>
 <p>The <code>MessageUtils</code> class is the essential translator between our application's Java <code>Message</code> objects and the raw bytes needed for network transmission.</p>
 <ul>
@@ -920,60 +652,32 @@
 </ul>
 <p>With <code>MessageUtils</code>, we complete the communication pipeline. We can now create message objects, translate and package them, send them over the network using the connection, receive packages, and translate them back into objects the application can understand.</p>
 <p>This concludes our tour of the core components of the <code>dat110-project2-javafx-chatapp</code> client! We've covered the message structure, client logic, application entry point, UI areas, controller, network framing, connection handling, and finally, the serialization/deserialization mechanism. You now have a foundational understanding of how these pieces work together to create a functional chat client.</p>
-<hr />
-
-
-
-
-
-
-
-
-
-
-
-
-                
-              </article>
-            </div>
-          
-          
+<hr/>
+</article>
+</div>
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
-        </div>
-        
-      </main>
-      
-        <footer class="md-footer">
-  
-  <div class="md-footer-meta md-typeset">
-    <div class="md-footer-meta__inner md-grid">
-      <div class="md-copyright">
+</div>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
   
   
     Made with
-    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
       Material for MkDocs
     </a>
-  
 </div>
-      
-    </div>
-  </div>
+</div>
+</div>
 </footer>
-      
-    </div>
-    <div class="md-dialog" data-md-component="dialog">
-      <div class="md-dialog__inner md-typeset"></div>
-    </div>
-    
-    
-    
-      
-      <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-    
-    
-      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
-      
-    
-  </body>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
 </html>
