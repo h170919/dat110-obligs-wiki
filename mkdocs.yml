@@ -1,0 +1,12 @@
+site_name: 110-notes
+theme:
+  name: material
+  features:
+    - mermaid
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - pymdownx.superfences
+  - pymdownx.details
