@@ -1,0 +1,684 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="../05_rpc_data_marshalling_unmarshalling_/" rel="prev"/>
+<link href="../07_message_framing_protocol_/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.6.12" name="generator"/>
+<title>Chapter 6: Messaging Connection - dat110 notes</title>
+<link href="../../assets/stylesheets/main.2afb09e1.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#chapter-6-messaging-connection">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="dat110 notes" class="md-header__button md-logo" data-md-component="logo" href="../.." title="dat110 notes">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            dat110 notes
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Chapter 6: Messaging Connection
+            
+          </span>
+</div>
+</div>
+</div>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="dat110 notes" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="dat110 notes">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    dat110 notes
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    Quem invecta sonantem gravidamve nascentur nimium
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Oblig1
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            Oblig1
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../">
+<span class="md-ellipsis">
+    Tutorial: dat110-project1-gruppe69
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../01_rpc_client_stub_/">
+<span class="md-ellipsis">
+    Chapter 1: RPC Client Stub
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../02_rpc_server_implementation__skeleton__/">
+<span class="md-ellipsis">
+    Chapter 2: RPC Server Implementation (Skeleton)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../03_rpc_client_/">
+<span class="md-ellipsis">
+    Chapter 3: RPC Client
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../04_rpc_server_/">
+<span class="md-ellipsis">
+    Chapter 4: RPC Server
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../05_rpc_data_marshalling_unmarshalling_/">
+<span class="md-ellipsis">
+    Chapter 5: RPC Data Marshalling/Unmarshalling
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    Chapter 6: Messaging Connection
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    Chapter 6: Messaging Connection
+    
+  </span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#the-problem-sending-bytes-reliably">
+<span class="md-ellipsis">
+      The Problem: Sending Bytes Reliably
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#introducing-the-messaging-connection-your-reliable-network-postman">
+<span class="md-ellipsis">
+      Introducing the Messaging Connection: Your Reliable Network Postman
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-components-of-the-messaging-layer">
+<span class="md-ellipsis">
+      Key Components of the Messaging Layer
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#how-the-rpc-layer-uses-the-messaging-layer">
+<span class="md-ellipsis">
+      How the RPC Layer Uses the Messaging Layer
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#under-the-hood-sockets-and-message-boundaries">
+<span class="md-ellipsis">
+      Under the Hood: Sockets and Message Boundaries
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#conclusion">
+<span class="md-ellipsis">
+      Conclusion
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../07_message_framing_protocol_/">
+<span class="md-ellipsis">
+    Chapter 7: Message Framing Protocol
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Oblig2
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            Oblig2
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/01_message_hierarchy__communication_protocol__/">
+<span class="md-ellipsis">
+    Chapter 1: Message Hierarchy (Communication Protocol)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/02_client__network_interaction_logic__/">
+<span class="md-ellipsis">
+    Chapter 2: Client (Network Interaction Logic)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/03_chapp__application_entry_point__/">
+<span class="md-ellipsis">
+    Chapter 3: Chapp (Application Entry Point)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/04_ui_areas__commandarea___messagearea__/">
+<span class="md-ellipsis">
+    Chapter 4: UI Areas (CommandArea &amp; MessageArea)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/05_controller__ui_logic_coordinator__/">
+<span class="md-ellipsis">
+    Chapter 5: Controller (UI Logic Coordinator)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/06_transportmessage__network_data_framing__/">
+<span class="md-ellipsis">
+    Chapter 6: TransportMessage (Network Data Framing)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/07_connection__network_stream_handling__/">
+<span class="md-ellipsis">
+    Chapter 7: Connection (Network Stream Handling)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/08_messageutils__serialization_deserialization__/">
+<span class="md-ellipsis">
+    Chapter 8: MessageUtils (Serialization/Deserialization)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/oblig2_index/">
+<span class="md-ellipsis">
+    Tutorial: dat110-project2-javafx-chatapp
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#the-problem-sending-bytes-reliably">
+<span class="md-ellipsis">
+      The Problem: Sending Bytes Reliably
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#introducing-the-messaging-connection-your-reliable-network-postman">
+<span class="md-ellipsis">
+      Introducing the Messaging Connection: Your Reliable Network Postman
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-components-of-the-messaging-layer">
+<span class="md-ellipsis">
+      Key Components of the Messaging Layer
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#how-the-rpc-layer-uses-the-messaging-layer">
+<span class="md-ellipsis">
+      How the RPC Layer Uses the Messaging Layer
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#under-the-hood-sockets-and-message-boundaries">
+<span class="md-ellipsis">
+      Under the Hood: Sockets and Message Boundaries
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#conclusion">
+<span class="md-ellipsis">
+      Conclusion
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-6-messaging-connection">Chapter 6: Messaging Connection</h1>
+<p>Welcome to Chapter 6! In the <a href="../05_rpc_data_marshalling_unmarshalling_/">previous chapter</a>, we learned how to pack our Java data (like integers or strings) into boxes of bytes (<code>byte[]</code>) using marshalling, and how to label those boxes with an RPC ID using encapsulation. We have our neatly packaged request (like "get temperature") ready to go!</p>
+<p>But how does this box of bytes actually get from our program (the client) to the other program (the server) across the unpredictable network? How do we make sure the whole box arrives, and not just parts of it? And how does the receiver know when one box ends and the next one begins if we send multiple boxes?</p>
+<p>Dealing directly with raw network connections (called sockets) involves managing streams of bytes, handling potential errors, and figuring out message boundaries. This can be quite tricky, especially for beginners. We need a simpler, more reliable way to just "send this message" and "receive the next message".</p>
+<h2 id="the-problem-sending-bytes-reliably">The Problem: Sending Bytes Reliably</h2>
+<p>Imagine you have your packed box (<code>byte[]</code>) containing the RPC request. You want to send it to the server. Sending it over the network is like sending raw data down a pipe.</p>
+<ul>
+<li>How does the receiver know exactly how many bytes belong to <em>this specific box</em>? If you send two boxes back-to-back, the receiver might just see a continuous stream of bytes.</li>
+<li>What if the network is slow or temporarily interrupted? How do you ensure the complete message is sent and received?</li>
+</ul>
+<p>We need a layer that handles these details for us.</p>
+<h2 id="introducing-the-messaging-connection-your-reliable-network-postman">Introducing the Messaging Connection: Your Reliable Network Postman</h2>
+<p>This is where the <strong>Messaging Connection</strong> layer comes in. Think of it as a super reliable <strong>postal service</strong> designed specifically for sending our pre-packaged <code>Message</code> objects.</p>
+<ul>
+<li><strong>You (RPC Client/Server):</strong> Prepare your message (the <code>byte[]</code> from marshalling/encapsulation) and put it inside a standard envelope – the <code>Message</code> object.</li>
+<li><strong>Messaging Connection (Postal Service):</strong> You give this <code>Message</code> envelope to the <code>MessageConnection</code>. It takes care of:<ul>
+<li>Knowing the recipient's address (established via TCP socket).</li>
+<li>Adding special markings (framing information, covered in the <a href="../07_message_framing_protocol_/">next chapter</a>) so the receiver knows exactly how big the message is.</li>
+<li>Using a reliable delivery method (TCP) to ensure the bytes arrive in order.</li>
+<li>Delivering <em>one whole message</em> at a time.</li>
+<li>Receiving <em>one whole message</em> at a time.</li>
+</ul>
+</li>
+</ul>
+<p>So, the <strong>Messaging Connection</strong>:</p>
+<ol>
+<li><strong>Represents the Channel:</strong> It's the established communication link (a TCP socket) between a client and a server.</li>
+<li><strong>Abstracts Streams:</strong> It hides the raw <code>InputStream</code> and <code>OutputStream</code> of the socket.</li>
+<li><strong>Deals in Messages:</strong> It provides methods to <code>send</code> and <code>receive</code> complete <code>Message</code> objects, not just loose bytes.</li>
+</ol>
+<p>This makes network communication much cleaner for the layers above it (like the <a href="../03_rpc_client_/">RPC Client</a> and <a href="../04_rpc_server_/">RPC Server</a>).</p>
+<h2 id="key-components-of-the-messaging-layer">Key Components of the Messaging Layer</h2>
+<p>This "postal service" has a few key parts working together:</p>
+<ol>
+<li>
+<p><strong><code>Message</code> Class:</strong> The standard envelope. It's a simple object that holds the data (<code>byte[]</code>) you want to send.</p>
+<p>```java
+// Simplified representation
+package no.hvl.dat110.messaging;</p>
+<p>public class Message {
+    private byte[] data; // The payload (your packed bytes)</p>
+<pre><code>public Message(byte[] data) {
+    this.data = data;
+}
+
+public byte[] getData() {
+    return data;
+}
+</code></pre>
+<p>}
+```
+This class just acts as a wrapper around the byte array we want to transmit.</p>
+</li>
+<li>
+<p><strong><code>MessageConnection</code> Class:</strong> Represents an active, established connection between two points. Once connected, you use this object to send and receive <code>Message</code> envelopes. It's like having a direct phone line open.</p>
+<p>```java
+// Simplified representation
+package no.hvl.dat110.messaging;</p>
+<p>import java.net.Socket;
+// ... other imports ...</p>
+<p>public class MessageConnection {
+    private Socket socket; // The underlying network connection
+    // ... Input/Output streams needed for sending/receiving ...</p>
+<pre><code>public MessageConnection(Socket socket) {
+    this.socket = socket;
+    // ... setup input/output streams from socket ...
+}
+
+public void send(Message message) {
+    // ... magic happens here to send the message reliably ...
+    // (Uses MessageUtils.encapsulate)
+}
+
+public Message receive() {
+    // ... magic happens here to receive one complete message ...
+    // (Uses MessageUtils.decapsulate)
+    Message receivedMessage = null;
+    // ... read from socket, figure out message boundaries ...
+    return receivedMessage;
+}
+
+public void close() {
+    // ... close streams and the socket ...
+}
+</code></pre>
+<p>}
+<code>``
+The</code>send<code>and</code>receive<code>methods are the core here. They handle the details of transmitting</code>Message<code>objects over the underlying</code>socket`.</p>
+</li>
+<li>
+<p><strong><code>MessagingClient</code> Class:</strong> Used by the client application (like the <code>Controller</code>) to <em>initiate</em> a connection <em>to</em> a server. It's like dialing the server's phone number.</p>
+<p>```java
+// File: src/main/java/no/hvl/dat110/messaging/MessagingClient.java (Simplified)
+package no.hvl.dat110.messaging;</p>
+<p>import java.net.Socket;
+import java.io.IOException;</p>
+<p>public class MessagingClient {
+    private String server;
+    private int port;</p>
+<pre><code>public MessagingClient(String server, int port) {
+    this.server = server;
+    this.port = port;
+}
+
+// Connect to the server and return the established connection
+public MessageConnection connect() {
+    try {
+        // Create a TCP socket connection to the server address/port
+        Socket clientSocket = new Socket(server, port);
+        // Wrap the socket in our MessageConnection object
+        return new MessageConnection(clientSocket);
+    } catch (IOException e) {
+        System.err.println("Error connecting to server: " + e.getMessage());
+        throw new RuntimeException(e);
+    }
+}
+</code></pre>
+<p>}
+<code>``
+Its main job is the</code>connect()<code>method, which creates the network</code>Socket<code>and returns the usable</code>MessageConnection`.</p>
+</li>
+<li>
+<p><strong><code>MessagingServer</code> Class:</strong> Used by the server application (like the <code>Sensor</code>) to <em>listen</em> for incoming connection attempts from clients. It's like the operator waiting for the phone to ring.</p>
+<p>```java
+// File: src/main/java/no/hvl/dat110/messaging/MessagingServer.java (Simplified)
+package no.hvl.dat110.messaging;</p>
+<p>import java.net.ServerSocket;
+import java.net.Socket;
+import java.io.IOException;</p>
+<p>public class MessagingServer {
+    private ServerSocket welcomeSocket; // Listens for connections</p>
+<pre><code>public MessagingServer(int port) {
+    try {
+        // Create a socket that listens on the specified port
+        this.welcomeSocket = new ServerSocket(port);
+    } catch (IOException e) {
+         System.err.println("Error starting server: " + e.getMessage());
+         throw new RuntimeException(e);
+    }
+}
+
+// Wait for a client to connect, then return the connection
+public MessageConnection accept() {
+    try {
+        System.out.println("MessagingServer waiting for connection...");
+        // Wait here until a client tries to connect
+        Socket connectionSocket = welcomeSocket.accept();
+        System.out.println("MessagingServer accepted connection.");
+        // Wrap the new client socket in a MessageConnection
+        return new MessageConnection(connectionSocket);
+    } catch (IOException e) {
+        System.err.println("Error accepting connection: " + e.getMessage());
+        throw new RuntimeException(e);
+    }
+}
+
+public void stop() { /* ... close welcomeSocket ... */ }
+</code></pre>
+<p>}
+<code>``
+Its main job is the</code>accept()<code>method, which blocks (waits) until a client connects, then returns a</code>MessageConnection` representing the link to <em>that specific client</em>.</p>
+</li>
+</ol>
+<h2 id="how-the-rpc-layer-uses-the-messaging-layer">How the RPC Layer Uses the Messaging Layer</h2>
+<p>Remember the <a href="../03_rpc_client_/">RPC Client</a>'s <code>call</code> method?</p>
+<pre><code class="language-java">// Inside RPCClient.call() (Simplified)
+public byte[] call(byte rpcid, byte[] params) {
+    byte[] requestData = RPCUtils.encapsulate(rpcid, params);
+    Message requestMessage = new Message(requestData); // Create the envelope
+
+    // Use the Messaging Layer to send
+    connection.send(requestMessage); // Hand off to the "postman"
+
+    // Use the Messaging Layer to receive
+    Message replyMessage = connection.receive(); // Wait for the return mail
+
+    byte[] returnval = RPCUtils.decapsulate(replyMessage.getData());
+    return returnval;
+}
+</code></pre>
+<p>And the <a href="../04_rpc_server_/">RPC Server</a>'s <code>run</code> loop?</p>
+<pre><code class="language-java">// Inside RPCServer.run() (Simplified loop)
+public void run() {
+    connection = msgserver.accept(); // Wait for a client connection
+
+    while (!stop) {
+        // Use Messaging Layer to receive request
+        Message requestmsg = connection.receive();
+
+        // ... process request (decapsulate, lookup, invoke) ...
+        byte[] result = specialist.invoke(params);
+        byte[] replyData = RPCUtils.encapsulate(rpcid, result);
+        Message replymsg = new Message(replyData); // Create reply envelope
+
+        // Use Messaging Layer to send reply
+        connection.send(replymsg);
+
+        // ... check for stop condition ...
+    }
+}
+</code></pre>
+<p>Notice how the RPC layer only deals with <code>Message</code> objects and the <code>send</code>/<code>receive</code> methods of the <code>MessageConnection</code>. It doesn't worry about sockets or byte streams directly. The <code>MessagingClient</code> and <code>MessagingServer</code> handle the initial setup (<code>connect</code>/<code>accept</code>).</p>
+<h2 id="under-the-hood-sockets-and-message-boundaries">Under the Hood: Sockets and Message Boundaries</h2>
+<p>So how does <code>MessageConnection</code> actually achieve this "send one message, receive one message" magic?</p>
+<ol>
+<li><strong>TCP Sockets:</strong> Underneath, <code>MessageConnection</code> uses standard Java <code>Socket</code> objects. TCP (Transmission Control Protocol) provides a reliable, ordered stream of bytes between the client and server. This means bytes sent arrive in the same order, and TCP handles retransmitting lost data. However, TCP itself <em>doesn't</em> know about message boundaries – it just sees a stream.</li>
+<li><strong>Input/Output Streams:</strong> The <code>MessageConnection</code> gets the <code>InputStream</code> and <code>OutputStream</code> from the <code>Socket</code>. It typically wraps these in <code>DataInputStream</code> and <code>DataOutputStream</code> which provide helpful methods for reading and writing primitive Java types and byte arrays.</li>
+<li><strong>Framing (The Secret Sauce!):</strong> This is the crucial part. Before writing the <code>Message</code>'s payload bytes to the <code>OutputStream</code>, the <code>send</code> method uses a helper function (from <code>MessageUtils</code>, covered in the <a href="../07_message_framing_protocol_/">next chapter</a>) to add <strong>framing information</strong>. The simplest form of framing is adding the <em>length</em> of the payload before the payload itself.</li>
+<li><strong>Sending:</strong> The <code>send</code> method writes the framing information (e.g., the length) followed by the actual payload bytes to the <code>DataOutputStream</code>.</li>
+<li><strong>Receiving:</strong> The <code>receive</code> method uses another helper function (from <code>MessageUtils</code>) that first reads the framing information (e.g., the length) from the <code>DataInputStream</code>. Once it knows the length, it reads <em>exactly</em> that many bytes from the stream – this is the payload.</li>
+<li><strong>Reconstructing the Message:</strong> It takes the received payload bytes and puts them into a new <code>Message</code> object, which is then returned.</li>
+</ol>
+<p>This process of adding and reading the length (or other boundary markers) is called the <strong>Message Framing Protocol</strong>.</p>
+<p>Here's a diagram showing the flow when <code>RPCClient</code> sends a message via <code>MessageConnection</code>:</p>
+<div class="mermaid">sequenceDiagram
+    participant RPC_Client as RPC Client
+    participant MsgConn as MessageConnection
+    participant MsgUtils as MessageUtils
+    participant Stream as DataOutputStream
+    participant Network
+
+    RPC_Client-&gt;&gt;MsgConn: send(myMessage)
+    Note over MsgConn: Get payload bytes from myMessage
+    MsgConn-&gt;&gt;MsgUtils: encapsulate(payload_bytes)
+    Note over MsgUtils: Add framing (e.g., length) to payload
+    MsgUtils--&gt;&gt;MsgConn: return framed_bytes (length + payload)
+    MsgConn-&gt;&gt;Stream: write(framed_bytes)
+    Stream-&gt;&gt;Network: Send framed_bytes over TCP socket
+</div>
+<p>And when the <code>RPCServer</code> receives it:</p>
+<div class="mermaid">sequenceDiagram
+    participant Network
+    participant Stream as DataInputStream
+    participant MsgUtils as MessageUtils
+    participant MsgConn as MessageConnection
+    participant RPC_Server as RPC Server
+
+    Network-&gt;&gt;Stream: Receive framed_bytes (length + payload)
+    RPC_Server-&gt;&gt;MsgConn: receive()
+    MsgConn-&gt;&gt;MsgUtils: decapsulate(Stream)
+    Note over MsgUtils: Read length from Stream
+    Note over MsgUtils: Read 'length' bytes of payload from Stream
+    MsgUtils--&gt;&gt;MsgConn: return received_payload_bytes
+    MsgConn-&gt;&gt;MsgConn: Create newMessage(received_payload_bytes)
+    MsgConn--&gt;&gt;RPC_Server: return newMessage
+end
+</div>
+<p>The <code>MessageUtils.encapsulate</code> and <code>MessageUtils.decapsulate</code> methods (which implement the framing protocol) are the key to making <code>MessageConnection.send</code> and <code>MessageConnection.receive</code> work with whole messages.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>The <strong>Messaging Connection</strong> layer provides a vital abstraction over raw network sockets. It establishes a connection (<code>MessagingClient</code>, <code>MessagingServer</code>) and allows the sending and receiving of discrete <code>Message</code> objects (<code>MessageConnection.send</code>, <code>MessageConnection.receive</code>).</p>
+<p>It hides the complexity of byte streams and error handling by leveraging TCP and, crucially, by implementing a framing protocol (via helper functions) to define message boundaries. This allows the higher-level RPC components to communicate reliably without getting bogged down in networking details. They simply work with <code>Message</code> objects.</p>
+<p>But how exactly does this framing work? How do we add the length information and read it back correctly? That's the topic of our final chapter.</p>
+<p>Next up: <a href="../07_message_framing_protocol_/">Message Framing Protocol</a></p>
+<hr/>
+<p>Generated by <a href="https://github.com/The-Pocket/Tutorial-Codebase-Knowledge">AI Codebase Knowledge Builder</a></p>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.c8b220af.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>

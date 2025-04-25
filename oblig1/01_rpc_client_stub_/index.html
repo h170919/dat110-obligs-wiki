@@ -1,0 +1,534 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="../" rel="prev"/>
+<link href="../02_rpc_server_implementation__skeleton__/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.6.12" name="generator"/>
+<title>Chapter 1: RPC Client Stub - dat110 notes</title>
+<link href="../../assets/stylesheets/main.2afb09e1.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#chapter-1-rpc-client-stub">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="dat110 notes" class="md-header__button md-logo" data-md-component="logo" href="../.." title="dat110 notes">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            dat110 notes
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Chapter 1: RPC Client Stub
+            
+          </span>
+</div>
+</div>
+</div>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="dat110 notes" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="dat110 notes">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    dat110 notes
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    Quem invecta sonantem gravidamve nascentur nimium
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Oblig1
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            Oblig1
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../">
+<span class="md-ellipsis">
+    Tutorial: dat110-project1-gruppe69
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    Chapter 1: RPC Client Stub
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    Chapter 1: RPC Client Stub
+    
+  </span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-is-an-rpc-client-stub">
+<span class="md-ellipsis">
+      What is an RPC Client Stub?
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#using-the-stub-making-remote-calls-look-local">
+<span class="md-ellipsis">
+      Using the Stub: Making Remote Calls Look Local
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#how-the-stub-works-under-the-hood">
+<span class="md-ellipsis">
+      How the Stub Works (Under the Hood)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#conclusion">
+<span class="md-ellipsis">
+      Conclusion
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../02_rpc_server_implementation__skeleton__/">
+<span class="md-ellipsis">
+    Chapter 2: RPC Server Implementation (Skeleton)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../03_rpc_client_/">
+<span class="md-ellipsis">
+    Chapter 3: RPC Client
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../04_rpc_server_/">
+<span class="md-ellipsis">
+    Chapter 4: RPC Server
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../05_rpc_data_marshalling_unmarshalling_/">
+<span class="md-ellipsis">
+    Chapter 5: RPC Data Marshalling/Unmarshalling
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../06_messaging_connection_/">
+<span class="md-ellipsis">
+    Chapter 6: Messaging Connection
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../07_message_framing_protocol_/">
+<span class="md-ellipsis">
+    Chapter 7: Message Framing Protocol
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Oblig2
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            Oblig2
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/01_message_hierarchy__communication_protocol__/">
+<span class="md-ellipsis">
+    Chapter 1: Message Hierarchy (Communication Protocol)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/02_client__network_interaction_logic__/">
+<span class="md-ellipsis">
+    Chapter 2: Client (Network Interaction Logic)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/03_chapp__application_entry_point__/">
+<span class="md-ellipsis">
+    Chapter 3: Chapp (Application Entry Point)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/04_ui_areas__commandarea___messagearea__/">
+<span class="md-ellipsis">
+    Chapter 4: UI Areas (CommandArea &amp; MessageArea)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/05_controller__ui_logic_coordinator__/">
+<span class="md-ellipsis">
+    Chapter 5: Controller (UI Logic Coordinator)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/06_transportmessage__network_data_framing__/">
+<span class="md-ellipsis">
+    Chapter 6: TransportMessage (Network Data Framing)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/07_connection__network_stream_handling__/">
+<span class="md-ellipsis">
+    Chapter 7: Connection (Network Stream Handling)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/08_messageutils__serialization_deserialization__/">
+<span class="md-ellipsis">
+    Chapter 8: MessageUtils (Serialization/Deserialization)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/oblig2_index/">
+<span class="md-ellipsis">
+    Tutorial: dat110-project2-javafx-chatapp
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-is-an-rpc-client-stub">
+<span class="md-ellipsis">
+      What is an RPC Client Stub?
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#using-the-stub-making-remote-calls-look-local">
+<span class="md-ellipsis">
+      Using the Stub: Making Remote Calls Look Local
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#how-the-stub-works-under-the-hood">
+<span class="md-ellipsis">
+      How the Stub Works (Under the Hood)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#conclusion">
+<span class="md-ellipsis">
+      Conclusion
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-1-rpc-client-stub">Chapter 1: RPC Client Stub</h1>
+<p>Welcome to the first chapter of our tutorial for <code>dat110-project1-gruppe69</code>! We're going to build a small system where different parts talk to each other over a network. Let's start with a common problem: How can one program ask another program, possibly running on a different computer, to do something for it?</p>
+<p>Imagine you have a Controller application that needs to know the current temperature. This temperature reading comes from a Sensor application, which might be running on a separate device. How does the Controller ask the Sensor for the temperature? It sounds complicated, involving networks and sending data back and forth.</p>
+<p>This is where the <strong>RPC Client Stub</strong> comes in. RPC stands for <strong>Remote Procedure Call</strong>. The RPC Client Stub makes this network communication <em>look</em> like a simple, normal function call within your Controller program.</p>
+<h2 id="what-is-an-rpc-client-stub">What is an RPC Client Stub?</h2>
+<p>Think of an RPC Client Stub like a helpful <strong>local travel agent</strong>. You want to book a flight to another country (call a function on another computer). Instead of figuring out international phone lines, different time zones, and booking systems yourself (dealing with network details), you just talk to your local travel agent (the stub).</p>
+<p>You tell the agent, "I want to fly to London on this date." (You call a method like <code>sensor.read()</code>). The agent takes your request, handles all the complex booking details with the airline (sends the request over the network), waits for confirmation (waits for the response), and then gives you your ticket (returns the result, like the temperature).</p>
+<p>So, the <strong>RPC Client Stub</strong> is:</p>
+<ol>
+<li><strong>A Local Object:</strong> It lives inside your client application (e.g., the Controller).</li>
+<li><strong>A Proxy/Stand-in:</strong> It pretends to be the remote service (e.g., the Sensor).</li>
+<li><strong>A Network Hider:</strong> It takes care of packaging your request (marshalling), sending it over the network using the underlying <a href="../03_rpc_client_/">RPC Client</a>, receiving the response, and unpacking it (unmarshalling) for you.</li>
+</ol>
+<p>This makes your life as a programmer much easier!</p>
+<h2 id="using-the-stub-making-remote-calls-look-local">Using the Stub: Making Remote Calls Look Local</h2>
+<p>Let's look at how the Controller application uses a stub to get the temperature from the Sensor.</p>
+<pre><code class="language-java">// Inside Controller.java (Simplified)
+
+public class Controller {
+    public static void main(String[] args) {
+        // ... setup code ...
+
+        // Assume 'sensorclient' is an RPCClient connected to the Sensor server
+        RPCClient sensorclient = new RPCClient(Common.SENSORHOST, Common.SENSORPORT);
+        sensorclient.connect();
+
+        // Create the stub, giving it the RPCClient to use for communication
+        SensorStub sensor = new SensorStub(sensorclient);
+
+        // Now, call the 'read' method ON THE STUB as if it were local!
+        int currentTemperature = sensor.read();
+
+        System.out.println("Controller received temperature: " + currentTemperature);
+
+        // ... cleanup code ...
+    }
+}
+</code></pre>
+<p>In this code:
+*   We create a <code>SensorStub</code> called <code>sensor</code>.
+*   We call <code>sensor.read()</code>. This <em>looks</em> exactly like calling a method on a normal Java object.
+*   The <code>SensorStub</code> handles all the networking behind the scenes.
+*   We get the temperature back as an integer, just like a regular method call.</p>
+<h2 id="how-the-stub-works-under-the-hood">How the Stub Works (Under the Hood)</h2>
+<p>So, what actually happens inside the <code>sensor.read()</code> call? Let's peek inside the <code>SensorStub.java</code> file.</p>
+<p>First, all client stubs in our project extend a base class called <code>RPCLocalStub</code>. This base class simply holds a reference to the <a href="../03_rpc_client_/">RPC Client</a> which is responsible for the actual network communication.</p>
+<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/rpc/RPCLocalStub.java
+package no.hvl.dat110.rpc;
+
+// Base class for all client-side stubs
+public abstract class RPCLocalStub {
+
+    protected RPCClient rpcclient; // Holds the client that handles network calls
+
+    public RPCLocalStub(RPCClient rpcclient) {
+        this.rpcclient = rpcclient; // Store the RPCClient when stub is created
+    }
+}
+</code></pre>
+<p>Now, let's look at the <code>SensorStub</code> itself and its <code>read()</code> method:</p>
+<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/system/controller/SensorStub.java
+package no.hvl.dat110.system.controller;
+
+import no.hvl.dat110.rpc.*; // Import necessary RPC classes
+
+public class SensorStub extends RPCLocalStub { // Extends the base stub class
+
+    // Constructor: receives the RPCClient and passes it to the base class
+    public SensorStub(RPCClient rpcclient) {
+        super(rpcclient);
+    }
+
+    // The method our Controller calls
+    public int read() {
+
+        // 1. Marshall parameters: 'read' takes no arguments (void).
+        // We still need to marshal this lack of arguments.
+        byte[] request = RPCUtils.marshallVoid();
+
+        // 2. Make the remote call: Tell the RPCClient to call the method
+        // identified by READ_RPCID, sending the marshalled 'void' parameter.
+        // The rpcclient handles sending/receiving over the network.
+        byte[] response = rpcclient.call((byte)Common.READ_RPCID, request);
+
+        // 3. Unmarshall the return value: The response byte array contains
+        // the marshalled integer (temperature). We need to convert it back.
+        int temp = RPCUtils.unmarshallInteger(response);
+
+        // 4. Return the result to the Controller
+        return temp;
+    }
+}
+</code></pre>
+<p>Let's break down the <code>read()</code> method step-by-step:</p>
+<ol>
+<li><strong>Marshall Parameters:</strong> The <code>read()</code> method on the <em>remote</em> Sensor doesn't need any input data. However, the RPC system needs <em>something</em> to send. <code>RPCUtils.marshallVoid()</code> creates a standardized empty byte array representing "no parameters". We'll learn more about marshalling in <a href="../05_rpc_data_marshalling_unmarshalling_/">RPC Data Marshalling/Unmarshalling</a>.</li>
+<li><strong>Invoke <code>rpcclient.call()</code>:</strong> This is the core step where the stub delegates the network communication. It calls the <code>call</code> method on the <code>rpcclient</code> object (which was passed into the stub's constructor).<ul>
+<li><code>Common.READ_RPCID</code>: This is a unique number (like an ID) that tells the server <em>which</em> method we want to run (in this case, the <code>read</code> method).</li>
+<li><code>request</code>: This is the marshalled data (the empty bytes for <code>void</code>) to send.</li>
+<li>The <code>rpcclient.call()</code> method (covered in <a href="../03_rpc_client_/">RPC Client</a>) handles sending the request ID and the data over the network and waits until it receives a response back from the server. It returns the raw bytes of the response.</li>
+</ul>
+</li>
+<li><strong>Unmarshall Return Value:</strong> The server executed the <code>read</code> method, got the temperature (an integer), marshalled it into bytes, and sent it back. The <code>response</code> variable now holds these bytes. <code>RPCUtils.unmarshallInteger(response)</code> converts these bytes back into a Java <code>int</code>. Again, see <a href="../05_rpc_data_marshalling_unmarshalling_/">RPC Data Marshalling/Unmarshalling</a> for details.</li>
+<li><strong>Return Result:</strong> The final integer <code>temp</code> is returned to the code that called <code>sensor.read()</code> (our <code>Controller</code>).</li>
+</ol>
+<p>Here's a simplified diagram showing the flow:</p>
+<div class="mermaid">sequenceDiagram
+    participant C as Controller
+    participant SS as SensorStub
+    participant RC as RPCClient
+    participant N as Network
+    participant RS as "Remote Sensor (Server Side)"
+
+    C-&gt;&gt;SS: read()
+    Note over SS: Prepare request (Marshall void)
+    SS-&gt;&gt;RC: call(READ_RPCID, requestBytes)
+    Note over RC: Handle network sending
+    RC-&gt;&gt;N: Send Request (ID + data)
+    N-&gt;&gt;RS: Receive Request
+    Note over RS: Find and run real read() method
+    RS-&gt;&gt;N: Send Response (Marshalled temperature)
+    Note over RC: Handle network receiving
+    N-&gt;&gt;RC: Receive Response
+    RC--&gt;&gt;SS: return responseBytes
+    Note over SS: Unpack response (Unmarshall integer)
+    SS--&gt;&gt;C: return temperature
+</div>
+<h2 id="conclusion">Conclusion</h2>
+<p>The RPC Client Stub is a powerful abstraction. It acts as a local representative for a remote service, allowing your application code (like the <code>Controller</code>) to call methods on remote objects (like the <code>Sensor</code>) as if they were right there in the same program. It hides the complexities of marshalling data, network communication, and unmarshalling results.</p>
+<p>You've now seen how the client side initiates a remote call using a stub. But how does the server side receive this request and actually run the code? That's where the server-side counterpart comes in. In the next chapter, we'll look at the basic structure needed on the server to handle these incoming requests.</p>
+<p>Next up: <a href="../02_rpc_server_implementation__skeleton__/">RPC Server Implementation (Skeleton)</a></p>
+<hr/>
+<p>Generated by <a href="https://github.com/The-Pocket/Tutorial-Codebase-Knowledge">AI Codebase Knowledge Builder</a></p>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.c8b220af.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>

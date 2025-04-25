@@ -1,0 +1,655 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="../04_rpc_server_/" rel="prev"/>
+<link href="../06_messaging_connection_/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.6.12" name="generator"/>
+<title>Chapter 5: RPC Data Marshalling/Unmarshalling - dat110 notes</title>
+<link href="../../assets/stylesheets/main.2afb09e1.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#chapter-5-rpc-data-marshallingunmarshalling">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="dat110 notes" class="md-header__button md-logo" data-md-component="logo" href="../.." title="dat110 notes">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            dat110 notes
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Chapter 5: RPC Data Marshalling/Unmarshalling
+            
+          </span>
+</div>
+</div>
+</div>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="dat110 notes" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="dat110 notes">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    dat110 notes
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    Quem invecta sonantem gravidamve nascentur nimium
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Oblig1
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            Oblig1
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../">
+<span class="md-ellipsis">
+    Tutorial: dat110-project1-gruppe69
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../01_rpc_client_stub_/">
+<span class="md-ellipsis">
+    Chapter 1: RPC Client Stub
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../02_rpc_server_implementation__skeleton__/">
+<span class="md-ellipsis">
+    Chapter 2: RPC Server Implementation (Skeleton)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../03_rpc_client_/">
+<span class="md-ellipsis">
+    Chapter 3: RPC Client
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../04_rpc_server_/">
+<span class="md-ellipsis">
+    Chapter 4: RPC Server
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    Chapter 5: RPC Data Marshalling/Unmarshalling
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    Chapter 5: RPC Data Marshalling/Unmarshalling
+    
+  </span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-is-marshallingunmarshalling-its-like-packing-boxes">
+<span class="md-ellipsis">
+      What is Marshalling/Unmarshalling? It's Like Packing Boxes!
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#marshallingunmarshalling-specific-data-types-rpcutils">
+<span class="md-ellipsis">
+      Marshalling/Unmarshalling Specific Data Types (RPCUtils)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#rpc-message-structure-encapsulationdecapsulation">
+<span class="md-ellipsis">
+      RPC Message Structure: Encapsulation/Decapsulation
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#putting-it-all-together-the-data-flow">
+<span class="md-ellipsis">
+      Putting It All Together: The Data Flow
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#conclusion">
+<span class="md-ellipsis">
+      Conclusion
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../06_messaging_connection_/">
+<span class="md-ellipsis">
+    Chapter 6: Messaging Connection
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../07_message_framing_protocol_/">
+<span class="md-ellipsis">
+    Chapter 7: Message Framing Protocol
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Oblig2
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            Oblig2
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/01_message_hierarchy__communication_protocol__/">
+<span class="md-ellipsis">
+    Chapter 1: Message Hierarchy (Communication Protocol)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/02_client__network_interaction_logic__/">
+<span class="md-ellipsis">
+    Chapter 2: Client (Network Interaction Logic)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/03_chapp__application_entry_point__/">
+<span class="md-ellipsis">
+    Chapter 3: Chapp (Application Entry Point)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/04_ui_areas__commandarea___messagearea__/">
+<span class="md-ellipsis">
+    Chapter 4: UI Areas (CommandArea &amp; MessageArea)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/05_controller__ui_logic_coordinator__/">
+<span class="md-ellipsis">
+    Chapter 5: Controller (UI Logic Coordinator)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/06_transportmessage__network_data_framing__/">
+<span class="md-ellipsis">
+    Chapter 6: TransportMessage (Network Data Framing)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/07_connection__network_stream_handling__/">
+<span class="md-ellipsis">
+    Chapter 7: Connection (Network Stream Handling)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/08_messageutils__serialization_deserialization__/">
+<span class="md-ellipsis">
+    Chapter 8: MessageUtils (Serialization/Deserialization)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/oblig2_index/">
+<span class="md-ellipsis">
+    Tutorial: dat110-project2-javafx-chatapp
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-is-marshallingunmarshalling-its-like-packing-boxes">
+<span class="md-ellipsis">
+      What is Marshalling/Unmarshalling? It's Like Packing Boxes!
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#marshallingunmarshalling-specific-data-types-rpcutils">
+<span class="md-ellipsis">
+      Marshalling/Unmarshalling Specific Data Types (RPCUtils)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#rpc-message-structure-encapsulationdecapsulation">
+<span class="md-ellipsis">
+      RPC Message Structure: Encapsulation/Decapsulation
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#putting-it-all-together-the-data-flow">
+<span class="md-ellipsis">
+      Putting It All Together: The Data Flow
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#conclusion">
+<span class="md-ellipsis">
+      Conclusion
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-5-rpc-data-marshallingunmarshalling">Chapter 5: RPC Data Marshalling/Unmarshalling</h1>
+<p>In the <a href="../04_rpc_server_/">previous chapter</a>, we saw how the <strong>RPC Server</strong> acts as the central receptionist on the server side, receiving requests and dispatching them to the correct specialist (like <code>SensorImpl</code>). We noticed that both the <a href="../03_rpc_client_/">RPC Client</a> and <a href="../04_rpc_server_/">RPC Server</a>, as well as the Stubs and Skeletons, frequently use helper functions from <code>RPCUtils</code> like <code>marshallInteger</code>, <code>unmarshallString</code>, <code>encapsulate</code>, and <code>decapsulate</code>.</p>
+<p>But what do these functions actually <em>do</em>? When the <code>SensorStub</code> wants to send a request to read the temperature, it doesn't need any parameters. It calls <code>RPCUtils.marshallVoid()</code>. When it gets the response, it calls <code>RPCUtils.unmarshallInteger()</code> to get the temperature value. How does Java data like an <code>int</code> or even "nothing" (void) get turned into bytes that can be sent over the network, and how are bytes turned back into useful Java data?</p>
+<p>This process of converting data between its friendly Java form and a network-friendly byte form is called <strong>Marshalling</strong> and <strong>Unmarshalling</strong>.</p>
+<h2 id="what-is-marshallingunmarshalling-its-like-packing-boxes">What is Marshalling/Unmarshalling? It's Like Packing Boxes!</h2>
+<p>Imagine you want to send a fragile vase (your Java data, like an <code>int</code> or a <code>String</code>) through the mail (the network). You can't just slap a stamp on the vase and hope for the best!</p>
+<ol>
+<li><strong>Marshalling (Packing):</strong> You need to carefully wrap the vase in bubble wrap and put it into a standard-sized cardboard box (a <code>byte[]</code> array). This process of converting your specific item (Java data) into a standardized package (byte array) suitable for shipping is <strong>marshalling</strong>.</li>
+<li><strong>Unmarshalling (Unpacking):</strong> When the box arrives at its destination, the recipient opens the box and carefully unwraps the bubble wrap to get the original vase back. This process of converting the standardized package (byte array) back into the specific item (Java data) is <strong>unmarshalling</strong>.</li>
+</ol>
+<p>So, in our RPC world:
+*   <strong>Marshalling:</strong> Converts Java data types (like <code>int</code>, <code>String</code>, <code>boolean</code>, or even <code>void</code>) into a sequence of bytes (<code>byte[]</code>).
+*   <strong>Unmarshalling:</strong> Converts a sequence of bytes (<code>byte[]</code>) back into the original Java data type.</p>
+<p>This is essential because networks primarily understand how to send and receive streams of raw bytes, not complex Java objects directly.</p>
+<h2 id="marshallingunmarshalling-specific-data-types-rpcutils">Marshalling/Unmarshalling Specific Data Types (<code>RPCUtils</code>)</h2>
+<p>The <code>RPCUtils.java</code> class provides helper functions to pack (marshall) and unpack (unmarshall) the specific data types we support in our simple RPC system: <code>int</code>, <code>String</code>, <code>boolean</code>, and <code>void</code>.</p>
+<p>Let's look at a couple of examples:</p>
+<p><strong>Integers:</strong></p>
+<p>An integer (<code>int</code>) in Java usually takes up 4 bytes of memory. Marshalling converts this 4-byte representation into a <code>byte[]</code> array of length 4. Unmarshalling does the reverse.</p>
+<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/rpc/RPCUtils.java (Simplified Integer Marshalling)
+
+import java.nio.ByteBuffer; // Used for easy conversion
+
+public class RPCUtils {
+
+    // integer to byte array representation
+    public static byte[] marshallInteger(int x) {
+        // Create a buffer that can hold exactly 4 bytes (size of an int)
+        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
+        // Put the integer into the buffer
+        buffer.putInt(x);
+        // Get the underlying byte array from the buffer
+        byte[] encoded = buffer.array();
+        return encoded;
+    }
+
+    // byte array representation to integer
+    public static int unmarshallInteger(byte[] data) {
+        // Wrap the incoming byte array into a buffer
+        ByteBuffer buffer = ByteBuffer.wrap(data);
+        // Read an integer from the buffer
+        int decoded = buffer.getInt();
+        return decoded;
+    }
+    // ... other marshall/unmarshall methods ...
+}
+</code></pre>
+<ul>
+<li><code>marshallInteger</code>: Uses Java's <code>ByteBuffer</code> to easily convert the <code>int</code> into a 4-byte array.</li>
+<li><code>unmarshallInteger</code>: Uses <code>ByteBuffer</code> again to read 4 bytes from the input <code>data</code> array and interpret them as an <code>int</code>.</li>
+</ul>
+<p><strong>Strings:</strong></p>
+<p>Strings are sequences of characters. Marshalling converts the string into a byte array using a standard character encoding (like UTF-8). Unmarshalling converts the byte array back into a string.</p>
+<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/rpc/RPCUtils.java (Simplified String Marshalling)
+
+public class RPCUtils {
+    // ... other methods ...
+
+    // convert String to byte array
+    public static byte[] marshallString(String str) {
+        // Use the built-in String method to get bytes (usually UTF-8)
+        byte[] encoded = str.getBytes();
+        return encoded;
+    }
+
+    // convert byte array to a String
+    public static String unmarshallString(byte[] data) {
+        // Use the String constructor that takes bytes
+        String decoded = new String(data);
+        return decoded;
+    }
+    // ... other methods ...
+}
+</code></pre>
+<ul>
+<li><code>marshallString</code>: Simply uses the <code>getBytes()</code> method available on all Java strings.</li>
+<li><code>unmarshallString</code>: Uses the <code>String</code> constructor that accepts a byte array.</li>
+</ul>
+<p><strong>Void (Nothing):</strong></p>
+<p>Sometimes, a remote method doesn't need any parameters (like <code>read()</code>) or doesn't return anything (like <code>write()</code>). How do we marshall "nothing"? We represent it as an empty byte array (<code>new byte[0]</code>).</p>
+<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/rpc/RPCUtils.java (Simplified Void Marshalling)
+
+public class RPCUtils {
+    // ... other methods ...
+
+    public static byte[] marshallVoid() {
+        // Return an array with zero bytes
+        return new byte[0];
+    }
+
+    public static void unmarshallVoid(byte[] data) {
+        // Just check that the received data is indeed empty
+        if (data.length != 0) {
+            throw new IllegalArgumentException("Expected void (empty data), but received data.");
+        }
+        // No value to return!
+    }
+    // ... other methods ...
+}
+</code></pre>
+<ul>
+<li><code>marshallVoid</code>: Creates and returns a zero-length byte array.</li>
+<li><code>unmarshallVoid</code>: Doesn't return anything, but it checks if the received byte array is empty, throwing an error if it's not.</li>
+</ul>
+<p><strong>Booleans:</strong></p>
+<p>A boolean (<code>true</code> or <code>false</code>) can be represented by a single byte. For example, <code>1</code> for <code>true</code> and <code>0</code> for <code>false</code>.</p>
+<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/rpc/RPCUtils.java (Boolean Marshalling)
+
+public class RPCUtils {
+    // ... other methods ...
+
+    // convert boolean to a byte array representation
+    public static byte[] marshallBoolean(boolean b) {
+        byte[] encoded = new byte[1];
+        encoded[0] = (b ? (byte)1 : (byte)0); // 1 if true, 0 if false
+        return encoded;
+    }
+
+    // convert byte array to a boolean representation
+    public static boolean unmarshallBoolean(byte[] data) {
+        // True if the byte is not 0
+        return (data[0] != 0);
+    }
+    // ... other methods ...
+}
+</code></pre>
+<p>These marshalling/unmarshalling functions are used by the <a href="../01_rpc_client_stub_/">RPC Client Stub</a> and the <a href="02_rpc_server_implementation__skeleton_.md">RPC Server Implementation (Skeleton)</a> to prepare parameters and interpret return values.</p>
+<h2 id="rpc-message-structure-encapsulationdecapsulation">RPC Message Structure: Encapsulation/Decapsulation</h2>
+<p>Okay, so we know how to pack the "vase" (our data like an <code>int</code>) into a box (<code>byte[]</code>). But when we send this box over the network, the receiver needs to know <em>what this box is for</em>. Is it the result of a <code>read</code> call? Is it the parameter for a <code>write</code> call?</p>
+<p>The raw marshalled data (like the 4 bytes for an integer) isn't enough. We need to add a label to the box: the <strong>RPC ID</strong>. This ID tells the server which remote method the message relates to (e.g., <code>Common.READ_RPCID</code> or <code>Common.WRITE_RPCID</code>).</p>
+<p><strong>Encapsulation (Adding the Label):</strong> Before sending the message, the <a href="../03_rpc_client_/">RPC Client</a> (or the <a href="../04_rpc_server_/">RPC Server</a> sending a reply) needs to combine the RPC ID and the marshalled data (payload) into a single byte array. This is <strong>encapsulation</strong>. Our format is simple: the first byte is the RPC ID, and the rest of the bytes are the marshalled payload.</p>
+<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/rpc/RPCUtils.java (Simplified Encapsulation)
+
+public class RPCUtils {
+    // ... marshall/unmarshall methods ...
+
+    public static byte[] encapsulate(byte rpcid, byte[] payload) {
+        // Create a new array large enough for the ID (1 byte) + payload
+        byte[] rpcmsg = new byte[1 + payload.length];
+
+        // Put the RPC ID in the first position
+        rpcmsg[0] = rpcid;
+
+        // Copy the payload bytes into the rest of the array
+        System.arraycopy(payload, 0, rpcmsg, 1, payload.length);
+
+        return rpcmsg;
+    }
+    // ... decapsulate method ...
+}
+</code></pre>
+<ul>
+<li><code>encapsulate</code>: Creates a new byte array one byte larger than the <code>payload</code>. It puts the <code>rpcid</code> at the beginning and copies the <code>payload</code> bytes immediately after it.</li>
+</ul>
+<p><strong>Decapsulation (Reading the Label and Opening the Box):</strong> When the <a href="../04_rpc_server_/">RPC Server</a> (or <a href="../03_rpc_client_/">RPC Client</a> receiving a reply) receives a message, it needs to perform the reverse: extract the RPC ID and the marshalled payload. This is <strong>decapsulation</strong>.</p>
+<pre><code class="language-java">// File: src/main/java/no/hvl/dat110/rpc/RPCUtils.java (Simplified Decapsulation)
+
+import java.util.Arrays; // Used for easy array copying
+
+public class RPCUtils {
+    // ... marshall/unmarshall/encapsulate methods ...
+
+    public static byte[] decapsulate(byte[] rpcmsg) {
+        // Check if the message is valid (must have at least the ID byte)
+        if (rpcmsg == null || rpcmsg.length &lt; 1) {
+            throw new IllegalArgumentException("Invalid RPC message for decapsulation");
+        }
+
+        // The payload is everything *except* the first byte (the RPC ID)
+        byte[] payload = Arrays.copyOfRange(rpcmsg, 1, rpcmsg.length);
+
+        return payload;
+        // Note: The caller needs to get the RPC ID separately (rpcmsg[0])
+        // before calling decapsulate.
+    }
+}
+</code></pre>
+<ul>
+<li><code>decapsulate</code>: Takes the full received message (<code>rpcmsg</code>). It extracts and returns a new byte array containing everything <em>from the second byte onwards</em> (the payload). The code that <em>calls</em> <code>decapsulate</code> (like in <code>RPCServer.run()</code> or <code>RPCClient.call()</code>) is responsible for looking at the first byte (<code>rpcmsg[0]</code>) separately to get the RPC ID.</li>
+</ul>
+<p>Here's what the encapsulated message looks like:</p>
+<pre><code>[ RPC ID (1 byte) | Marshalled Parameter/Result Bytes (Payload) ]
+</code></pre>
+<h2 id="putting-it-all-together-the-data-flow">Putting It All Together: The Data Flow</h2>
+<p>Let's trace how data is transformed during a <code>sensor.read()</code> call:</p>
+<div class="mermaid">sequenceDiagram
+    participant Stub as SensorStub
+    participant RPCClient
+    participant Network
+    participant RPCServer
+    participant Skeleton as SensorImpl
+
+    Note over Stub: Wants to call read(). No parameters.
+    Stub-&gt;&gt;Stub: Calls RPCUtils.marshallVoid() -&gt; gets empty byte[] (param_bytes)
+    Stub-&gt;&gt;RPCClient: call(READ_RPCID, param_bytes)
+    Note over RPCClient: Needs to send message.
+    RPCClient-&gt;&gt;RPCClient: Calls RPCUtils.encapsulate(READ_RPCID, param_bytes) -&gt; gets [READ_RPCID] (msg_bytes)
+    RPCClient-&gt;&gt;Network: Sends msg_bytes
+    Network-&gt;&gt;RPCServer: Receives msg_bytes ([READ_RPCID])
+    Note over RPCServer: Needs to process message.
+    RPCServer-&gt;&gt;RPCServer: Extracts ID = msg_bytes[0] (READ_RPCID)
+    RPCServer-&gt;&gt;RPCServer: Calls RPCUtils.decapsulate(msg_bytes) -&gt; gets empty byte[] (param_bytes')
+    RPCServer-&gt;&gt;Skeleton: invoke(param_bytes')
+    Note over Skeleton: Needs parameters.
+    Skeleton-&gt;&gt;Skeleton: Calls RPCUtils.unmarshallVoid(param_bytes') -&gt; Checks it's empty. OK.
+    Skeleton-&gt;&gt;Skeleton: Calls internal read() -&gt; gets temperature (e.g., 17)
+    Note over Skeleton: Needs to return result.
+    Skeleton-&gt;&gt;Skeleton: Calls RPCUtils.marshallInteger(17) -&gt; gets 4 bytes for 17 (result_bytes)
+    Skeleton--&gt;&gt;RPCServer: Returns result_bytes
+    Note over RPCServer: Needs to send reply.
+    RPCServer-&gt;&gt;RPCServer: Calls RPCUtils.encapsulate(READ_RPCID, result_bytes) -&gt; gets [READ_RPCID | 4 bytes for 17] (reply_bytes)
+    RPCServer-&gt;&gt;Network: Sends reply_bytes
+    Network-&gt;&gt;RPCClient: Receives reply_bytes
+    Note over RPCClient: Needs to process reply.
+    RPCClient-&gt;&gt;RPCClient: Calls RPCUtils.decapsulate(reply_bytes) -&gt; gets 4 bytes for 17 (result_bytes')
+    RPCClient--&gt;&gt;Stub: Returns result_bytes'
+    Note over Stub: Needs result value.
+    Stub-&gt;&gt;Stub: Calls RPCUtils.unmarshallInteger(result_bytes') -&gt; gets 17
+    Stub--&gt;&gt;Controller: Returns 17
+end
+</div>
+<p>This diagram shows the journey:
+1.  Stub <strong>marshalls</strong> parameters.
+2.  RPCClient <strong>encapsulates</strong> the ID and marshalled parameters.
+3.  RPCServer <strong>decapsulates</strong> the received message to get the ID and marshalled parameters.
+4.  Skeleton <strong>unmarshalls</strong> the parameters to use them.
+5.  Skeleton <strong>marshalls</strong> the result.
+6.  RPCServer <strong>encapsulates</strong> the ID and marshalled result for the reply.
+7.  RPCClient <strong>decapsulates</strong> the reply to get the marshalled result.
+8.  Stub <strong>unmarshalls</strong> the result to return it to the caller.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Marshalling/Unmarshalling is the crucial process of converting Java data into byte arrays for network travel and back again, like packing and unpacking a box. Encapsulation/Decapsulation is the process of adding (and removing) the necessary RPC ID label to this box so the receiver knows what the message is for.</p>
+<p>The <code>RPCUtils</code> class provides the tools for both:
+*   <code>marshallX</code>/<code>unmarshallX</code> methods for packing/unpacking specific data types (used by Stubs and Skeletons).
+*   <code>encapsulate</code>/<code>decapsulate</code> methods for adding/removing the RPC ID label to the packed data (used by RPC Client and RPC Server).</p>
+<p>Without these steps, our RPC components wouldn't be able to exchange meaningful information over the network.</p>
+<p>Now that we understand how data is prepared for sending, how is it <em>actually</em> sent and received as a reliable message? That's the job of the layer below RPC: the Messaging Layer.</p>
+<p>Next up: <a href="../06_messaging_connection_/">Messaging Connection</a></p>
+<hr/>
+<p>Generated by <a href="https://github.com/The-Pocket/Tutorial-Codebase-Knowledge">AI Codebase Knowledge Builder</a></p>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.c8b220af.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>
