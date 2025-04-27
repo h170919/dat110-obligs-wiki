@@ -206,7 +206,6 @@ sequenceDiagram
     RpcSrv->>MsgServer: send(Message(replyData))
     MsgServer->>Network: Send reply data
     Network->>Client: Receive Reply (temp_bytes)
-end
 ```
 
 The `RPCServer` acts as the central dispatcher, taking incoming network messages facilitated by the `MessagingServer`, understanding the RPC request within, delegating the work to the correct `Skeleton`, and ensuring the reply gets sent back.

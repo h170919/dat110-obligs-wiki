@@ -1,4 +1,4 @@
-# Tutorial: dat110-project1-gruppe69
+# Project 1 Overview
 
 This project implements a simple **Remote Procedure Call (RPC)** system for an *IoT application* (Sensor, Controller, Display).
 It builds the RPC functionality on top of a custom **messaging layer**, which itself uses standard TCP sockets for network communication.

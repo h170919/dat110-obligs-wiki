@@ -269,7 +269,6 @@ sequenceDiagram
     MsgUtils-->>MsgConn: return received_payload_bytes
     MsgConn->>MsgConn: Create newMessage(received_payload_bytes)
     MsgConn-->>RPC_Server: return newMessage
-end
 ```
 
 The `MessageUtils.encapsulate` and `MessageUtils.decapsulate` methods (which implement the framing protocol) are the key to making `MessageConnection.send` and `MessageConnection.receive` work with whole messages.

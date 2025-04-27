@@ -33,14 +33,14 @@ Here's what our 128-byte "envelope" (segment) looks like:
 
 ```mermaid
 graph LR
-    A[Segment (128 bytes total)] --> B(Byte 1: Length L);
-    A --> C(Bytes 2 to L+1: Payload Data);
-    A --> D(Bytes L+2 to 128: Padding);
-    subgraph Fixed Size Frame
-        direction LR
-        B --- C --- D;
-    end
-    style A fill:#f9f,stroke:#333,stroke-width:2px
+  A["Segment (128 bytes total)"] --> B["Byte 1: Length L"]
+  A --> C["Bytes 2 to L+1: Payload Data"]
+  A --> D["Bytes L+2 to 128: Padding"]
+  subgraph "Fixed Size Frame"
+    direction LR
+    B --- C --- D
+  end
+  style A fill:#f9f,stroke:#333,stroke-width:2px
 ```
 
 *   The first byte tells us `L`, the length of the *real* data.

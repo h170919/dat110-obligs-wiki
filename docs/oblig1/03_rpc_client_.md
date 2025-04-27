@@ -157,25 +157,24 @@ Here's a diagram showing the RPC Client's role in the communication:
 sequenceDiagram
     participant Stub as SensorStub
     participant RPC_Client as RPCClient
-    participant MsgConn as Messaging Connection
+    participant MsgConn as "Messaging Connection"
     participant Network
-    participant RPC_Server as RPC Server (High Level)
+    participant RPC_Server as "RPC Server (High Level)"
 
     Stub->>RPC_Client: call(READ_RPCID, void_params)
-    Note over RPC_Client: Encapsulate(READ_RPCID, void_params) -> request_bytes
+    Note over RPC_Client: Encapsulate(READ_RPCID, void_params) → request_bytes
     RPC_Client->>MsgConn: send(new Message(request_bytes))
     Note over MsgConn: Send request_bytes over TCP socket
     MsgConn->>Network: Send request data
     Network->>RPC_Server: Request arrives
     Note over RPC_Server: Server processes request (unpacks, calls SensorImpl.invoke, gets result)
-    Note over RPC_Server: Server encapsulates result -> reply_bytes
+    Note over RPC_Server: Server encapsulates result → reply_bytes
     RPC_Server->>Network: Send reply data (reply_bytes)
-    Note over MsgConn: Receive reply_bytes via TCP socket
     Network->>MsgConn: Receive reply data
+    Note over MsgConn: Receive reply_bytes via TCP socket
     MsgConn-->>RPC_Client: return new Message(reply_bytes)
-    Note over RPC_Client: Decapsulate(reply_bytes) -> result_bytes (temp)
+    Note over RPC_Client: Decapsulate(reply_bytes) → result_bytes (temp)
     RPC_Client-->>Stub: return result_bytes
-end
 ```
 
 This shows the `RPCClient` acting as the middleman between the high-level `Stub` and the lower-level `Messaging Connection`. It packages the request, sends it, waits for the reply, and unpacks it.

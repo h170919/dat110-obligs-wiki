@@ -238,7 +238,7 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="../oblig1_index/">
 <span class="md-ellipsis">
-    Tutorial: dat110-project1-gruppe69
+    Project 1 Overview
     
   </span>
 </a>
@@ -328,7 +328,97 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="../../oblig2/oblig2_index/">
 <span class="md-ellipsis">
-    Tutorial: dat110-project2-javafx-chatapp
+    Project 2 Overview
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    Oblig3
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            Oblig3
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig3/01_file_management___replication_/">
+<span class="md-ellipsis">
+    Chapter 1: File Management &amp; Replication
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig3/02_node__peer__/">
+<span class="md-ellipsis">
+    Chapter 2: Node (Peer)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig3/03_remote_communication__rmi__/">
+<span class="md-ellipsis">
+    Chapter 3: Remote Communication (RMI)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig3/04_hashing___id_space_/">
+<span class="md-ellipsis">
+    Chapter 4: Hashing &amp; ID Space
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig3/05_chord_protocol__ring__lookup__stabilization__/">
+<span class="md-ellipsis">
+    Chapter 5: Chord Protocol (Ring, Lookup, Stabilization)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig3/06_message_/">
+<span class="md-ellipsis">
+    Chapter 6: Message
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig3/07_consistency__remote_write_protocol__/">
+<span class="md-ellipsis">
+    Chapter 7: Consistency (Remote-Write Protocol)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig3/08_distributed_mutual_exclusion_/">
+<span class="md-ellipsis">
+    Chapter 8: Distributed Mutual Exclusion
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig3/oblig3_index/">
+<span class="md-ellipsis">
+    Project 3 Overview
     
   </span>
 </a>
@@ -645,8 +735,7 @@ Notice how the RPC layer only deals with <code>Message</code> objects and the <c
     Note over MsgUtils: Read 'length' bytes of payload from Stream
     MsgUtils--&gt;&gt;MsgConn: return received_payload_bytes
     MsgConn-&gt;&gt;MsgConn: Create newMessage(received_payload_bytes)
-    MsgConn--&gt;&gt;RPC_Server: return newMessage
-end</code></pre>
+    MsgConn--&gt;&gt;RPC_Server: return newMessage</code></pre>
 <p>The <code>MessageUtils.encapsulate</code> and <code>MessageUtils.decapsulate</code> methods (which implement the framing protocol) are the key to making <code>MessageConnection.send</code> and <code>MessageConnection.receive</code> work with whole messages.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>The <strong>Messaging Connection</strong> layer provides a vital abstraction over raw network sockets. It establishes a connection (<code>MessagingClient</code>, <code>MessagingServer</code>) and allows the sending and receiving of discrete <code>Message</code> objects (<code>MessageConnection.send</code>, <code>MessageConnection.receive</code>).</p>

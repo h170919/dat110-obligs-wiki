@@ -1,4 +1,4 @@
-# Tutorial: dat110-project2-javafx-chatapp
+# Project 2 Overview
 
 This project is a simple **JavaFX Chat Application** (*ChApp*).
 It allows users to connect to a central *message broker* (server), subscribe to chat *topics*, and publish/receive messages on those topics.

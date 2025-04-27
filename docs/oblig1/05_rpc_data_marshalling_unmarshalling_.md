@@ -249,7 +249,6 @@ sequenceDiagram
     Note over Stub: Needs result value.
     Stub->>Stub: Calls RPCUtils.unmarshallInteger(result_bytes') -> gets 17
     Stub-->>Controller: Returns 17
-end
 ```
 
 This diagram shows the journey:
