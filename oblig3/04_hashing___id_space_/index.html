@@ -1,0 +1,733 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="../03_remote_communication__rmi__/" rel="prev"/>
+<link href="../05_chord_protocol__ring__lookup__stabilization__/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.6.12" name="generator"/>
+<title>Chapter 4: Hashing &amp; ID Space - dat110 notes</title>
+<link href="../../assets/stylesheets/main.2afb09e1.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#chapter-4-hashing-id-space">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="dat110 notes" class="md-header__button md-logo" data-md-component="logo" href="../.." title="dat110 notes">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            dat110 notes
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Chapter 4: Hashing &amp; ID Space
+            
+          </span>
+</div>
+</div>
+</div>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="dat110 notes" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="dat110 notes">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    dat110 notes
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    Home
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Oblig1
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            Oblig1
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig1/01_rpc_client_stub_/">
+<span class="md-ellipsis">
+    Chapter 1: RPC Client Stub
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig1/02_rpc_server_implementation__skeleton__/">
+<span class="md-ellipsis">
+    Chapter 2: RPC Server Implementation (Skeleton)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig1/03_rpc_client_/">
+<span class="md-ellipsis">
+    Chapter 3: RPC Client
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig1/04_rpc_server_/">
+<span class="md-ellipsis">
+    Chapter 4: RPC Server
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig1/05_rpc_data_marshalling_unmarshalling_/">
+<span class="md-ellipsis">
+    Chapter 5: RPC Data Marshalling/Unmarshalling
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig1/06_messaging_connection_/">
+<span class="md-ellipsis">
+    Chapter 6: Messaging Connection
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig1/07_message_framing_protocol_/">
+<span class="md-ellipsis">
+    Chapter 7: Message Framing Protocol
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig1/oblig1_index/">
+<span class="md-ellipsis">
+    Project 1 Overview
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Oblig2
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            Oblig2
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/01_message_hierarchy__communication_protocol__/">
+<span class="md-ellipsis">
+    Chapter 1: Message Hierarchy (Communication Protocol)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/02_client__network_interaction_logic__/">
+<span class="md-ellipsis">
+    Chapter 2: Client (Network Interaction Logic)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/03_chapp__application_entry_point__/">
+<span class="md-ellipsis">
+    Chapter 3: Chapp (Application Entry Point)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/04_ui_areas__commandarea___messagearea__/">
+<span class="md-ellipsis">
+    Chapter 4: UI Areas (CommandArea &amp; MessageArea)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/05_controller__ui_logic_coordinator__/">
+<span class="md-ellipsis">
+    Chapter 5: Controller (UI Logic Coordinator)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/06_transportmessage__network_data_framing__/">
+<span class="md-ellipsis">
+    Chapter 6: TransportMessage (Network Data Framing)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/07_connection__network_stream_handling__/">
+<span class="md-ellipsis">
+    Chapter 7: Connection (Network Stream Handling)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/08_messageutils__serialization_deserialization__/">
+<span class="md-ellipsis">
+    Chapter 8: MessageUtils (Serialization/Deserialization)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig2/oblig2_index/">
+<span class="md-ellipsis">
+    Project 2 Overview
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    Oblig3
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            Oblig3
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../01_file_management___replication_/">
+<span class="md-ellipsis">
+    Chapter 1: File Management &amp; Replication
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../02_node__peer__/">
+<span class="md-ellipsis">
+    Chapter 2: Node (Peer)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../03_remote_communication__rmi__/">
+<span class="md-ellipsis">
+    Chapter 3: Remote Communication (RMI)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    Chapter 4: Hashing &amp; ID Space
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    Chapter 4: Hashing &amp; ID Space
+    
+  </span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#the-problem-assigning-unique-addresses">
+<span class="md-ellipsis">
+      The Problem: Assigning Unique Addresses
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-concepts">
+<span class="md-ellipsis">
+      Key Concepts
+    </span>
+</a>
+<nav aria-label="Key Concepts" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-hashing-the-fingerprint-generator">
+<span class="md-ellipsis">
+      1. Hashing: The Fingerprint Generator
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-id-space-the-range-of-all-addresses">
+<span class="md-ellipsis">
+      2. ID Space: The Range of All Addresses
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-circular-id-space-wrapping-around">
+<span class="md-ellipsis">
+      3. Circular ID Space: Wrapping Around
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#how-we-use-hashing-and-the-id-space">
+<span class="md-ellipsis">
+      How We Use Hashing and the ID Space
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#under-the-hood-the-hashjava-utility">
+<span class="md-ellipsis">
+      Under the Hood: The Hash.java Utility
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#conclusion">
+<span class="md-ellipsis">
+      Conclusion
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../05_chord_protocol__ring__lookup__stabilization__/">
+<span class="md-ellipsis">
+    Chapter 5: Chord Protocol (Ring, Lookup, Stabilization)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../06_message_/">
+<span class="md-ellipsis">
+    Chapter 6: Message
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../07_consistency__remote_write_protocol__/">
+<span class="md-ellipsis">
+    Chapter 7: Consistency (Remote-Write Protocol)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../08_distributed_mutual_exclusion_/">
+<span class="md-ellipsis">
+    Chapter 8: Distributed Mutual Exclusion
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../oblig3_index/">
+<span class="md-ellipsis">
+    Project 3 Overview
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#the-problem-assigning-unique-addresses">
+<span class="md-ellipsis">
+      The Problem: Assigning Unique Addresses
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-concepts">
+<span class="md-ellipsis">
+      Key Concepts
+    </span>
+</a>
+<nav aria-label="Key Concepts" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-hashing-the-fingerprint-generator">
+<span class="md-ellipsis">
+      1. Hashing: The Fingerprint Generator
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-id-space-the-range-of-all-addresses">
+<span class="md-ellipsis">
+      2. ID Space: The Range of All Addresses
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-circular-id-space-wrapping-around">
+<span class="md-ellipsis">
+      3. Circular ID Space: Wrapping Around
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#how-we-use-hashing-and-the-id-space">
+<span class="md-ellipsis">
+      How We Use Hashing and the ID Space
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#under-the-hood-the-hashjava-utility">
+<span class="md-ellipsis">
+      Under the Hood: The Hash.java Utility
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#conclusion">
+<span class="md-ellipsis">
+      Conclusion
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-4-hashing-id-space">Chapter 4: Hashing &amp; ID Space</h1>
+<p>Welcome to Chapter 4! In the <a href="../03_remote_communication__rmi__/">previous chapter</a>, we learned how our individual <a href="../02_node__peer__/">Nodes (Peers)</a> can talk to each other across the network using <strong>Remote Communication (RMI)</strong>, like using an office phone system.</p>
+<p>Now, imagine our building again. To make the phone system work, every office needs a unique extension number. Also, if we want to file documents efficiently, each document (or its copy) needs a unique filing code. How do we come up with these unique numbers or codes in a consistent way?</p>
+<p>This chapter introduces <strong>Hashing &amp; ID Space</strong>. This is the universal addressing system for our distributed "building." It defines how we generate unique numerical identifiers (IDs) for everything – both the offices (<a href="../02_node__peer__/">Nodes (Peers)</a>) and the file copies (<a href="../01_file_management___replication_/">File Management &amp; Replication</a>) – and describes the "space" or range where all these addresses live.</p>
+<p><strong>What You'll Learn:</strong></p>
+<ul>
+<li>What hashing is and how it creates unique IDs (like fingerprints).</li>
+<li>How we use the MD5 algorithm for hashing in this project.</li>
+<li>What the ID Space is (the range of all possible IDs).</li>
+<li>Why this ID space is "circular" and why that's important.</li>
+</ul>
+<h2 id="the-problem-assigning-unique-addresses">The Problem: Assigning Unique Addresses</h2>
+<p>In our distributed system, we have many Nodes and many file replicas. We need a reliable way to:</p>
+<ol>
+<li>Give every Node a unique ID so we can tell them apart and organize them.</li>
+<li>Give every file replica a unique ID so we know which Node is responsible for storing it.</li>
+</ol>
+<p>If Node A wants to find Node B, it needs Node B's unique ID. If a user wants to find a file, the system needs to know the IDs of its replicas to figure out where they are stored. We can't just assign numbers randomly (what if two things get the same number?) or sequentially (what happens when nodes join and leave?). We need a deterministic and consistent method.</p>
+<h2 id="key-concepts">Key Concepts</h2>
+<h3 id="1-hashing-the-fingerprint-generator">1. Hashing: The Fingerprint Generator</h3>
+<p>Imagine a magical machine. You feed it any piece of text (like a Node's name "node101" or a file replica's name "my_notes0"), and it always spits out a unique, fixed-size string of characters or numbers based on the input. This is essentially what a <strong>hash function</strong> does.</p>
+<ul>
+<li><strong>Input:</strong> Any data (in our case, usually a String like a name).</li>
+<li><strong>Output:</strong> A fixed-size value, typically a sequence of numbers and letters (or just a very large number), called the <strong>hash value</strong> or <strong>digest</strong>.</li>
+<li><strong>Key Properties:</strong><ul>
+<li><strong>Deterministic:</strong> The <em>same</em> input always produces the <em>same</em> output hash. (Putting "node101" in always gives the same result).</li>
+<li><strong>Uniform:</strong> Different inputs should ideally produce very different outputs, spreading the hashes out.</li>
+<li><strong>One-way:</strong> It's practically impossible to figure out the original input just by looking at the output hash.</li>
+<li><strong>Collision Resistant:</strong> It's very unlikely that two <em>different</em> inputs will accidentally produce the <em>same</em> output hash (like two different people having the same fingerprint).</li>
+</ul>
+</li>
+</ul>
+<p>In this project, we use a specific hash function called <strong>MD5 (Message Digest 5)</strong>. MD5 takes any input and produces a 128-bit output. We represent this 128-bit output as a very large non-negative integer (<code>BigInteger</code> in Java).</p>
+<p><strong>Analogy:</strong> Think of MD5 as a super-precise fingerprint generator. Every person (input string) gets a unique fingerprint (hash value).</p>
+<h3 id="2-id-space-the-range-of-all-addresses">2. ID Space: The Range of All Addresses</h3>
+<p>The MD5 hash function produces 128-bit outputs. How many possible unique IDs can we generate with 128 bits? That's 2<sup>128</sup>, which is an astronomically large number!</p>
+<p>2<sup>128</sup> = 340,282,366,920,938,463,463,374,607,431,768,211,456</p>
+<p>This enormous range of possible IDs, from 0 up to 2<sup>128</sup> - 1, is called the <strong>ID Space</strong>. Every Node ID and every file replica ID generated by our MD5 hash function will be a number somewhere within this space.</p>
+<p><strong>Analogy:</strong> If our building used 3-digit room numbers, the ID space would be 000 to 999 (1000 possible addresses). Our MD5 ID space is vastly larger.</p>
+<h3 id="3-circular-id-space-wrapping-around">3. Circular ID Space: Wrapping Around</h3>
+<p>Imagine all these possible ID numbers arranged not on a straight line, but on a huge circle, like the numbers on a clock face. The largest number (2<sup>128</sup> - 1) is immediately followed by 0, completing the circle.</p>
+<pre class="mermaid"><code>graph TD
+    subgraph "Circular ID Space (Conceptual)"
+        direction LR
+        A(0) --&gt; B(...)
+        B --&gt; C(Node ID 1)
+        C --&gt; D(...)
+        D --&gt; E(File ID X)
+        E --&gt; F(...)
+        F --&gt; G(Node ID 2)
+        G --&gt; H(...)
+        H --&gt; I(2^128 - 1)
+        I --&gt; A
+    end</code></pre>
+<p><em>Explanation:</em> This diagram shows a conceptual ring. IDs are points on this circle. The circle connects the maximum ID back to 0. Nodes and File Replicas get assigned IDs that place them somewhere on this ring.</p>
+<p>This circular arrangement is fundamental to how the <a href="05_chord_protocol__ring__lookup__stabilization_.md">Chord Protocol (Ring, Lookup, Stabilization)</a> works. It ensures there are no "start" or "end" points, making it easy to define concepts like "the next node on the ring" (successor) regardless of where you are.</p>
+<h2 id="how-we-use-hashing-and-the-id-space">How We Use Hashing and the ID Space</h2>
+<p>We use a utility class called <code>Hash</code> to perform these operations.</p>
+<p><strong>1. Assigning a Node ID:</strong></p>
+<p>When a <a href="../02_node__peer__/">Node (Peer)</a> starts, its unique name (like "node101" or the process name like "process1") is fed into the hash function to get its permanent <code>nodeID</code>.</p>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-0-1"><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1">// In Node.java constructor (Simplified)</span>
+</span><span id="__span-0-2"><a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="n">String</span><span class="w"> </span><span class="n">nodename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"process1"</span><span class="p">;</span><span class="w"> </span><span class="c1">// Example name for this node</span>
+</span><span id="__span-0-3"><a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="n">BigInteger</span><span class="w"> </span><span class="n">nodeID</span><span class="p">;</span>
+</span><span id="__span-0-4"><a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="c1">// Use the Hash utility to calculate the ID</span>
+</span><span id="__span-0-6"><a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="n">nodeID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Hash</span><span class="p">.</span><span class="na">hashOf</span><span class="p">(</span><span class="n">nodename</span><span class="p">);</span>
+</span><span id="__span-0-7"><a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">"Node "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">nodename</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">" has ID: "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">nodeID</span><span class="p">);</span>
+</span></code></pre></div>
+<p><em>Explanation:</em> We call <code>Hash.hashOf()</code> with the node's name. It runs the MD5 algorithm and returns a unique <code>BigInteger</code> which becomes the <code>nodeID</code>. This ID determines the node's position on the circular ID space.</p>
+<p><em>Example Output (IDs will vary):</em>
+<code>Node process1 has ID: 184883359565900980586981169341156351448</code></p>
+<p><strong>2. Assigning File Replica IDs:</strong></p>
+<p>As we saw in <a href="../01_file_management___replication_/">File Management &amp; Replication</a>, when distributing a file, the <code>FileManager</code> creates multiple replica names (e.g., "my_notes0", "my_notes1", "my_notes2") and hashes <em>each one</em> to get distinct replica IDs.</p>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-1-1"><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1">// In FileManager.java createReplicaFiles() method (Simplified)</span>
+</span><span id="__span-1-2"><a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="n">String</span><span class="w"> </span><span class="n">baseFilename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"my_notes"</span><span class="p">;</span>
+</span><span id="__span-1-3"><a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="kt">int</span><span class="w"> </span><span class="n">numReplicas</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+</span><span id="__span-1-4"><a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="n">BigInteger</span><span class="o">[]</span><span class="w"> </span><span class="n">replicaIDs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BigInteger</span><span class="o">[</span><span class="n">numReplicas</span><span class="o">]</span><span class="p">;</span>
+</span><span id="__span-1-5"><a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>
+</span><span id="__span-1-6"><a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">numReplicas</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-7"><a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">replicaName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">baseFilename</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="p">;</span><span class="w"> </span><span class="c1">// e.g., "my_notes0"</span>
+</span><span id="__span-1-8"><a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="w">    </span><span class="c1">// Use the Hash utility for each replica name</span>
+</span><span id="__span-1-9"><a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="w">    </span><span class="n">replicaIDs</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Hash</span><span class="p">.</span><span class="na">hashOf</span><span class="p">(</span><span class="n">replicaName</span><span class="p">);</span>
+</span><span id="__span-1-10"><a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="w">    </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">"Replica "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">replicaName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">" has ID: "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">replicaIDs</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">);</span>
+</span><span id="__span-1-11"><a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><em>Explanation:</em> Each unique replica name ("my_notes0", "my_notes1", etc.) is hashed separately. This produces multiple distinct <code>BigInteger</code> IDs, each representing a point on the circular ID space where a copy of the file should ideally be managed.</p>
+<p><em>Example Output (IDs will vary):</em>
+<code>Replica my_notes0 has ID: 26845416607232347001079434980358746769</code>
+<code>Replica my_notes1 has ID: 337557115089051893325617838048617738677</code>
+<code>Replica my_notes2 has ID: 179507865398391841007180138972716939810</code></p>
+<p><strong>3. Determining Responsibility:</strong></p>
+<p>These generated IDs (both for nodes and file replicas) are crucial for the <a href="05_chord_protocol__ring__lookup__stabilization_.md">Chord Protocol (Ring, Lookup, Stabilization)</a>. Chord uses these IDs and the circular ID space to determine which Node is <em>responsible</em> for which range of IDs, and therefore, which Node should store which file replica. (We'll see exactly how in the next chapter!)</p>
+<h2 id="under-the-hood-the-hashjava-utility">Under the Hood: The <code>Hash.java</code> Utility</h2>
+<p>Let's peek inside the <code>Hash.java</code> utility class to see how it works.</p>
+<p><strong><code>Hash.hashOf(String entity)</code>:</strong></p>
+<p>This method takes a string input and returns the MD5 hash as a <code>BigInteger</code>.</p>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-2-1"><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1">// File: src/main/java/no/hvl/dat110/util/Hash.java (Simplified hashOf)</span>
+</span><span id="__span-2-2"><a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">java.math.BigInteger</span><span class="p">;</span>
+</span><span id="__span-2-3"><a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">java.security.MessageDigest</span><span class="p">;</span>
+</span><span id="__span-2-4"><a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">java.security.NoSuchAlgorithmException</span><span class="p">;</span>
+</span><span id="__span-2-5"><a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.HexFormat</span><span class="p">;</span><span class="w"> </span><span class="c1">// Used to convert byte array to hex string</span>
+</span><span id="__span-2-6"><a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>
+</span><span id="__span-2-7"><a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Hash</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-8"><a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>
+</span><span id="__span-2-9"><a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">BigInteger</span><span class="w"> </span><span class="nf">hashOf</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">entity</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-10"><a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w">        </span><span class="n">BigInteger</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+</span><span id="__span-2-11"><a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-12"><a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w">            </span><span class="c1">// 1. Get an MD5 message digest instance</span>
+</span><span id="__span-2-13"><a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w">            </span><span class="n">MessageDigest</span><span class="w"> </span><span class="n">md</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MessageDigest</span><span class="p">.</span><span class="na">getInstance</span><span class="p">(</span><span class="s">"MD5"</span><span class="p">);</span>
+</span><span id="__span-2-14"><a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>
+</span><span id="__span-2-15"><a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="w">            </span><span class="c1">// 2. Convert the input string to bytes</span>
+</span><span id="__span-2-16"><a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="w">            </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">entityBytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">entity</span><span class="p">.</span><span class="na">getBytes</span><span class="p">();</span>
+</span><span id="__span-2-17"><a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>
+</span><span id="__span-2-18"><a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a><span class="w">            </span><span class="c1">// 3. Compute the MD5 hash (digest) of the bytes</span>
+</span><span id="__span-2-19"><a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a><span class="w">            </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">hashBytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">md</span><span class="p">.</span><span class="na">digest</span><span class="p">(</span><span class="n">entityBytes</span><span class="p">);</span><span class="w"> </span><span class="c1">// Returns 16 bytes for MD5</span>
+</span><span id="__span-2-20"><a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>
+</span><span id="__span-2-21"><a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a><span class="w">            </span><span class="c1">// 4. Convert the byte array hash into a hexadecimal string</span>
+</span><span id="__span-2-22"><a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a><span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">hexHash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HexFormat</span><span class="p">.</span><span class="na">of</span><span class="p">().</span><span class="na">formatHex</span><span class="p">(</span><span class="n">hashBytes</span><span class="p">);</span>
+</span><span id="__span-2-23"><a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a>
+</span><span id="__span-2-24"><a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a><span class="w">            </span><span class="c1">// 5. Convert the hexadecimal string into a BigInteger</span>
+</span><span id="__span-2-25"><a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a><span class="w">            </span><span class="c1">// The '16' means the input string is base-16 (hex)</span>
+</span><span id="__span-2-26"><a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a><span class="w">            </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BigInteger</span><span class="p">(</span><span class="n">hexHash</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="p">);</span>
+</span><span id="__span-2-27"><a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a>
+</span><span id="__span-2-28"><a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a><span class="w">            </span><span class="c1">// Ensure the BigInteger is non-negative</span>
+</span><span id="__span-2-29"><a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a><span class="w">            </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="na">signum</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">BigInteger</span><span class="p">.</span><span class="na">ZERO</span><span class="p">;</span><span class="w"> </span><span class="c1">// Adjust if negative</span>
+</span><span id="__span-2-30"><a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a>
+</span><span id="__span-2-31"><a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">NoSuchAlgorithmException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-32"><a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a><span class="w">            </span><span class="c1">// This happens if "MD5" algorithm is not supported by the Java env</span>
+</span><span id="__span-2-33"><a href="#__codelineno-2-33" id="__codelineno-2-33" name="__codelineno-2-33"></a><span class="w">            </span><span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
+</span><span id="__span-2-34"><a href="#__codelineno-2-34" id="__codelineno-2-34" name="__codelineno-2-34"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-2-35"><a href="#__codelineno-2-35" id="__codelineno-2-35" name="__codelineno-2-35"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+</span><span id="__span-2-36"><a href="#__codelineno-2-36" id="__codelineno-2-36" name="__codelineno-2-36"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-2-37"><a href="#__codelineno-2-37" id="__codelineno-2-37" name="__codelineno-2-37"></a><span class="w">    </span><span class="c1">// ... other methods ...</span>
+</span><span id="__span-2-38"><a href="#__codelineno-2-38" id="__codelineno-2-38" name="__codelineno-2-38"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><em>Explanation:</em>
+1.  <code>MessageDigest.getInstance("MD5")</code>: Gets the Java security object ready to perform MD5 hashing.
+2.  <code>entity.getBytes()</code>: Converts the input string (e.g., "node101") into raw bytes.
+3.  <code>md.digest(entityBytes)</code>: Performs the core MD5 calculation on the bytes, producing a 16-byte array (128 bits).
+4.  <code>HexFormat.of().formatHex(hashBytes)</code>: Converts the 16 raw bytes into a 32-character hexadecimal string (like "d41d8cd98f00b204e9800998ecf8427e").
+5.  <code>new BigInteger(hexHash, 16)</code>: Parses the hexadecimal string to create the final <code>BigInteger</code> representing the ID.
+6.  The check <code>result.signum() &gt;= 0</code> handles a technicality where <code>BigInteger</code> might interpret the leading bit as a sign bit; we ensure our IDs are always positive.</p>
+<p><strong><code>Hash.bitSize()</code> and <code>Hash.addressSize()</code>:</strong></p>
+<p>These methods provide information about the ID space.</p>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-3-1"><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="c1">// File: src/main/java/no/hvl/dat110/util/Hash.java (Simplified bitSize/addressSize)</span>
+</span><span id="__span-3-2"><a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Hash</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-3"><a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">    </span><span class="c1">// ... hashOf method ...</span>
+</span><span id="__span-3-4"><a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">bitSize</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-6"><a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-7"><a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="w">            </span><span class="c1">// Ask the MD5 algorithm for its digest length in bytes</span>
+</span><span id="__span-3-8"><a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w">            </span><span class="n">MessageDigest</span><span class="w"> </span><span class="n">md</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MessageDigest</span><span class="p">.</span><span class="na">getInstance</span><span class="p">(</span><span class="s">"MD5"</span><span class="p">);</span>
+</span><span id="__span-3-9"><a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="w">            </span><span class="kt">int</span><span class="w"> </span><span class="n">digestlenBytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">md</span><span class="p">.</span><span class="na">getDigestLength</span><span class="p">();</span><span class="w"> </span><span class="c1">// This is 16 for MD5</span>
+</span><span id="__span-3-10"><a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w">            </span><span class="c1">// Convert bytes to bits</span>
+</span><span id="__span-3-11"><a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">digestlenBytes</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">8</span><span class="p">;</span><span class="w"> </span><span class="c1">// 16 * 8 = 128 bits</span>
+</span><span id="__span-3-12"><a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">NoSuchAlgorithmException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-13"><a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RuntimeException</span><span class="p">(</span><span class="n">e</span><span class="p">);</span><span class="w"> </span><span class="c1">// Should not happen for MD5</span>
+</span><span id="__span-3-14"><a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-3-15"><a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-3-16"><a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>
+</span><span id="__span-3-17"><a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">BigInteger</span><span class="w"> </span><span class="nf">addressSize</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-18"><a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="w">        </span><span class="c1">// Calculate 2 raised to the power of the number of bits</span>
+</span><span id="__span-3-19"><a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">bits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bitSize</span><span class="p">();</span><span class="w"> </span><span class="c1">// Get 128</span>
+</span><span id="__span-3-20"><a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a><span class="w">        </span><span class="n">BigInteger</span><span class="w"> </span><span class="n">base</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BigInteger</span><span class="p">.</span><span class="na">valueOf</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+</span><span id="__span-3-21"><a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="w">        </span><span class="n">BigInteger</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">base</span><span class="p">.</span><span class="na">pow</span><span class="p">(</span><span class="n">bits</span><span class="p">);</span><span class="w"> </span><span class="c1">// 2^128</span>
+</span><span id="__span-3-22"><a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">size</span><span class="p">;</span>
+</span><span id="__span-3-23"><a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-3-24"><a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a><span class="w">    </span><span class="c1">// ... toHex method ...</span>
+</span><span id="__span-3-25"><a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><em>Explanation:</em>
+*   <code>bitSize()</code>: Determines the size of the hash output in bits (always 128 for MD5).
+*   <code>addressSize()</code>: Calculates the total number of possible unique IDs in the space by computing 2<sup>bits</sup> (2<sup>128</sup>).</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>In this chapter, we learned about the crucial concept of <strong>Hashing &amp; ID Space</strong>. We saw how hash functions, specifically <strong>MD5</strong>, act like fingerprint generators to create unique, large numerical IDs (<code>BigInteger</code>) for both <a href="../02_node__peer__/">Nodes (Peers)</a> and file replicas based on their names.</p>
+<p>These IDs all exist within a vast <strong>ID Space</strong> (0 to 2<sup>128</sup>-1), which we visualize as being <strong>circular</strong>. This consistent way of assigning addresses and the circular nature of the space are the absolute foundation for organizing our distributed system.</p>
+<p>Now that we know how everything gets a unique address and where these addresses live, how do we use this to actually build the network structure, find specific nodes, and determine who is responsible for which file replica IDs? That's exactly what we'll cover in the next chapter on the <a href="05_chord_protocol__ring__lookup__stabilization_.md">Chord Protocol (Ring, Lookup, Stabilization)</a>.</p>
+<hr/>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.c8b220af.min.js"></script>
+</body>
+</html>
