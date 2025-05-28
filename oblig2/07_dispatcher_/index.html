@@ -1,0 +1,578 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="../06_connection_/" rel="prev"/>
+<link href="../08_storage_/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.6.12" name="generator"/>
+<title>Chapter 7: Dispatcher - dat110 notes</title>
+<link href="../../assets/stylesheets/main.2afb09e1.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#chapter-7-dispatcher">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="dat110 notes" class="md-header__button md-logo" data-md-component="logo" href="../.." title="dat110 notes">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            dat110 notes
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Chapter 7: Dispatcher
+            
+          </span>
+</div>
+</div>
+</div>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="dat110 notes" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="dat110 notes">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    dat110 notes
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    Home
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Oblig1
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            Oblig1
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig1/01_rpc_client_stub_/">
+<span class="md-ellipsis">
+    Chapter 1: RPC Client Stub
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig1/02_rpc_server_implementation__skeleton__/">
+<span class="md-ellipsis">
+    Chapter 2: RPC Server Implementation (Skeleton)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig1/03_rpc_client_/">
+<span class="md-ellipsis">
+    Chapter 3: RPC Client
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig1/04_rpc_server_/">
+<span class="md-ellipsis">
+    Chapter 4: RPC Server
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig1/05_rpc_data_marshalling_unmarshalling_/">
+<span class="md-ellipsis">
+    Chapter 5: RPC Data Marshalling/Unmarshalling
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig1/06_messaging_connection_/">
+<span class="md-ellipsis">
+    Chapter 6: Messaging Connection
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig1/07_message_framing_protocol_/">
+<span class="md-ellipsis">
+    Chapter 7: Message Framing Protocol
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig1/oblig1_index/">
+<span class="md-ellipsis">
+    Project 1 Overview
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Oblig2
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            Oblig2
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../00_index/">
+<span class="md-ellipsis">
+    Tutorial: dat110-oblig2
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../01_client_/">
+<span class="md-ellipsis">
+    Chapter 1: Client
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../02_broker_/">
+<span class="md-ellipsis">
+    Chapter 2: Broker
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../03_message_/">
+<span class="md-ellipsis">
+    Chapter 3: Message
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../04_messagetype_/">
+<span class="md-ellipsis">
+    Chapter 4: MessageType
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../05_messageutils_/">
+<span class="md-ellipsis">
+    Chapter 5: MessageUtils
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../06_connection_/">
+<span class="md-ellipsis">
+    Chapter 6: Connection
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    Chapter 7: Dispatcher
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../08_storage_/">
+<span class="md-ellipsis">
+    Chapter 8: Storage
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../09_clientsession_/">
+<span class="md-ellipsis">
+    Chapter 9: ClientSession
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../10_stopable_/">
+<span class="md-ellipsis">
+    Chapter 10: Stopable
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    Oblig3
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            Oblig3
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig3/01_file_management___replication_/">
+<span class="md-ellipsis">
+    Chapter 1: File Management &amp; Replication
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig3/02_node__peer__/">
+<span class="md-ellipsis">
+    Chapter 2: Node (Peer)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig3/03_remote_communication__rmi__/">
+<span class="md-ellipsis">
+    Chapter 3: Remote Communication (RMI)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig3/04_hashing___id_space_/">
+<span class="md-ellipsis">
+    Chapter 4: Hashing &amp; ID Space
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig3/05_chord_protocol__ring__lookup__stabilization__/">
+<span class="md-ellipsis">
+    Chapter 5: Chord Protocol (Ring, Lookup, Stabilization)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig3/06_message_/">
+<span class="md-ellipsis">
+    Chapter 6: Message
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig3/07_consistency__remote_write_protocol__/">
+<span class="md-ellipsis">
+    Chapter 7: Consistency (Remote-Write Protocol)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig3/08_distributed_mutual_exclusion_/">
+<span class="md-ellipsis">
+    Chapter 8: Distributed Mutual Exclusion
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../oblig3/oblig3_index/">
+<span class="md-ellipsis">
+    Project 3 Overview
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-7-dispatcher">Chapter 7: Dispatcher</h1>
+<p>In the previous chapter, <a href="../06_connection_/">Connection</a>, we learned how to establish a connection between a client and the broker and send raw data back and forth. But once the broker receives the data, how does it know <em>what</em> to do with it? That's where the <code>Dispatcher</code> comes in!</p>
+<p>Think of the <code>Dispatcher</code> as the traffic controller at an airport. Airplanes (messages) arrive, and the traffic controller directs them to the correct runway (handler) based on their type (e.g., arriving, departing, emergency). The <code>Dispatcher</code> receives messages from connected clients, figures out what kind of message it is (using the <a href="../04_messagetype_/">MessageType</a> we learned about!), and then calls the right method to handle it.</p>
+<p><strong>Why do we need a Dispatcher?</strong></p>
+<p>Imagine a scenario where you have many different types of messages: connecting, disconnecting, publishing data, subscribing to topics, etc. Without a <code>Dispatcher</code>, the <code>Broker</code> would have to handle <em>every single</em> message type directly. This would make the <code>Broker</code> code very long, complex, and hard to maintain.</p>
+<p>The <code>Dispatcher</code> solves this problem by:</p>
+<ol>
+<li><strong>Centralizing Message Handling:</strong> It provides a single place to handle all incoming messages.</li>
+<li><strong>Decoupling Message Types from the Broker:</strong>  The <code>Broker</code> doesn't need to know about the specifics of each message type. It just passes the message to the <code>Dispatcher</code> and lets it handle the rest.</li>
+<li><strong>Routing Messages to the Correct Handlers:</strong>  It determines the message type and calls the appropriate handler method.</li>
+</ol>
+<p><strong>Key Concepts</strong></p>
+<p>The <code>Dispatcher</code> has a few key concepts:</p>
+<ol>
+<li><strong>Message Handling:</strong> The <code>Dispatcher</code>'s main job is to receive messages from clients.</li>
+<li><strong>Message Type Determination:</strong> It uses the <a href="../04_messagetype_/">MessageType</a> to figure out what kind of message it is (e.g., CONNECT, PUBLISH, SUBSCRIBE).</li>
+<li><strong>Handler Methods:</strong> It has different methods for handling different message types (e.g., <code>onConnect()</code>, <code>onPublish()</code>, <code>onSubscribe()</code>). These methods contain the logic for processing each type of message.</li>
+<li><strong>Storage:</strong> It interacts with the <a href="../08_storage_/">Storage</a> to manage topics, subscribers, and client sessions. We will learn about it in the next chapter.</li>
+</ol>
+<p><strong>Using the Dispatcher: A Simple Example</strong></p>
+<p>Let's say a client sends a <code>PublishMsg</code> to the broker. Here's how the <code>Dispatcher</code> would handle it:</p>
+<ol>
+<li>The <a href="../02_broker_/">Broker</a> receives the <code>PublishMsg</code> from the client.</li>
+<li>The <code>Broker</code> passes the <code>PublishMsg</code> to the <code>Dispatcher</code>.</li>
+<li>The <code>Dispatcher</code> examines the <a href="../04_messagetype_/">MessageType</a> of the message. It sees that the type is <code>PUBLISH</code>.</li>
+<li>The <code>Dispatcher</code> calls the <code>onPublish()</code> method to handle the <code>PublishMsg</code>.</li>
+<li>The <code>onPublish()</code> method retrieves the topic and message content from the <code>PublishMsg</code> and then forwards the message to all clients subscribed to that topic.</li>
+</ol>
+<p><strong>Relevant Code Snippet:</strong></p>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-0-1"><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">dispatch</span><span class="p">(</span><span class="n">ClientSession</span><span class="w"> </span><span class="n">client</span><span class="p">,</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-2"><a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">    </span><span class="n">MessageType</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">msg</span><span class="p">.</span><span class="na">getType</span><span class="p">();</span>
+</span><span id="__span-0-4"><a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">type</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-6"><a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="n">PUBLISH</span><span class="p">:</span>
+</span><span id="__span-0-7"><a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">            </span><span class="n">onPublish</span><span class="p">((</span><span class="n">PublishMsg</span><span class="p">)</span><span class="w"> </span><span class="n">msg</span><span class="p">);</span>
+</span><span id="__span-0-8"><a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w">            </span><span class="k">break</span><span class="p">;</span>
+</span><span id="__span-0-9"><a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="w">        </span><span class="c1">// ... other message types</span>
+</span><span id="__span-0-10"><a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-11"><a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>Explanation:</strong></p>
+<ul>
+<li>This code snippet shows how the <code>Dispatcher</code> uses a <code>switch</code> statement to determine which handler method to call based on the <code>MessageType</code>.</li>
+<li>If the <code>MessageType</code> is <code>PUBLISH</code>, it calls the <code>onPublish()</code> method, casting the <code>Message</code> to a <code>PublishMsg</code> so that the handler has access to the topic and message content.</li>
+</ul>
+<p><strong>The <code>onPublish</code> Method:</strong></p>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-1-1"><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">onPublish</span><span class="p">(</span><span class="n">PublishMsg</span><span class="w"> </span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-2"><a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">    </span><span class="n">Logger</span><span class="p">.</span><span class="na">log</span><span class="p">(</span><span class="s">"onPublish:"</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">msg</span><span class="p">.</span><span class="na">toString</span><span class="p">());</span>
+</span><span id="__span-1-3"><a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">    </span><span class="c1">// Get subscribers to the topic</span>
+</span><span id="__span-1-4"><a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">    </span><span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">storage</span><span class="p">.</span><span class="na">getSubscribers</span><span class="p">(</span><span class="n">msg</span><span class="p">.</span><span class="na">getTopic</span><span class="p">());</span>
+</span><span id="__span-1-5"><a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>
+</span><span id="__span-1-6"><a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w">    </span><span class="c1">// Iterate through the subscribers and send them the message</span>
+</span><span id="__span-1-7"><a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">users</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-8"><a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="w">        </span><span class="n">ClientSession</span><span class="w"> </span><span class="n">clientSession</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">storage</span><span class="p">.</span><span class="na">clients</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">user</span><span class="p">);</span>
+</span><span id="__span-1-9"><a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="w">        </span><span class="n">clientSession</span><span class="p">.</span><span class="na">send</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
+</span><span id="__span-1-10"><a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-11"><a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>Explanation:</strong></p>
+<ul>
+<li>The <code>onPublish</code> method retrieves all users subscribed to the topic from the <a href="../08_storage_/">Storage</a>.</li>
+<li>It iterates through these subscribers, retrieves their <code>ClientSession</code>, and sends the <code>PublishMsg</code> to each of them using the <code>ClientSession.send()</code> method.</li>
+</ul>
+<p><strong>Under the Hood: How it Works</strong></p>
+<p>When a message arrives at the broker, here's a simplified sequence of events involving the <code>Dispatcher</code>:</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Client
+    participant Broker
+    participant Dispatcher
+    participant Storage
+    participant ClientSession
+
+    Client-&gt;&gt;Broker: Send PublishMsg (topic, message)
+    Broker-&gt;&gt;Dispatcher: dispatch(PublishMsg, clientSession)
+    activate Dispatcher
+    Dispatcher-&gt;&gt;Dispatcher: Determine MessageType (PUBLISH)
+    Dispatcher-&gt;&gt;Dispatcher: onPublish(PublishMsg)
+    Dispatcher-&gt;&gt;Storage: getSubscribers(topic)
+    Storage--&gt;&gt;Dispatcher: Set&lt;String&gt; users
+    loop For each user in users
+        Dispatcher-&gt;&gt;Storage: clients.get(user)
+        Storage--&gt;&gt;Dispatcher: ClientSession
+        Dispatcher-&gt;&gt;ClientSession: send(PublishMsg)
+        ClientSession--&gt;&gt;Dispatcher: Ack
+    end
+    Dispatcher--&gt;&gt;Broker: Done
+    deactivate Dispatcher
+</code></pre>
+<p>Here's the breakdown:</p>
+<ol>
+<li>The <code>Client</code> sends a <code>PublishMsg</code> to the <code>Broker</code>.</li>
+<li>The <code>Broker</code> calls the <code>dispatch()</code> method of the <code>Dispatcher</code>, passing in the <code>PublishMsg</code> and the <code>ClientSession</code> associated with the client.</li>
+<li>The <code>Dispatcher</code> determines that the message type is <code>PUBLISH</code> and calls the <code>onPublish()</code> method.</li>
+<li>The <code>onPublish()</code> method retrieves the list of subscribers for the topic from the <code>Storage</code>.</li>
+<li>For each subscriber, it retrieves the corresponding <code>ClientSession</code> from the <code>Storage</code> and sends the <code>PublishMsg</code> to that client.</li>
+</ol>
+<p><strong>Relevant Code Snippets</strong></p>
+<p>Let's look at the <code>doProcess()</code> method in <code>src/main/java/no/hvl/dat110/broker/Dispatcher.java</code>:</p>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-2-1"><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="nd">@Override</span>
+</span><span id="__span-2-2"><a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">doProcess</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-3"><a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w">    </span><span class="n">Collection</span><span class="o">&lt;</span><span class="n">ClientSession</span><span class="o">&gt;</span><span class="w"> </span><span class="n">clients</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">storage</span><span class="p">.</span><span class="na">getSessions</span><span class="p">();</span>
+</span><span id="__span-2-5"><a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>
+</span><span id="__span-2-6"><a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">ClientSession</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">clients</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-7"><a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>
+</span><span id="__span-2-8"><a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">        </span><span class="n">Message</span><span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+</span><span id="__span-2-9"><a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>
+</span><span id="__span-2-10"><a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">client</span><span class="p">.</span><span class="na">hasData</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-11"><a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w">            </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="na">receive</span><span class="p">();</span>
+</span><span id="__span-2-12"><a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-2-13"><a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>
+</span><span id="__span-2-14"><a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">msg</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-15"><a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="w">            </span><span class="n">dispatch</span><span class="p">(</span><span class="n">client</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">);</span>
+</span><span id="__span-2-16"><a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-2-17"><a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-2-18"><a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>Explanation:</strong></p>
+<ul>
+<li>The <code>doProcess()</code> method is the main loop of the <code>Dispatcher</code>.</li>
+<li>It iterates through all the active <code>ClientSession</code> objects stored in the <code>Storage</code>.</li>
+<li>For each <code>ClientSession</code>, it checks if there is any data available to be read using <code>client.hasData()</code>.</li>
+<li>If there is data, it calls <code>client.receive()</code> to receive a <a href="../03_message_/">Message</a>.</li>
+<li>If a message is received (<code>msg != null</code>), it calls the <code>dispatch()</code> method to handle the message.</li>
+</ul>
+<p><strong>How the <code>onConnect()</code> method is used</strong></p>
+<p>The <code>onConnect</code> method is particularly important as it's the entrypoint for new clients.</p>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-3-1"><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">onConnect</span><span class="p">(</span><span class="n">ConnectMsg</span><span class="w"> </span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">Connection</span><span class="w"> </span><span class="n">connection</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-2"><a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">msg</span><span class="p">.</span><span class="na">getUser</span><span class="p">();</span>
+</span><span id="__span-3-4"><a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">    </span><span class="n">Logger</span><span class="p">.</span><span class="na">log</span><span class="p">(</span><span class="s">"onConnect:"</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">msg</span><span class="p">.</span><span class="na">toString</span><span class="p">());</span>
+</span><span id="__span-3-6"><a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>
+</span><span id="__span-3-7"><a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="w">    </span><span class="n">storage</span><span class="p">.</span><span class="na">addClientSession</span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="w"> </span><span class="n">connection</span><span class="p">);</span>
+</span><span id="__span-3-8"><a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>
+</span><span id="__span-3-9"><a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>Explanation:</strong></p>
+<ul>
+<li>This method is called by the <a href="../02_broker_/">Broker</a> when a new client attempts to connect.</li>
+<li>It extracts the username from the <code>ConnectMsg</code>.</li>
+<li>It creates a new <a href="../09_clientsession_/">ClientSession</a> object (we will dive into it later) and associates it with the client's username and <a href="../06_connection_/">Connection</a>.</li>
+<li>Finally, it adds the new <code>ClientSession</code> to the <code>Storage</code>, allowing the <code>Dispatcher</code> to manage the client's messages.</li>
+</ul>
+<p><strong>Conclusion</strong></p>
+<p>In this chapter, we've learned about the <code>Dispatcher</code> and how it acts as the brain of the broker, routing messages to the appropriate handler methods. We've seen how it uses the <a href="../04_messagetype_/">MessageType</a> to determine the message type and how it interacts with the <a href="../08_storage_/">Storage</a> to manage topics and subscribers. The <code>Dispatcher</code> is essential for managing the complexity of a messaging system.</p>
+<p>In the next chapter, we'll explore the <a href="../08_storage_/">Storage</a> class, which is responsible for storing topics, subscribers, and client sessions.</p>
+<hr/>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.c8b220af.min.js"></script>
+</body>
+</html>
